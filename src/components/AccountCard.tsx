@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { config, Transition } from 'react-spring/renderprops';
 import { Card, Label } from 'semantic-ui-react';
 
-import { BaseAccount, Static } from 'evm-lite-lib';
+import { BaseAccount, Utils } from 'evm-lite-core';
 
 const Address = styled.span`
 	word-wrap: break-word !important;
@@ -37,9 +37,7 @@ class Account extends React.Component<LocalProps, any> {
 					<Card.Header className={'address'}>
 						<Link to={`/account/${this.props.account.address}`}>
 							<Address>
-								{Static.cleanAddress(
-									this.props.account.address
-								)}
+								{Utils.cleanAddress(this.props.account.address)}
 							</Address>
 						</Link>
 					</Card.Header>

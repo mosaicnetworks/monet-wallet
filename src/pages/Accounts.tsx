@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Static } from 'evm-lite-lib';
+import { Utils } from 'evm-lite-core';
 import { InjectedAlertProp, withAlert } from 'react-alert';
 import { connect } from 'react-redux';
 import { config, Spring } from 'react-spring/renderprops';
@@ -54,11 +54,7 @@ class Accounts extends React.Component<LocalProps, State> {
 	public handleListAccounts = () => this.props.list();
 
 	public render() {
-		const {
-			accounts,
-			configuration
-			// accountUnlockTask
-		} = this.props;
+		const { accounts } = this.props;
 
 		return (
 			<React.Fragment>
@@ -77,10 +73,6 @@ class Accounts extends React.Component<LocalProps, State> {
 						{props => (
 							<Header style={props} as="h2" floated="left">
 								Account Settings
-								<Header.Subheader>
-									{configuration.data.storage &&
-										configuration.data.storage.keystore}
-								</Header.Subheader>
 							</Header>
 						)}
 					</Spring>
@@ -147,11 +139,11 @@ class Accounts extends React.Component<LocalProps, State> {
 											<AccountCard
 												unlocked={
 													(accounts.unlocked &&
-														Static.cleanAddress(
+														Utils.cleanAddress(
 															accounts.unlocked
 																.address
 														) ===
-															Static.cleanAddress(
+															Utils.cleanAddress(
 																account.address
 															)) ||
 													false

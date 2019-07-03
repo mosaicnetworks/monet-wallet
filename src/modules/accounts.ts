@@ -1,14 +1,13 @@
 import {
 	Account,
 	BaseAccount,
-	EVM,
+	EVMTypes,
 	EVMLC,
-	Keystore,
-	SentTX,
-	Static,
-	TXReceipt,
-	V3JSONKeyStore
-} from 'evm-lite-lib';
+	Utils,
+	TransactionReceipt
+} from 'evm-lite-core';
+
+import { Keystore, V3JSONKeyStore } from 'evm-lite-keystore';
 
 import { BaseAction, ThunkResult } from '.';
 
@@ -43,9 +42,9 @@ const TRANSFER_ERROR = '@monet/accounts/TRANSFER/ERROR';
  *
  * @param x - The value to comma sepetate.
  */
-function integerWithCommas(x: number | string) {
-	return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-}
+// function integerWithCommas(x: number | string) {
+// 	return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+// }
 
 // Accounts state structure
 export interface AccountsState {
@@ -58,8 +57,8 @@ export interface AccountsState {
 	// Entrie list of transactions (not specific to an account)
 	// Latest transaction hash
 	readonly transactions: {
-		all: SentTX[];
-		lastestReceipt?: TXReceipt;
+		all: any[];
+		lastestReceipt?: TransactionReceipt;
 	};
 
 	// A single error field to be used by this module for any action
@@ -169,15 +168,21 @@ export default function reducer(
 			};
 		case GET_SUCCESS:
 			const accounts = state.all.map(acc => {
+				const acc2 = {
+					balance: 0,
+					nonce: 0,
+					address: acc.address,
+					bytecode: ''
+				};
 				if (
-					Static.cleanAddress(acc.address) ===
-					Static.cleanAddress(action.payload.address)
+					Utils.cleanAddress(acc.address) ===
+					Utils.cleanAddress(action.payload.address)
 				) {
-					acc.balance = action.payload.balance;
-					acc.nonce = action.payload.nonce;
+					acc2.balance = action.payload.balance;
+					acc2.nonce = action.payload.nonce;
 				}
 
-				return acc;
+				return acc2;
 			});
 
 			return {
@@ -292,8 +297,7 @@ export default function reducer(
  * and set the `all` attribute to the desired result.
  */
 export function list(): ThunkResult<Promise<BaseAccount[]>> {
-	return async (dispatch, getState) => {
-		const state = getState();
+	return async dispatch => {
 		let accounts: BaseAccount[] = [];
 
 		dispatch({
@@ -302,29 +306,21 @@ export function list(): ThunkResult<Promise<BaseAccount[]>> {
 
 		try {
 			let connection: EVMLC | undefined;
-			const config = state.config.data;
 
-			if (!Object.keys(config).length) {
-				throw Error('Configuration data not loaded.');
-			}
+			connection = new EVMLC('localhost', 8080);
 
-			connection = new EVMLC(
-				config.connection.host,
-				config.connection.port,
-				{
-					from: config.defaults.from,
-					gas: config.defaults.gas,
-					gasPrice: config.defaults.gasPrice
-				}
-			);
-
-			await connection.testConnection().catch(() => {
+			await connection.getInfo().catch(() => {
 				connection = undefined;
 			});
 
-			const keystore = new Keystore(config.storage.keystore);
+			const keystore = new Keystore('/Users/danu/.evmlc/keystore');
 
-			accounts = await keystore.list(connection);
+			accounts = (await keystore.list()).map(keystore => ({
+				address: keystore.address,
+				balance: 0,
+				nonce: 0,
+				bytecode: ''
+			}));
 
 			dispatch({
 				type: LIST_SUCCESS,
@@ -348,13 +344,11 @@ export function list(): ThunkResult<Promise<BaseAccount[]>> {
  */
 export function create(password: string): ThunkResult<Promise<BaseAccount>> {
 	return async (dispatch, getState) => {
-		const state = getState();
-		const config = state.config.data;
-
-		const account: BaseAccount = {
+		const account = {
 			address: '',
 			balance: 0,
-			nonce: 0
+			nonce: 0,
+			bytecode: ''
 		};
 
 		dispatch({
@@ -362,21 +356,15 @@ export function create(password: string): ThunkResult<Promise<BaseAccount>> {
 		});
 
 		try {
-			if (!!Object.keys(config).length) {
-				const keystore = new Keystore(config.storage.keystore);
-				const acc: V3JSONKeyStore = JSON.parse(
-					await keystore.create(password)
-				);
+			const keystore = new Keystore('/Users/danu/.evmlc/keystore');
+			const acc: V3JSONKeyStore = await keystore.create(password);
 
-				account.address = acc.address;
+			account.address = acc.address;
 
-				dispatch({
-					type: CREATE_SUCCESS,
-					payload: account
-				});
-			} else {
-				throw Error('Configuration could not loaded.');
-			}
+			dispatch({
+				type: CREATE_SUCCESS,
+				payload: account
+			});
 		} catch (error) {
 			dispatch({
 				type: CREATE_ERROR,
@@ -394,53 +382,56 @@ export function create(password: string): ThunkResult<Promise<BaseAccount>> {
  *
  * @param address - The address to fetch from the node
  */
-export function get(address: EVM.Address): ThunkResult<Promise<BaseAccount>> {
+export function get(
+	address: EVMTypes.Address
+): ThunkResult<Promise<BaseAccount>> {
 	return async (dispatch, getState) => {
-		const state = getState();
-		const config = state.config.data;
+		// const state = getState();
+		// const config = state.config.data;
 		let account = {
 			address,
-			balance: '',
-			nonce: 0
+			balance: 0,
+			nonce: 0,
+			bytecode: ''
 		};
 
-		dispatch({
-			type: GET_REQUEST
-		});
+		// dispatch({
+		// 	type: GET_REQUEST
+		// });
 
-		try {
-			if (!!Object.keys(config).length) {
-				const connection = new EVMLC(
-					config.connection.host,
-					config.connection.port,
-					{
-						from: config.defaults.from,
-						gas: config.defaults.gas,
-						gasPrice: config.defaults.gasPrice
-					}
-				);
+		// try {
+		// 	if (!!Object.keys(config).length) {
+		// 		const connection = new EVMLC(
+		// 			config.connection.host,
+		// 			config.connection.port,
+		// 			{
+		// 				from: config.defaults.from,
+		// 				gas: config.defaults.gas,
+		// 				gasPrice: config.defaults.gasPrice
+		// 			}
+		// 		);
 
-				account = await connection.accounts.getAccount(address);
-				account.balance = integerWithCommas(
-					account.balance
-						.toString()
-						.split(',')
-						.join('')
-				);
+		// 		account = await connection.accounts.getAccount(address);
+		// 		account.balance = integerWithCommas(
+		// 			account.balance
+		// 				.toString()
+		// 				.split(',')
+		// 				.join('')
+		// 		);
 
-				dispatch({
-					type: GET_SUCCESS,
-					payload: account
-				});
-			} else {
-				throw Error('Configuration could not loaded.');
-			}
-		} catch (error) {
-			dispatch({
-				type: GET_ERROR,
-				payload: error.toString()
-			});
-		}
+		// 		dispatch({
+		// 			type: GET_SUCCESS,
+		// 			payload: account
+		// 		});
+		// 	} else {
+		// 		throw Error('Configuration could not loaded.');
+		// 	}
+		// } catch (error) {
+		// 	dispatch({
+		// 		type: GET_ERROR,
+		// 		payload: error.toString()
+		// 	});
+		// }
 
 		return account;
 	};
@@ -454,7 +445,7 @@ export function get(address: EVM.Address): ThunkResult<Promise<BaseAccount>> {
  * @param password - The associated password for the address in question
  */
 export function unlock(
-	address: EVM.Address,
+	address: EVMTypes.Address,
 	password: string
 ): ThunkResult<Promise<Account | undefined>> {
 	return async (dispatch, getState) => {
@@ -470,20 +461,18 @@ export function unlock(
 			if (!!Object.keys(config).length) {
 				let connection: EVMLC | undefined = new EVMLC(
 					config.connection.host,
-					config.connection.port,
-					{
-						from: config.defaults.from,
-						gas: config.defaults.gas,
-						gasPrice: config.defaults.gasPrice
-					}
+					config.connection.port
 				);
 
-				await connection.testConnection().catch(() => {
+				await connection.getInfo().catch(() => {
 					connection = undefined;
 				});
 
-				const keystore = new Keystore(config.storage.keystore);
-				account = await keystore.decrypt(address, password, connection);
+				const keystore = new Keystore('/Users/danu/.evmlc/keystore');
+				account = Keystore.decrypt(
+					await keystore.get(address),
+					password
+				);
 
 				dispatch({
 					type: UNLOCK_SUCCESS,
@@ -526,12 +515,12 @@ export function resetUnlock(): ThunkResult<void> {
  * @param gasPrice - The price per `gas` to pay for the transaction
  */
 export function transfer(
-	from: EVM.Address,
-	to: EVM.Address,
-	value: EVM.Value,
-	gas: EVM.Gas,
-	gasPrice: EVM.GasPrice
-): ThunkResult<Promise<TXReceipt>> {
+	from: EVMTypes.Address,
+	to: EVMTypes.Address,
+	value: EVMTypes.Value,
+	gas: EVMTypes.Gas,
+	gasPrice: EVMTypes.GasPrice
+): ThunkResult<Promise<TransactionReceipt>> {
 	return async (dispatch, getState) => {
 		const state = getState();
 		const config = state.config.data;
@@ -548,36 +537,31 @@ export function transfer(
 			if (!!Object.keys(config).length) {
 				const evmlc = new EVMLC(
 					config.connection.host,
-					config.connection.port,
-					{
-						from,
-						gas,
-						gasPrice
-					}
+					config.connection.port
 				);
 
-				await evmlc.testConnection();
+				await evmlc.getInfo();
 
-				const transaction = evmlc.accounts.prepareTransfer(to, value);
-				await transaction.submit(state.accounts.unlocked, {
-					timeout: 3
-				});
+				// const transaction = Account.prepareTransfer(coto, value);
+				// await transaction.submit(state.accounts.unlocked, {
+				// 	timeout: 3
+				// });
 
-				if (!transaction.hash) {
-					throw Error(
-						'Transaction hash not found after ' +
-							'transfer was submitted to node.'
-					);
-				}
+				// if (!transaction.hash) {
+				// 	throw Error(
+				// 		'Transaction hash not found after ' +
+				// 			'transfer was submitted to node.'
+				// 	);
+				// }
 
-				const receipt = await transaction.receipt;
+				const receipt = {} as TransactionReceipt;
 
 				dispatch({
 					type: TRANSFER_SUCCESS,
 					payload: receipt
 				});
 
-				return receipt;
+				return receipt!;
 			} else {
 				throw Error('Configuration could not loaded.');
 			}
@@ -587,7 +571,7 @@ export function transfer(
 				payload: error.toString()
 			});
 
-			return {} as TXReceipt;
+			return {} as TransactionReceipt;
 		}
 	};
 }

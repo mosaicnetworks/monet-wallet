@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import styled from 'styled-components';
 
-import { Static } from 'evm-lite-lib';
+import { Utils } from 'evm-lite-keystore';
 import { InjectedAlertProp, withAlert } from 'react-alert';
 import { connect } from 'react-redux';
 import { Form, Grid, Header, Input } from 'semantic-ui-react';
@@ -93,7 +93,6 @@ class Configuration extends React.Component<LocalProps, State> {
 						this.setState({
 							fields: {
 								...this.state.fields,
-								keystore: config.storage.keystore,
 								gas: config.defaults.gas,
 								gasPrice: config.defaults.gasPrice
 							}
@@ -120,7 +119,6 @@ class Configuration extends React.Component<LocalProps, State> {
 			this.setState({
 				fields: {
 					...this.state.fields,
-					keystore: config.storage.keystore,
 					gas: config.defaults.gas,
 					gasPrice: config.defaults.gasPrice
 				}
@@ -137,8 +135,8 @@ class Configuration extends React.Component<LocalProps, State> {
 		}
 
 		if (
-			Static.exists(fields.dataDirectory) &&
-			!Static.isDirectory(fields.dataDirectory)
+			Utils.exists(fields.dataDirectory) &&
+			!Utils.isDirectory(fields.dataDirectory)
 		) {
 			this.props.alert.error('The path given is not a directory.');
 			return;

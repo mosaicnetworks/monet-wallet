@@ -3,7 +3,7 @@ import * as React from 'react';
 import Highlight from 'react-highlight';
 import styled from 'styled-components';
 
-import { Static } from 'evm-lite-lib';
+import { Utils } from 'evm-lite-core';
 import { Grid, Icon, Image, Segment, Table } from 'semantic-ui-react';
 
 import Misc from '../classes/Misc';
@@ -72,13 +72,13 @@ class Transaction extends React.Component<LocalProps, State> {
 							{transaction.incoming ? 'INCOMING' : 'OUTGOING'}
 						</BoldCentered>
 					</Segment>
-					<Segment>{Static.cleanAddress(transaction.from)}</Segment>
+					<Segment>{Utils.cleanAddress(transaction.from)}</Segment>
 					<Segment>
 						<BoldCentered>
 							<Icon name="long arrow alternate right" />
 						</BoldCentered>
 					</Segment>
-					<Segment>{Static.cleanAddress(transaction.to)}</Segment>
+					<Segment>{Utils.cleanAddress(transaction.to)}</Segment>
 					<Segment>
 						<BoldCentered>
 							<Image src={TENOM} width={20} />
@@ -130,7 +130,7 @@ class Transaction extends React.Component<LocalProps, State> {
 										<Table.Row>
 											<Table.Cell>From</Table.Cell>
 											<Table.Cell>
-												{Static.cleanAddress(
+												{Utils.cleanAddress(
 													transaction.from
 												)}
 											</Table.Cell>
@@ -138,7 +138,7 @@ class Transaction extends React.Component<LocalProps, State> {
 										<Table.Row>
 											<Table.Cell>To</Table.Cell>
 											<Table.Cell>
-												{Static.cleanAddress(
+												{Utils.cleanAddress(
 													transaction.to
 												)}
 											</Table.Cell>

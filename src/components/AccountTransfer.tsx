@@ -3,7 +3,7 @@ import * as React from 'react';
 import Highlight from 'react-highlight';
 import styled from 'styled-components';
 
-import { BaseAccount, EVM, Static, TX } from 'evm-lite-lib';
+import { BaseAccount, EVMTypes, Utils, TX } from 'evm-lite-core';
 import { InjectedAlertProp, withAlert } from 'react-alert';
 import { connect } from 'react-redux';
 import { config, Transition } from 'react-spring/renderprops';
@@ -74,11 +74,11 @@ interface AlertProps {
 
 interface DispatchProps {
 	transfer: (
-		from: EVM.Address,
-		to: EVM.Address,
-		value: EVM.Value,
-		gas: EVM.Gas,
-		gasPrice: EVM.GasPrice
+		from: EVMTypes.Address,
+		to: EVMTypes.Address,
+		value: EVMTypes.Value,
+		gas: EVMTypes.Gas,
+		gasPrice: EVMTypes.GasPrice
 	) => Promise<string>;
 }
 
@@ -157,8 +157,8 @@ class AccountTransfer extends React.Component<LocalProps, State> {
 
 		if (accounts.unlocked) {
 			allowTransfer =
-				Static.cleanAddress(accounts.unlocked.address) ===
-				Static.cleanAddress(account.address);
+				Utils.cleanAddress(accounts.unlocked.address) ===
+				Utils.cleanAddress(account.address);
 		}
 
 		return (

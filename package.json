@@ -3,6 +3,9 @@
 	"version": "0.1.0",
 	"private": true,
 	"dependencies": {
+		"evm-lite-core": "^1.0.0-alpha.8",
+		"evm-lite-datadir": "^1.0.0-alpha.8",
+		"evm-lite-keystore": "^1.0.0-alpha.8",
 		"random-hash": "^4.0.1",
 		"react": "^16.6.1",
 		"react-alert": "^4.0.4",
@@ -18,9 +21,10 @@
 	},
 	"scripts": {
 		"build": "webpack --config config/webpack.config.js && cp ./package.json ./dist/",
+		"clean": "rm -rf node_modules && rm -rf dist/",
+		"postinstall": "webpack --config config/webpack.config.js && cp ./package.json ./dist/",
 		"start:dev": "webpack-dev-server --config config/webpack.config.js --hot --inline",
 		"start:electron": "electron ./dist",
-		"start:evml": "cd /Users/danu/code/src/github.com/mosaicnetworks/evm-lite/cmd/evml/ && ./evml solo",
 		"bin": "electron-packager ./dist EVM-Lite-Wallet --platform=darwin --arch=x64 --out ./bin --overwrite --icon src/assets/monet_logo.png",
 		"start": "npm install && npm run build && npm run start:electron"
 	},

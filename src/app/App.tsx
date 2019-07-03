@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { ConfigSchema } from 'evm-lite-lib';
+import { ConfigurationSchema } from 'evm-lite-datadir';
 import { InjectedAlertProp, withAlert } from 'react-alert';
 import { connect } from 'react-redux';
 import { HashRouter, Route } from 'react-router-dom';
@@ -24,7 +24,7 @@ interface StoreProps {
 }
 
 interface DispatchProps {
-	loadConfig: () => Promise<ConfigSchema>;
+	loadConfig: () => Promise<ConfigurationSchema>;
 	initializeApp: () => Promise<void>;
 }
 

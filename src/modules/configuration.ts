@@ -1,9 +1,9 @@
 import * as path from 'path';
 
-import { Config, ConfigSchema, DataDirectory, Static } from 'evm-lite-lib';
+import { ConfigurationSchema, DataDirectory } from 'evm-lite-datadir';
+import { Utils } from 'evm-lite-keystore';
 
 import { BaseAction, ThunkResult } from 'src/modules';
-import { Store } from 'src/store';
 
 import { list } from './accounts';
 
@@ -29,7 +29,7 @@ export interface ConfigurationState {
 	readonly directory: string;
 
 	// The configuration data values
-	readonly data: ConfigSchema;
+	readonly data: ConfigurationSchema;
 
 	// This error attribute is used by all actions
 	readonly error?: string;
@@ -43,7 +43,7 @@ export interface ConfigurationState {
 
 const initialState: ConfigurationState = {
 	directory: defaultPath,
-	data: {} as ConfigSchema,
+	data: {} as ConfigurationSchema,
 	loading: {
 		load: false,
 		save: false
@@ -131,21 +131,20 @@ export default function reducer(
 	}
 }
 
-export function load(): ThunkResult<Promise<ConfigSchema>> {
-	return async (dispatch, getState) => {
-		const state: Store = getState();
-		let config = {} as ConfigSchema;
+export function load(): ThunkResult<Promise<ConfigurationSchema>> {
+	return async (dispatch, getStore) => {
+		const store = getStore();
+
+		let config = {} as ConfigurationSchema;
 
 		dispatch({
 			type: LOAD_REQUEST
 		});
 
 		try {
-			const configuration = new Config(
-				`${state.config.directory}/config.toml`
-			);
+			const datadir = new DataDirectory(store.config.directory);
 
-			config = await configuration.load();
+			config = await datadir.config.load();
 
 			dispatch({
 				type: LOAD_SUCCESS,
@@ -164,7 +163,7 @@ export function load(): ThunkResult<Promise<ConfigSchema>> {
 
 export function setDirectory(path: string): ThunkResult<Promise<string>> {
 	return async dispatch => {
-		if (Static.exists(path) && !Static.isDirectory(path)) {
+		if (Utils.exists(path) && !Utils.isDirectory(path)) {
 			dispatch({
 				type: SET_DIRECTORY_ERROR,
 				payload: `Provided path '${path}' is not a directory.`
@@ -173,8 +172,7 @@ export function setDirectory(path: string): ThunkResult<Promise<string>> {
 			return path;
 		}
 
-		const _ = new DataDirectory(path);
-		console.log(_.path);
+		new DataDirectory(path);
 
 		dispatch({
 			type: SET_DIRECTORY_SUCCESS,
@@ -194,21 +192,19 @@ export function initialize(): ThunkResult<Promise<void>> {
 }
 
 export function save(
-	newConfig: ConfigSchema
-): ThunkResult<Promise<ConfigSchema>> {
+	newConfig: ConfigurationSchema
+): ThunkResult<Promise<ConfigurationSchema>> {
 	return async (dispatch, getState) => {
-		const state: Store = getState();
+		const state = getState();
 
 		dispatch({
 			type: SAVE_REQUEST
 		});
 
 		try {
-			const configuration = new Config(
-				`${state.config.directory}/config.toml`
-			);
+			const datadir = new DataDirectory(state.config.directory);
 
-			await configuration.save(newConfig);
+			await datadir.config.save(newConfig);
 
 			dispatch({
 				type: SAVE_SUCCESS,
@@ -222,7 +218,7 @@ export function save(
 				payload: error.toString()
 			});
 
-			return {} as ConfigSchema;
+			return {} as ConfigurationSchema;
 		}
 	};
 }

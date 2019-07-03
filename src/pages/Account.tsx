@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { BaseAccount, Static } from 'evm-lite-lib';
+import { BaseAccount, Utils } from 'evm-lite-core';
 import { InjectedAlertProp, withAlert } from 'react-alert';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router-dom';
@@ -68,7 +68,8 @@ class Account extends React.Component<LocalProps, State> {
 			address: this.props.match.params.address,
 			balance: 0,
 			nonce: 0,
-			lastUpdated: ''
+			lastUpdated: '',
+			bytecode: ''
 		}
 	};
 
@@ -148,7 +149,7 @@ class Account extends React.Component<LocalProps, State> {
 					>
 						{props => (
 							<Header style={props} as="h2" floated="left">
-								{Static.cleanAddress(account.address)}
+								{Utils.cleanAddress(account.address)}
 								<Header.Subheader>
 									Last Updated: {account.lastUpdated || 'N/A'}
 								</Header.Subheader>
@@ -193,8 +194,8 @@ class Account extends React.Component<LocalProps, State> {
 				<Transition
 					items={
 						!!accounts.unlocked &&
-						Static.cleanAddress(accounts.unlocked.address) ===
-							Static.cleanAddress(account.address)
+						Utils.cleanAddress(accounts.unlocked.address) ===
+							Utils.cleanAddress(account.address)
 					}
 					from={{ opacity: 0 }}
 					enter={{ opacity: 1 }}

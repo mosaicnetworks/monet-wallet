@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import styled from 'styled-components';
 
-import { BaseAccount } from 'evm-lite-lib';
+import { BaseAccount } from 'evm-lite-core';
 import { InjectedAlertProp, withAlert } from 'react-alert';
 import { connect } from 'react-redux';
 import { config, Transition } from 'react-spring/renderprops';
