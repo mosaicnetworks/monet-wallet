@@ -4,11 +4,9 @@ import styled from 'styled-components';
 
 import { connect } from 'react-redux';
 import { NavLink as Link } from 'react-router-dom';
-import { config, Transition } from 'react-spring/renderprops';
-import { Container, Icon, Image, Label } from 'semantic-ui-react';
+import { Container, Icon, Image } from 'semantic-ui-react';
 
-import { Store } from 'src/store';
-import { AccountsState, resetUnlock } from '../modules/accounts';
+import { Store } from '../store';
 
 import MONET_LOGO from '../assets/monet_logo.png';
 
@@ -95,38 +93,18 @@ interface OwnProps {
 	empty?: null;
 }
 
-interface StoreProps {
-	accounts: AccountsState;
-}
+interface StoreProps {}
 
-interface DispatchProps {
-	resetUnlock: () => void;
-}
+interface DispatchProps {}
 
 type LocalProps = OwnProps & StoreProps & DispatchProps;
 
 class Header extends React.Component<LocalProps, any> {
 	public state = {};
 
-	public handleAccountUnlockReset = () => {
-		if (this.props.accounts.unlocked) {
-			this.props.resetUnlock();
-		} else {
-			console.log('Already reset');
-		}
-	};
+	public handleAccountUnlockReset = () => {};
 
 	public render() {
-		const { accounts } = this.props;
-
-		let to: any;
-
-		if (accounts.unlocked) {
-			to = {
-				pathname: `/account/${accounts.unlocked.address}`
-			};
-		}
-
 		return (
 			<Container fluid={true}>
 				<WalletHeader>
@@ -136,43 +114,6 @@ class Header extends React.Component<LocalProps, any> {
 						</Link>
 					</Logo>
 					<HeaderLinks>
-						<HeaderLink
-							style={{
-								marginRight: '10px'
-							}}
-						>
-							<Transition
-								items={!!accounts.unlocked}
-								from={{ opacity: 0, marginRight: -50 }}
-								enter={{ opacity: 1, marginRight: 10 }}
-								leave={{ opacity: 0 }}
-								config={config.wobbly}
-							>
-								{show =>
-									show &&
-									(props => (
-										<Label style={props}>
-											<Link to={to || ''}>
-												{(accounts.unlocked &&
-													accounts.unlocked
-														.address) ||
-													''}
-											</Link>
-											<Icon
-												style={{
-													cursor: 'pointer'
-												}}
-												name="delete"
-												onClick={
-													this
-														.handleAccountUnlockReset
-												}
-											/>
-										</Label>
-									))
-								}
-							</Transition>
-						</HeaderLink>
 						<HeaderLink>
 							<Link activeClassName="is-active" to="/poa">
 								<Icon
@@ -236,9 +177,7 @@ const mapStoreToProps = (store: Store): StoreProps => ({
 	accounts: store.accounts
 });
 
-const mapsDispatchToProps = (dispatch: any): DispatchProps => ({
-	resetUnlock: () => dispatch(resetUnlock())
-});
+const mapsDispatchToProps = (dispatch: any): DispatchProps => ({});
 
 export default connect<StoreProps, DispatchProps, OwnProps, Store>(
 	mapStoreToProps,

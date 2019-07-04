@@ -1,43 +1,29 @@
 import * as React from 'react';
 
-import { ConfigurationSchema } from 'evm-lite-datadir';
 import { InjectedAlertProp, withAlert } from 'react-alert';
 import { connect } from 'react-redux';
 import { HashRouter, Route } from 'react-router-dom';
-import { Store } from 'src/store';
 
-import { initialize, load } from '../modules/configuration';
-
-import Account from '../pages/Account';
-import Accounts from '../pages/Accounts';
-import Configuration from '../pages/Configuration';
-import POA from '../pages/POA';
+import { Store } from '../store';
 
 import Wrapper from '../components/Wrapper';
+
+import Accounts from '../containers/Accounts';
 
 interface AlertProps {
 	alert: InjectedAlertProp;
 }
 
-interface StoreProps {
-	empty?: null;
-}
+interface StoreProps {}
 
-interface DispatchProps {
-	loadConfig: () => Promise<ConfigurationSchema>;
-	initializeApp: () => Promise<void>;
-}
+interface DispatchProps {}
 
-interface OwnProps {
-	empty?: null;
-}
+interface OwnProps {}
 
 type LocalProps = OwnProps & DispatchProps & StoreProps & AlertProps;
 
 class App extends React.Component<LocalProps, any> {
-	public componentDidMount() {
-		this.props.initializeApp();
-	}
+	public componentDidMount() {}
 
 	public render() {
 		return (
@@ -45,17 +31,6 @@ class App extends React.Component<LocalProps, any> {
 				<React.Fragment>
 					<Wrapper>
 						<Route exact={true} path="/" component={Accounts} />
-						<Route
-							name="account"
-							exact={true}
-							path="/account/:address"
-							component={Account}
-						/>
-						<Route path="/poa" component={POA} />
-						<Route
-							path="/configuration"
-							component={Configuration}
-						/>
 					</Wrapper>
 				</React.Fragment>
 			</HashRouter>
@@ -65,10 +40,7 @@ class App extends React.Component<LocalProps, any> {
 
 const mapStoreToProps = (store: Store): StoreProps => ({});
 
-const mapsDispatchToProps = (dispatch: any): DispatchProps => ({
-	loadConfig: () => dispatch(load()),
-	initializeApp: () => dispatch(initialize())
-});
+const mapsDispatchToProps = (dispatch: any): DispatchProps => ({});
 
 export default connect<StoreProps, DispatchProps, OwnProps, Store>(
 	mapStoreToProps,
