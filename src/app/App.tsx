@@ -9,6 +9,7 @@ import { Store } from '../store';
 import Wrapper from '../components/Wrapper';
 
 import Accounts from '../containers/Accounts';
+import Configuration from '../containers/Configuration';
 
 interface AlertProps {
 	alert: InjectedAlertProp;
@@ -31,6 +32,7 @@ class App extends React.Component<LocalProps, any> {
 				<React.Fragment>
 					<Wrapper>
 						<Route exact={true} path="/" component={Accounts} />
+						<Route path="/config" component={Configuration} />
 					</Wrapper>
 				</React.Fragment>
 			</HashRouter>

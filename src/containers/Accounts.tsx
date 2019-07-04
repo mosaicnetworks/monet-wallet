@@ -51,6 +51,9 @@ class Accounts extends React.Component<LocalProps, State> {
 						{props => (
 							<Header style={props} as="h2" floated="left">
 								Account Settings
+								<Header.Subheader>
+									Manage new and existing accounts
+								</Header.Subheader>
 							</Header>
 						)}
 					</Spring>
@@ -63,7 +66,7 @@ class Accounts extends React.Component<LocalProps, State> {
 						<Header.Subheader>0</Header.Subheader>
 					</Header>
 				</Jumbo>
-				<Banner color="blue">
+				<Banner color="purple">
 					All accounts listed here are read in locally from your
 					keystore.
 				</Banner>

@@ -2,11 +2,8 @@ import * as React from 'react';
 
 import styled from 'styled-components';
 
-import { connect } from 'react-redux';
 import { NavLink as Link } from 'react-router-dom';
 import { Container, Icon, Image } from 'semantic-ui-react';
-
-import { Store } from '../store';
 
 import MONET_LOGO from '../assets/monet_logo.png';
 
@@ -93,17 +90,7 @@ interface OwnProps {
 	empty?: null;
 }
 
-interface StoreProps {}
-
-interface DispatchProps {}
-
-type LocalProps = OwnProps & StoreProps & DispatchProps;
-
-class Header extends React.Component<LocalProps, any> {
-	public state = {};
-
-	public handleAccountUnlockReset = () => {};
-
+class Header extends React.Component<OwnProps, {}> {
 	public render() {
 		return (
 			<Container fluid={true}>
@@ -114,15 +101,6 @@ class Header extends React.Component<LocalProps, any> {
 						</Link>
 					</Logo>
 					<HeaderLinks>
-						<HeaderLink>
-							<Link activeClassName="is-active" to="/poa">
-								<Icon
-									size={'large'}
-									color={'black'}
-									name="connectdevelop"
-								/>
-							</Link>
-						</HeaderLink>
 						<HeaderLink>
 							<Link
 								exact={true}
@@ -140,25 +118,12 @@ class Header extends React.Component<LocalProps, any> {
 							<Link
 								exact={true}
 								activeClassName="is-active"
-								to="/configuration"
+								to="/config"
 							>
 								<Icon
 									size={'large'}
 									color={'black'}
 									name="cog"
-								/>
-							</Link>
-						</HeaderLink>
-						<HeaderLink>
-							<Link
-								activeClassName="is-active"
-								exact={true}
-								to="/notifications"
-							>
-								<Icon
-									size={'large'}
-									color={'blue'}
-									name="bell"
 								/>
 							</Link>
 						</HeaderLink>
@@ -173,13 +138,4 @@ class Header extends React.Component<LocalProps, any> {
 	}
 }
 
-const mapStoreToProps = (store: Store): StoreProps => ({
-	accounts: store.accounts
-});
-
-const mapsDispatchToProps = (dispatch: any): DispatchProps => ({});
-
-export default connect<StoreProps, DispatchProps, OwnProps, Store>(
-	mapStoreToProps,
-	mapsDispatchToProps
-)(Header);
+export default Header;
