@@ -1,7 +1,8 @@
 import * as path from 'path';
 
+import Utils from 'evm-lite-utils';
+
 import { ConfigurationSchema, DataDirectory } from 'evm-lite-datadir';
-import { Utils } from 'evm-lite-keystore';
 
 import { BaseAction, ThunkResult } from 'src/modules';
 

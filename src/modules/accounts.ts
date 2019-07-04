@@ -1,9 +1,10 @@
+import Utils from 'evm-lite-utils';
+
 import {
 	Account,
 	BaseAccount,
 	EVMTypes,
 	EVMLC,
-	Utils,
 	TransactionReceipt
 } from 'evm-lite-core';
 

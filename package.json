@@ -21,13 +21,13 @@
 		"styled-components": "^4.2.0"
 	},
 	"scripts": {
+		"dev": "concurrently --kill-others \"yarn run start:server\" \"yarn run start:electron\"",
+		"start:server": "webpack-dev-server --config config/webpack.config.js --hot --inline",
+		"start:electron": "electron ./dist",
 		"build": "webpack --config config/webpack.config.js && cp ./package.json ./dist/",
 		"clean": "rm -rf node_modules && rm -rf dist/",
-		"postinstall": "webpack --config config/webpack.config.js && cp ./package.json ./dist/",
-		"start:dev": "webpack-dev-server --config config/webpack.config.js --hot --inline",
-		"start:electron": "electron ./dist",
-		"bin": "electron-packager ./dist EVM-Lite-Wallet --platform=darwin --arch=x64 --out ./bin --overwrite --icon src/assets/monet_logo.png",
-		"start": "npm install && npm run build && npm run start:electron"
+		"postinstall": "yarn run build",
+		"bin": "electron-packager ./dist EVM-Lite-Wallet --platform=darwin --arch=x64 --out ./bin --overwrite --icon src/assets/monet_logo.png"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.1.6",
@@ -48,6 +48,7 @@
 		"babel-preset-es2015-node": "^6.1.1",
 		"babel-preset-react": "^6.24.1",
 		"clean-webpack-plugin": "^1.0.0",
+		"concurrently": "^4.1.1",
 		"css-loader": "^1.0.1",
 		"electron": "^3.0.8",
 		"electron-devtools-installer": "^2.2.4",
