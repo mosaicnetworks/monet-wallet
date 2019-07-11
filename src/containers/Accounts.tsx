@@ -1,26 +1,35 @@
 import * as React from 'react';
 
+import styled from 'styled-components';
+
 import { InjectedAlertProp, withAlert } from 'react-alert';
 import { connect } from 'react-redux';
 import { config, Spring } from 'react-spring/renderprops';
-import { Header } from 'semantic-ui-react';
+import { Header, Card } from 'semantic-ui-react';
+
+import { AccountsState } from '../modules/accounts';
 
 import { Store } from '../store';
 
 import Banner from '../components/Banner';
 import Jumbo from '../components/Jumbo';
+import Account from '../components/Account';
+
+const AccountsContainer = styled.div`
+	padding: 5px 10px;
+`;
 
 interface AlertProps {
 	alert: InjectedAlertProp;
 }
 
-interface StoreProps {}
+interface StoreProps {
+	accounts: AccountsState;
+}
 
 interface DispatchProps {}
 
-interface OwnProps {
-	empty?: null;
-}
+interface OwnProps {}
 
 interface State {
 	totalBalance: number;
@@ -34,6 +43,7 @@ class Accounts extends React.Component<LocalProps, State> {
 	};
 
 	public render() {
+		const { accounts } = this.props;
 		return (
 			<React.Fragment>
 				<Jumbo>
@@ -52,7 +62,7 @@ class Accounts extends React.Component<LocalProps, State> {
 							<Header style={props} as="h2" floated="left">
 								Account Settings
 								<Header.Subheader>
-									Manage new and existing accounts
+									Create new and manage existing accounts
 								</Header.Subheader>
 							</Header>
 						)}
@@ -70,12 +80,21 @@ class Accounts extends React.Component<LocalProps, State> {
 					All accounts listed here are read in locally from your
 					keystore.
 				</Banner>
+				<AccountsContainer>
+					<Card.Group>
+						{accounts.all.map(account => (
+							<Account key={account.address} account={account} />
+						))}
+					</Card.Group>
+				</AccountsContainer>
 			</React.Fragment>
 		);
 	}
 }
 
-const mapStoreToProps = (store: Store): StoreProps => ({});
+const mapStoreToProps = (store: Store): StoreProps => ({
+	accounts: store.accounts
+});
 
 const mapsDispatchToProps = (dispatch: any): any => ({});
 

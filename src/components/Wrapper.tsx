@@ -1,7 +1,5 @@
 import * as React from 'react';
 
-import { Container } from 'semantic-ui-react';
-
 import Header from './Header';
 
 class Wrapper extends React.Component<any, any> {
@@ -9,7 +7,7 @@ class Wrapper extends React.Component<any, any> {
 		return (
 			<React.Fragment>
 				<Header />
-				<Container fluid={true}>{this.props.children}</Container>
+				{this.props.children}
 			</React.Fragment>
 		);
 	}

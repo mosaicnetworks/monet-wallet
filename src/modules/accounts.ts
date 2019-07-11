@@ -1,3 +1,5 @@
+import * as path from 'path';
+
 import Utils from 'evm-lite-utils';
 
 import {
@@ -13,30 +15,30 @@ import { Keystore, V3JSONKeyStore } from 'evm-lite-keystore';
 import { BaseAction, ThunkResult } from '.';
 
 // Lists all accounts in keystore
-const LIST_REQUEST = '@monet/accounts/LIST/REQUEST';
-const LIST_SUCCESS = '@monet/accounts/LIST/SUCCESS';
-const LIST_ERROR = '@monet/accounts/LIST/ERROR';
+const LIST_REQUEST = '@evm-lite-wallet/accounts/LIST/REQUEST';
+const LIST_SUCCESS = '@evm-lite-wallet/accounts/LIST/SUCCESS';
+const LIST_ERROR = '@evm-lite-wallet/accounts/LIST/ERROR';
 
 // Creates account in keystore
-const CREATE_REQUEST = '@monet/accounts/CREATE/REQUEST';
-const CREATE_SUCCESS = '@monet/accounts/CREATE/SUCCESS';
-const CREATE_ERROR = '@monet/accounts/CREATE/ERROR';
+const CREATE_REQUEST = '@evm-lite-wallet/accounts/CREATE/REQUEST';
+const CREATE_SUCCESS = '@evm-lite-wallet/accounts/CREATE/SUCCESS';
+const CREATE_ERROR = '@evm-lite-wallet/accounts/CREATE/ERROR';
 
 // Get account balance and nonce from node
-const GET_REQUEST = '@monet/accounts/GET/REQUEST';
-const GET_SUCCESS = '@monet/accounts/GET/SUCCESS';
-const GET_ERROR = '@monet/accounts/GET/ERROR';
+const GET_REQUEST = '@evm-lite-wallet/accounts/GET/REQUEST';
+const GET_SUCCESS = '@evm-lite-wallet/accounts/GET/SUCCESS';
+const GET_ERROR = '@evm-lite-wallet/accounts/GET/ERROR';
 
 // For decrypting an account
-const UNLOCK_REQUEST = '@monet/accounts/UNLOCK/REQUEST';
-const UNLOCK_SUCCESS = '@monet/accounts/UNLOCK/SUCCESS';
-const UNLOCK_ERROR = '@monet/accounts/UNLOCK/ERROR';
-const UNLOCK_RESET = '@monet/accounts/UNLOCK/RESET';
+const UNLOCK_REQUEST = '@evm-lite-wallet/accounts/UNLOCK/REQUEST';
+const UNLOCK_SUCCESS = '@evm-lite-wallet/accounts/UNLOCK/SUCCESS';
+const UNLOCK_ERROR = '@evm-lite-wallet/accounts/UNLOCK/ERROR';
+const UNLOCK_RESET = '@evm-lite-wallet/accounts/UNLOCK/RESET';
 
 // For transferring tokens/coins from an account
-const TRANSFER_REQUEST = '@monet/accounts/TRANSFER/REQUEST';
-const TRANSFER_SUCCESS = '@monet/accounts/TRANSFER/SUCCESS';
-const TRANSFER_ERROR = '@monet/accounts/TRANSFER/ERROR';
+const TRANSFER_REQUEST = '@evm-lite-wallet/accounts/TRANSFER/REQUEST';
+const TRANSFER_SUCCESS = '@evm-lite-wallet/accounts/TRANSFER/SUCCESS';
+const TRANSFER_ERROR = '@evm-lite-wallet/accounts/TRANSFER/ERROR';
 
 /**
  * Should comma seperate the integer/ string.
@@ -298,7 +300,9 @@ export default function reducer(
  * and set the `all` attribute to the desired result.
  */
 export function list(): ThunkResult<Promise<BaseAccount[]>> {
-	return async dispatch => {
+	return async (dispatch, getState) => {
+		const state = getState();
+
 		let accounts: BaseAccount[] = [];
 
 		dispatch({
@@ -306,15 +310,17 @@ export function list(): ThunkResult<Promise<BaseAccount[]>> {
 		});
 
 		try {
-			let connection: EVMLC | undefined;
+			let node: EVMLC | undefined;
 
-			connection = new EVMLC('localhost', 8080);
+			node = new EVMLC('localhost', 8080);
 
-			await connection.getInfo().catch(() => {
-				connection = undefined;
+			await node.getInfo().catch(() => {
+				node = undefined;
 			});
 
-			const keystore = new Keystore('/Users/danu/.evmlc/keystore');
+			const keystore = new Keystore(
+				path.join(state.config.directory, 'keystore')
+			);
 
 			accounts = (await keystore.list()).map(keystore => ({
 				address: keystore.address,
@@ -322,6 +328,14 @@ export function list(): ThunkResult<Promise<BaseAccount[]>> {
 				nonce: 0,
 				bytecode: ''
 			}));
+
+			if (node) {
+				accounts = await Promise.all(
+					accounts.map(async account => {
+						return await node!.getAccount(account.address);
+					})
+				);
+			}
 
 			dispatch({
 				type: LIST_SUCCESS,

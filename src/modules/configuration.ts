@@ -9,18 +9,20 @@ import { BaseAction, ThunkResult } from 'src/modules';
 import { list } from './accounts';
 
 // Set configuration data directory
-const SET_DIRECTORY_SUCCESS = '@monet/configuration/DATADIRECTORY/SUCCESS';
-const SET_DIRECTORY_ERROR = '@monet/configuration/DATADIRECTORY/ERROR';
+const SET_DIRECTORY_SUCCESS =
+	'@evm-lite-wallet/configuration/DATADIRECTORY/SUCCESS';
+const SET_DIRECTORY_ERROR =
+	'@evm-lite-wallet/configuration/DATADIRECTORY/ERROR';
 
 // Load configuration from data directory
-const LOAD_REQUEST = '@monet/configuration/LOAD/REQUEST';
-const LOAD_SUCCESS = '@monet/configuration/LOAD/SUCCESS';
-const LOAD_ERROR = '@monet/configuration/LOAD/ERROR';
+const LOAD_REQUEST = '@evm-lite-wallet/configuration/LOAD/REQUEST';
+const LOAD_SUCCESS = '@evm-lite-wallet/configuration/LOAD/SUCCESS';
+const LOAD_ERROR = '@evm-lite-wallet/configuration/LOAD/ERROR';
 
 // Save configuration
-const SAVE_REQUEST = '@monet/configuration/SAVE/REQUEST';
-const SAVE_SUCCESS = '@monet/configuration/SAVE/SUCCESS';
-const SAVE_ERROR = '@monet/configuration/SAVE/ERROR';
+const SAVE_REQUEST = '@evm-lite-wallet/configuration/SAVE/REQUEST';
+const SAVE_SUCCESS = '@evm-lite-wallet/configuration/SAVE/SUCCESS';
+const SAVE_ERROR = '@evm-lite-wallet/configuration/SAVE/ERROR';
 
 // @ts-ignore - The default path for the data directory if none is set.
 const defaultPath = path.join(window.require('os').homedir(), '.evmlc');

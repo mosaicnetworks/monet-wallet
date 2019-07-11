@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { HashRouter, Route } from 'react-router-dom';
 
 import { Store } from '../store';
+import { initialize } from '../modules/configuration';
 
 import Wrapper from '../components/Wrapper';
 
@@ -17,14 +18,18 @@ interface AlertProps {
 
 interface StoreProps {}
 
-interface DispatchProps {}
+interface DispatchProps {
+	handleInitialize: () => void;
+}
 
 interface OwnProps {}
 
 type LocalProps = OwnProps & DispatchProps & StoreProps & AlertProps;
 
 class App extends React.Component<LocalProps, any> {
-	public componentDidMount() {}
+	public componentDidMount() {
+		this.props.handleInitialize();
+	}
 
 	public render() {
 		return (
@@ -42,7 +47,9 @@ class App extends React.Component<LocalProps, any> {
 
 const mapStoreToProps = (store: Store): StoreProps => ({});
 
-const mapsDispatchToProps = (dispatch: any): DispatchProps => ({});
+const mapsDispatchToProps = (dispatch: any): DispatchProps => ({
+	handleInitialize: () => dispatch(initialize())
+});
 
 export default connect<StoreProps, DispatchProps, OwnProps, Store>(
 	mapStoreToProps,
