@@ -2,18 +2,19 @@
 
 body {
 	font-family: 'Titillium Web', sans-serif !important;
-	margin: 0;
-	padding: 0;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 	background: #f4f5f7 !important;
-	min-width: 1067px !important;
+	margin: 0 !important;
+	padding: 0 !important;
 }
 
 .card {
-	border-radius: 2px !important;
+	border-radius: 5px !important;
 	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.03) !important;
 	word-break: break-all;
 	font-family: 'Titillium Web', sans-serif !important;
-	/* border: 1px solid #eee !important; */
+	border: 1px solid #eee !important;
 	/* box-shadow: 0 4px 20px -6px #eee !important; */
 }
 
@@ -80,6 +81,7 @@ h5 {
 
 button {
 	font-family: 'Titillium Web', sans-serif !important;
+	border-radius: 0 !important;
 }
 
 button.blue {

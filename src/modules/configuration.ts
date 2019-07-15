@@ -4,7 +4,7 @@ import Utils from 'evm-lite-utils';
 
 import { ConfigurationSchema, DataDirectory } from 'evm-lite-datadir';
 
-import { BaseAction, ThunkResult } from 'src/modules';
+import { BaseAction, ThunkResult } from '.';
 
 import { list } from './accounts';
 

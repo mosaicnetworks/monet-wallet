@@ -7,13 +7,16 @@ import { connect } from 'react-redux';
 import { config, Spring } from 'react-spring/renderprops';
 import { Header, Card } from 'semantic-ui-react';
 
-import { AccountsState } from '../modules/accounts';
+import { AccountsState, list, create } from '../modules/accounts';
 
 import { Store } from '../store';
 
 import Banner from '../components/Banner';
 import Jumbo from '../components/Jumbo';
 import Account from '../components/Account';
+import FloatingButton from '../components/FloatingButton';
+import LoadingButton from '../components/LoadingButton';
+import AccountCreate from '../components/AccountCreate';
 
 const AccountsContainer = styled.div`
 	padding: 5px 10px;
@@ -27,7 +30,10 @@ interface StoreProps {
 	accounts: AccountsState;
 }
 
-interface DispatchProps {}
+interface DispatchProps {
+	handleRefreshAccount: () => void;
+	handleCreateAccount: (password: string) => void;
+}
 
 interface OwnProps {}
 
@@ -42,8 +48,13 @@ class Accounts extends React.Component<LocalProps, State> {
 		totalBalance: 123523432
 	};
 
+	public handleRefreshAccounts = () => {
+		this.props.handleRefreshAccount();
+	};
+
 	public render() {
 		const { accounts } = this.props;
+
 		return (
 			<React.Fragment>
 				<Jumbo>
@@ -69,11 +80,13 @@ class Accounts extends React.Component<LocalProps, State> {
 					</Spring>
 					<Header as="h2" floated="right">
 						Accounts
-						<Header.Subheader>0</Header.Subheader>
+						<Header.Subheader>
+							{accounts.all.length}
+						</Header.Subheader>
 					</Header>
 					<Header as="h2" floated="right">
 						Total Balance
-						<Header.Subheader>0</Header.Subheader>
+						<Header.Subheader>Lots!</Header.Subheader>
 					</Header>
 				</Jumbo>
 				<Banner color="purple">
@@ -81,12 +94,23 @@ class Accounts extends React.Component<LocalProps, State> {
 					keystore.
 				</Banner>
 				<AccountsContainer>
-					<Card.Group>
+					<Card.Group centered={true}>
 						{accounts.all.map(account => (
 							<Account key={account.address} account={account} />
 						))}
 					</Card.Group>
 				</AccountsContainer>
+				<AccountCreate
+					bottomOffset={105}
+					accounts={accounts}
+					create={this.props.handleCreateAccount}
+				/>
+				<FloatingButton bottomOffset={60}>
+					<LoadingButton
+						isLoading={accounts.loading.list}
+						onClickHandler={this.handleRefreshAccounts}
+					/>
+				</FloatingButton>
 			</React.Fragment>
 		);
 	}
@@ -96,7 +120,10 @@ const mapStoreToProps = (store: Store): StoreProps => ({
 	accounts: store.accounts
 });
 
-const mapsDispatchToProps = (dispatch: any): any => ({});
+const mapsDispatchToProps = (dispatch: any): DispatchProps => ({
+	handleRefreshAccount: () => dispatch(list()),
+	handleCreateAccount: password => dispatch(create(password))
+});
 
 export default connect<StoreProps, DispatchProps, OwnProps, Store>(
 	mapStoreToProps,

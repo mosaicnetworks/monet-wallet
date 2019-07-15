@@ -1,47 +1,59 @@
 import * as React from 'react';
 
-import styled from 'styled-components';
+// import styled from 'styled-components';
 
 import { InjectedAlertProp, withAlert } from 'react-alert';
 import { connect } from 'react-redux';
 import { Header, Input } from 'semantic-ui-react';
 
+import { ConfigurationState, setDirectory } from '../modules/configuration';
 import { Store } from '../store';
 
 import Banner from '../components/Banner';
 import Jumbo from '../components/Jumbo';
 
-const Description = styled.div`
-	margin: 40px;
-`;
-
 interface AlertProps {
 	alert: InjectedAlertProp;
 }
 
-interface StoreProps {}
+interface StoreProps {
+	config: ConfigurationState;
+}
 
-interface DispatchProps {}
+interface DispatchProps {
+	handleSetDataDir: (path: string) => void;
+}
 
-interface State {}
+interface State {
+	directory: string;
+}
 
 type LocalProps = StoreProps & AlertProps & DispatchProps;
 
 class Configuration extends React.Component<LocalProps, State> {
+	public state = {
+		directory: this.props.config.directory || 'No data directory set.'
+	};
+
 	public render() {
+		const { directory } = this.state;
+
 		return (
 			<React.Fragment>
 				<Jumbo>
 					<Header as="h2" floated="left">
 						Configuration
 						<Header.Subheader>
-							Configuration directory here
+							Set data directory and update configuration
 						</Header.Subheader>
 					</Header>
 					<Header as="h2" floated="right">
 						<Header.Subheader>
 							<Input
-								compact={true}
+								defaultValue={directory}
+								onChange={(e, { value }) =>
+									this.setState({ directory: value })
+								}
 								action={{
 									color: 'blue',
 									labelPosition: 'right',
@@ -57,15 +69,18 @@ class Configuration extends React.Component<LocalProps, State> {
 					across the wallet and other evm-lite applications as default
 					values.
 				</Banner>
-				<Description />
 			</React.Fragment>
 		);
 	}
 }
 
-const mapStoreToProps = (store: Store): StoreProps => ({});
+const mapStoreToProps = (store: Store): StoreProps => ({
+	config: store.config
+});
 
-const mapsDispatchToProps = (dispatch: any): DispatchProps => ({});
+const mapsDispatchToProps = (dispatch: any): DispatchProps => ({
+	handleSetDataDir: path => dispatch(setDirectory(path))
+});
 
 export default connect<StoreProps, {}, {}, Store>(
 	mapStoreToProps,
