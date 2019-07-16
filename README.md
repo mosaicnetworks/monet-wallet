@@ -1,6 +1,6 @@
 # EVM-Lite Wallet
 
-> A user interface to interact with EVM-Lite.
+A user interface to interact with EVM-Lite.
 
 ## Development
 

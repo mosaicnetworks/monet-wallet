@@ -128,7 +128,6 @@ class AccountCreate extends React.Component<Props, State> {
 			}
 			& div.help {
 				background: rgba(0, 0, 0, 0.02);
-				font-size: 13px;
 				padding: 4px 10px;
 				color: #888;
 				margin-bottom: 14px;
@@ -227,27 +226,11 @@ class AccountCreate extends React.Component<Props, State> {
 									<Input
 										placeholder="Set Password"
 										type="password"
-										onChange={(e, { value }) =>
-											this.setState({
-												fields: {
-													...this.state.fields,
-													password: value
-												}
-											})
-										}
 									/>
 									<br />
 									<Input
 										placeholder="Verify Password"
 										type="password"
-										onChange={(e, { value }) =>
-											this.setState({
-												fields: {
-													...this.state.fields,
-													verifyPassword: value
-												}
-											})
-										}
 									/>
 								</div>
 							</Content>
