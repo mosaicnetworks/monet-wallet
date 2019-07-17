@@ -122,6 +122,19 @@ class Header extends React.Component<OwnProps, {}> {
 							<Link
 								exact={true}
 								activeClassName="is-active"
+								to="/poa"
+							>
+								<Icon
+									size={'large'}
+									color={'black'}
+									name="connectdevelop"
+								/>
+							</Link>
+						</HeaderLink>
+						<HeaderLink>
+							<Link
+								exact={true}
+								activeClassName="is-active"
 								to="/config"
 							>
 								<Icon

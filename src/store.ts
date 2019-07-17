@@ -9,10 +9,12 @@ import rootReducer from './modules';
 
 import { AccountsState } from './modules/accounts';
 import { ConfigurationState } from './modules/configuration';
+import { POAState } from './modules/poa';
 
 export interface Store {
 	accounts: AccountsState;
 	config: ConfigurationState;
+	poa: POAState;
 }
 
 const persistConfig: PersistConfig = {

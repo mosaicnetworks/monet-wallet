@@ -2,8 +2,9 @@ import { ThunkAction } from 'redux-thunk';
 
 import { combineReducers } from 'redux';
 
-import { Store } from 'src/store';
+import { Store } from '../store';
 
+import poa from './poa';
 import accounts from './accounts';
 import config from './configuration';
 
@@ -15,5 +16,6 @@ export interface BaseAction<Payload> {
 
 export default combineReducers({
 	config,
-	accounts
+	accounts,
+	poa
 });

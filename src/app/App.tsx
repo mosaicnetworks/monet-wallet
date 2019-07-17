@@ -11,6 +11,7 @@ import Wrapper from '../components/Wrapper';
 
 import Accounts from '../containers/Accounts';
 import Configuration from '../containers/Configuration';
+import POA from '../containers/POA';
 
 interface StoreProps {}
 
@@ -34,6 +35,7 @@ class App extends React.Component<LocalProps, any> {
 					<Wrapper>
 						<Route exact={true} path="/" component={Accounts} />
 						<Route path="/config" component={Configuration} />
+						<Route path="/poa" component={POA} />
 					</Wrapper>
 					<ToastContainer
 						autoClose={2000}

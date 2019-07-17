@@ -2,10 +2,10 @@ import React from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 
 const colors = {
-	purple: 'rgba(126, 66, 149, 0.9)',
+	purple: 'rgba(118, 70, 146, 1)',
 	orange: '#f2711c',
 	black: '#222',
-	blue: 'rgba(24, 64, 150, 0.9)'
+	blue: 'rgba(24, 64, 150, 1)'
 };
 
 const BannerContainer = styled.div`
