@@ -7,7 +7,8 @@ import {
 } from 'evm-lite-core';
 
 import Utils from 'evm-lite-utils';
-// import { toast } from 'react-toastify';
+
+import { toast } from 'react-toastify';
 
 import { BaseAction, ThunkResult } from '.';
 
@@ -96,6 +97,7 @@ export default function reducer(
 			return {
 				...state,
 				error: undefined,
+				whitelist: [],
 				loading: {
 					...state.loading,
 					whitelist: true
@@ -126,6 +128,7 @@ export default function reducer(
 			return {
 				...state,
 				error: undefined,
+				nominees: [],
 				loading: {
 					...state.loading,
 					nomineelist: true
@@ -137,7 +140,7 @@ export default function reducer(
 				nominees: action.payload,
 				loading: {
 					...state.loading,
-					whitelist: false
+					nomineelist: false
 				}
 			};
 		case NOMINEELIST_ERROR:
@@ -147,13 +150,23 @@ export default function reducer(
 				error: action.payload,
 				loading: {
 					...state.loading,
-					whitelist: false
+					nomineelist: false
 				}
 			};
 
 		default:
 			return state;
 	}
+}
+
+export function reload(): ThunkResult<Promise<void>> {
+	return async dispatch => {
+		dispatch(whitelist()).then(() =>
+			dispatch(nomineelist()).then(() =>
+				toast('Proof of Authority data reloaded.')
+			)
+		);
+	};
 }
 
 export function whitelist(): ThunkResult<Promise<void>> {
@@ -276,7 +289,7 @@ export function nomineelist(): ThunkResult<Promise<void>> {
 					downVotes: 0
 				};
 
-				const tx = contract.methods.getWhiteListAddressFromIdx(
+				const tx = contract.methods.getNomineeAddressFromIdx(
 					{
 						gas: config.data.defaults.gas,
 						gasPrice: config.data.defaults.gasPrice

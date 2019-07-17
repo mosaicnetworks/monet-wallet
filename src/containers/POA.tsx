@@ -1,18 +1,23 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import Utils from 'evm-lite-utils';
+
 import { connect } from 'react-redux';
 import { config, Spring } from 'react-spring/renderprops';
-import { Header, Grid, Container } from 'semantic-ui-react';
+import { Header, Grid, Container, Card } from 'semantic-ui-react';
 
 import { Store } from '../store';
 
-import { POAState, whitelist } from '../modules/poa';
+import { POAState, reload } from '../modules/poa';
 
 import Banner from '../components/Banner';
+import Nominee from '../components/Nominee';
 import Jumbo from '../components/Jumbo';
 import FloatingButton from '../components/FloatingButton';
 import LoadingButton from '../components/LoadingButton';
+
+const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
 const Status = styled.div`
 	color: green !important;
@@ -23,12 +28,35 @@ const Padding = styled.div`
 	margin-bottom: 0 !important;
 `;
 
+const Whitelist = styled(Padding)`
+	/* position: sticky; */
+`;
+
+const WhitelistItem = styled.div`
+	padding: 15px;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.03) !important;
+	background: #fff;
+	border-bottom: 1px solid #eee;
+
+	&:nth-child(2n) {
+		border-bottom: none !important;
+	}
+
+	& h5 {
+		margin-bottom: 0 !important;
+	}
+
+	& div {
+		word-break: break-all !important;
+	}
+`;
+
 interface StoreProps {
 	poa: POAState;
 }
 
 interface DispatchProps {
-	handleFetchWhitelist: () => void;
+	handlePOAReload: () => void;
 }
 
 interface OwnProps {}
@@ -40,7 +68,13 @@ type LocalProps = OwnProps & StoreProps & DispatchProps;
 class Accounts extends React.Component<LocalProps, State> {
 	public state = {};
 
+	public componentDidMount() {
+		this.props.handlePOAReload();
+	}
+
 	public render() {
+		const { poa } = this.props;
+
 		return (
 			<React.Fragment>
 				<Jumbo>
@@ -81,27 +115,53 @@ class Accounts extends React.Component<LocalProps, State> {
 				</Banner>
 				<Container fluid={true}>
 					<Grid columns="equal">
-						<Grid.Column width={8}>
+						<Grid.Column width={10}>
 							<Padding>
-								<h2>Nominate</h2>
+								<h2>Nominees</h2>
+								<div>
+									<Card.Group>
+										{poa.nominees.map(nominee => (
+											<Nominee
+												key={nominee.address}
+												moniker={nominee.moniker}
+												address={nominee.address}
+												upVotes={nominee.upVotes}
+												downVotes={nominee.downVotes}
+											/>
+										))}
+									</Card.Group>
+									{!poa.nominees.length &&
+										'No nominees found.'}
+								</div>
 							</Padding>
 						</Grid.Column>
 						<Grid.Column>
-							<Padding>
-								<h3>Nominee List</h3>
-							</Padding>
-						</Grid.Column>
-						<Grid.Column>
-							<Padding>
+							<Whitelist>
 								<h3>Whitelist</h3>
-							</Padding>
+								<div>
+									{poa.whitelist.map(item => (
+										<WhitelistItem key={item.address}>
+											<h5>{capitalize(item.moniker)}</h5>
+											<div>
+												{Utils.cleanAddress(
+													item.address
+												)}
+											</div>
+										</WhitelistItem>
+									))}
+									{!poa.whitelist.length &&
+										'No whitelist entries found.'}
+								</div>
+							</Whitelist>
 						</Grid.Column>
 					</Grid>
 				</Container>
 				<FloatingButton bottomOffset={60}>
 					<LoadingButton
-						isLoading={false}
-						onClickHandler={this.props.handleFetchWhitelist}
+						isLoading={
+							poa.loading.whitelist || poa.loading.nomineelist
+						}
+						onClickHandler={this.props.handlePOAReload}
 					/>
 				</FloatingButton>
 			</React.Fragment>
@@ -114,7 +174,7 @@ const mapStoreToProps = (store: Store): StoreProps => ({
 });
 
 const mapsDispatchToProps = (dispatch: any): DispatchProps => ({
-	handleFetchWhitelist: () => dispatch(whitelist())
+	handlePOAReload: () => dispatch(reload())
 });
 
 export default connect<StoreProps, DispatchProps, OwnProps, Store>(
