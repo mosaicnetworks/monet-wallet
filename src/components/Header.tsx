@@ -86,6 +86,10 @@ const HeaderLink = styled.li`
 	}
 `;
 
+const Spacer = styled.div`
+	margin-bottom: 76px;
+`;
+
 interface OwnProps {
 	empty?: null;
 }
@@ -129,10 +133,7 @@ class Header extends React.Component<OwnProps, {}> {
 						</HeaderLink>
 					</HeaderLinks>
 				</WalletHeader>
-				<br />
-				<br />
-				<br />
-				<br />
+				<Spacer />
 			</Container>
 		);
 	}

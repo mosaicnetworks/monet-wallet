@@ -177,6 +177,7 @@ export default function reducer(
 					address: acc.address,
 					bytecode: ''
 				};
+
 				if (
 					Utils.cleanAddress(acc.address) ===
 					Utils.cleanAddress(action.payload.address)

@@ -35,6 +35,10 @@ class Configuration extends React.Component<LocalProps, State> {
 		directory: this.props.config.directory || 'No data directory set.'
 	};
 
+	public handleSetDataDir = () => {
+		this.props.handleSetDataDir(this.state.directory);
+	};
+
 	public render() {
 		const { directory } = this.state;
 
@@ -58,6 +62,7 @@ class Configuration extends React.Component<LocalProps, State> {
 									color: 'blue',
 									labelPosition: 'right',
 									icon: 'folder',
+									onClick: this.handleSetDataDir,
 									content: 'Set'
 								}}
 							/>
