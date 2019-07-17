@@ -42,7 +42,9 @@ class Account extends React.Component<LocalProps, any> {
 						<Label color="green" basic={false}>
 							Balance
 							<Label.Detail>
-								{account.balance.toString()}
+								{typeof account.balance === 'object'
+									? account.balance.toString(10)
+									: account.balance}
 							</Label.Detail>
 						</Label>
 						<Label basic={false}>

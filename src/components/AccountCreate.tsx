@@ -231,11 +231,29 @@ class AccountCreate extends React.Component<Props, State> {
 										<Input
 											placeholder="Set Password"
 											type="password"
+											onChange={(e, { value }) =>
+												this.setState({
+													...this.state,
+													fields: {
+														...this.state.fields,
+														password: value
+													}
+												})
+											}
 										/>
 										<br />
 										<Input
 											placeholder="Verify Password"
 											type="password"
+											onChange={(e, { value }) =>
+												this.setState({
+													...this.state,
+													fields: {
+														...this.state.fields,
+														verifyPassword: value
+													}
+												})
+											}
 										/>
 									</div>
 								</Content>

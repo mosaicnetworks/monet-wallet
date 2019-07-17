@@ -9,7 +9,7 @@ const colors = {
 };
 
 const BannerContainer = styled.div`
-	background: ${props => props.color} !important;
+	background: ${props => props.theme.color} !important;
 	color: #fff !important;
 	padding: 20px;
 	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3) !important;
@@ -31,7 +31,7 @@ class Banner extends React.Component<Props, any> {
 		const { color } = this.props;
 
 		const theme = {
-			color
+			color: colors[color]
 		};
 
 		return (
