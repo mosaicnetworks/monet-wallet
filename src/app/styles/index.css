@@ -160,4 +160,10 @@ input[type='password'] {
 
 .Toastify__toast--error {
 	color: white !important;
+	background: rgb(204, 29, 40) !important;
+}
+
+.Toastify__toast--success {
+	background: #0d4b0d !important;
+	color: white !important;
 }

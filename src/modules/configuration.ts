@@ -183,7 +183,7 @@ export function setDirectory(path: string): ThunkResult<Promise<string>> {
 			payload: path
 		});
 
-		toast(`Data directory loaded at ${path}`);
+		toast.success(`Data directory loaded at ${path}`);
 
 		dispatch(load()).then(() => dispatch(list()));
 
@@ -217,7 +217,7 @@ export function save(
 				payload: newConfig
 			});
 
-			toast(`Configuration saved.`);
+			toast.success(`Configuration saved.`);
 
 			return newConfig;
 		} catch (error) {
