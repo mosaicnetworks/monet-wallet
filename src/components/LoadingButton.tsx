@@ -1,18 +1,13 @@
 import React from 'react';
 
-import { InjectedAlertProp, withAlert } from 'react-alert';
 import { Button } from 'semantic-ui-react';
-
-interface AlertProps {
-	alert: InjectedAlertProp;
-}
 
 interface OwnProps {
 	isLoading: boolean;
 	onClickHandler: any;
 }
 
-type LocalProps = OwnProps & AlertProps;
+type LocalProps = OwnProps;
 
 class LoadingButton extends React.Component<LocalProps, any> {
 	public render() {
@@ -32,4 +27,4 @@ class LoadingButton extends React.Component<LocalProps, any> {
 	}
 }
 
-export default withAlert<LocalProps>(LoadingButton);
+export default LoadingButton;

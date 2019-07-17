@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { InjectedAlertProp, withAlert } from 'react-alert';
 import { connect } from 'react-redux';
 import { HashRouter, Route } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
 
 import { Store } from '../store';
 import { initialize } from '../modules/configuration';
@@ -12,10 +12,6 @@ import Wrapper from '../components/Wrapper';
 import Accounts from '../containers/Accounts';
 import Configuration from '../containers/Configuration';
 
-interface AlertProps {
-	alert: InjectedAlertProp;
-}
-
 interface StoreProps {}
 
 interface DispatchProps {
@@ -24,7 +20,7 @@ interface DispatchProps {
 
 interface OwnProps {}
 
-type LocalProps = OwnProps & DispatchProps & StoreProps & AlertProps;
+type LocalProps = OwnProps & DispatchProps & StoreProps;
 
 class App extends React.Component<LocalProps, any> {
 	public componentDidMount() {
@@ -39,6 +35,11 @@ class App extends React.Component<LocalProps, any> {
 						<Route exact={true} path="/" component={Accounts} />
 						<Route path="/config" component={Configuration} />
 					</Wrapper>
+					<ToastContainer
+						autoClose={2000}
+						position={'bottom-left'}
+						toastClassName="toast-custom"
+					/>
 				</React.Fragment>
 			</HashRouter>
 		);
@@ -54,4 +55,4 @@ const mapsDispatchToProps = (dispatch: any): DispatchProps => ({
 export default connect<StoreProps, DispatchProps, OwnProps, Store>(
 	mapStoreToProps,
 	mapsDispatchToProps
-)(withAlert<LocalProps>(App));
+)(App);

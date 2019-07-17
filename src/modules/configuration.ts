@@ -2,6 +2,7 @@ import * as path from 'path';
 
 import Utils from 'evm-lite-utils';
 
+import { toast } from 'react-toastify';
 import { ConfigurationSchema, DataDirectory } from 'evm-lite-datadir';
 
 import { BaseAction, ThunkResult } from '.';
@@ -182,6 +183,8 @@ export function setDirectory(path: string): ThunkResult<Promise<string>> {
 			payload: path
 		});
 
+		toast(`Data directory loaded at ${path}`);
+
 		dispatch(load()).then(() => dispatch(list()));
 
 		return path;
@@ -213,6 +216,8 @@ export function save(
 				type: SAVE_SUCCESS,
 				payload: newConfig
 			});
+
+			toast(`Configuration saved.`);
 
 			return newConfig;
 		} catch (error) {

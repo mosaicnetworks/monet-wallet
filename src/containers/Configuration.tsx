@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { ConfigurationSchema } from 'evm-lite-datadir';
-import { InjectedAlertProp, withAlert } from 'react-alert';
 import { connect } from 'react-redux';
 import { config as springConfig, Spring } from 'react-spring/renderprops';
 import { Header, Input, Grid, Form } from 'semantic-ui-react';
@@ -48,10 +47,6 @@ const Padding = styled.div`
 	margin-bottom: 0 !important;
 `;
 
-interface AlertProps {
-	alert: InjectedAlertProp;
-}
-
 interface StoreProps {
 	config: ConfigurationState;
 }
@@ -72,7 +67,7 @@ interface State {
 	};
 }
 
-type LocalProps = StoreProps & AlertProps & DispatchProps;
+type LocalProps = StoreProps & DispatchProps;
 
 class Configuration extends React.Component<LocalProps, State> {
 	public state = {
@@ -343,4 +338,4 @@ const mapsDispatchToProps = (dispatch: any): DispatchProps => ({
 export default connect<StoreProps, {}, {}, Store>(
 	mapStoreToProps,
 	mapsDispatchToProps
-)(withAlert<LocalProps>(Configuration));
+)(Configuration);

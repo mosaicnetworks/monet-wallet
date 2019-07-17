@@ -152,3 +152,12 @@ input[type='password'] {
 .ui.info.message {
 	border-radius: 2px !important;
 }
+
+.toast-custom {
+	padding: 5px 20px !important;
+	color: #333;
+}
+
+.Toastify__toast--error {
+	color: white !important;
+}

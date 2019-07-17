@@ -11,6 +11,7 @@ import {
 } from 'evm-lite-core';
 
 import { Keystore, V3JSONKeyStore } from 'evm-lite-keystore';
+import { toast } from 'react-toastify';
 
 import { BaseAction, ThunkResult } from '.';
 
@@ -381,6 +382,8 @@ export function create(password: string): ThunkResult<Promise<BaseAccount>> {
 				type: CREATE_SUCCESS,
 				payload: account
 			});
+
+			toast(`Account created: 0x${account.address.slice(0, 15)}...`);
 		} catch (error) {
 			dispatch({
 				type: CREATE_ERROR,

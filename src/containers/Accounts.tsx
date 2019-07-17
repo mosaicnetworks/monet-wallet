@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { InjectedAlertProp, withAlert } from 'react-alert';
 import { connect } from 'react-redux';
 import { config, Spring } from 'react-spring/renderprops';
 import { Header, Card } from 'semantic-ui-react';
@@ -21,10 +20,6 @@ const AccountsContainer = styled.div`
 	padding: 5px 10px;
 `;
 
-interface AlertProps {
-	alert: InjectedAlertProp;
-}
-
 interface StoreProps {
 	accounts: AccountsState;
 }
@@ -40,7 +35,7 @@ interface State {
 	totalBalance: number;
 }
 
-type LocalProps = OwnProps & StoreProps & DispatchProps & AlertProps;
+type LocalProps = OwnProps & StoreProps & DispatchProps;
 
 class Accounts extends React.Component<LocalProps, State> {
 	public state = {
@@ -127,4 +122,4 @@ const mapsDispatchToProps = (dispatch: any): DispatchProps => ({
 export default connect<StoreProps, DispatchProps, OwnProps, Store>(
 	mapStoreToProps,
 	mapsDispatchToProps
-)(withAlert<LocalProps>(Accounts));
+)(Accounts);

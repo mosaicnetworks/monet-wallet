@@ -2,7 +2,7 @@ import React from 'react';
 
 import styled, { ThemeProvider } from 'styled-components';
 
-import { InjectedAlertProp, withAlert } from 'react-alert';
+import { toast } from 'react-toastify';
 import { config, Transition } from 'react-spring/renderprops';
 import { Button, Input } from 'semantic-ui-react';
 
@@ -91,11 +91,7 @@ interface OwnProps {
 	accounts: AccountsState;
 }
 
-interface AlertProps {
-	alert: InjectedAlertProp;
-}
-
-type Props = AlertProps & OwnProps;
+type Props = OwnProps;
 
 class AccountCreate extends React.Component<Props, State> {
 	public state = {
@@ -110,12 +106,12 @@ class AccountCreate extends React.Component<Props, State> {
 		const { fields } = this.state;
 
 		if (!fields.password || !fields.verifyPassword) {
-			this.props.alert.error('Both fields must be filled in.');
+			toast.error('Both fields must be filled in.');
 			return;
 		}
 
 		if (fields.password !== fields.verifyPassword) {
-			this.props.alert.error('Passwords do not match.');
+			toast.error('Passwords do not match.');
 			return;
 		}
 
@@ -266,4 +262,4 @@ class AccountCreate extends React.Component<Props, State> {
 	}
 }
 
-export default withAlert<Props>(AccountCreate);
+export default AccountCreate;
