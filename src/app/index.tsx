@@ -1,5 +1,6 @@
-import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+
+import React from 'react';
 
 import { Provider as AlertProvider } from 'react-alert';
 import { Provider } from 'react-redux';

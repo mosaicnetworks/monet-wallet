@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 
 import { InjectedAlertProp, withAlert } from 'react-alert';
 import { connect } from 'react-redux';

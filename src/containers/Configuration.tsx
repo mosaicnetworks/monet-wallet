@@ -1,5 +1,4 @@
-import * as React from 'react';
-
+import React from 'react';
 import styled from 'styled-components';
 
 import { ConfigurationSchema } from 'evm-lite-datadir';
@@ -22,7 +21,8 @@ const Column = styled(Grid.Column)`
 	background: #fff;
 	margin: 10px;
 	padding: 0 !important;
-	box-shadow: 0 4px 20px -6px #eee !important;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.03) !important;
+	border: 1px solid #eee !important;
 
 	& > div {
 		padding: 20px;
