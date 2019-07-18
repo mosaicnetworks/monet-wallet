@@ -361,6 +361,8 @@ export function list(): ThunkResult<Promise<BaseAccount[]>> {
  */
 export function create(password: string): ThunkResult<Promise<BaseAccount>> {
 	return async (dispatch, getState) => {
+		const { config } = getState();
+
 		const account = {
 			address: '',
 			balance: 0,
@@ -373,7 +375,9 @@ export function create(password: string): ThunkResult<Promise<BaseAccount>> {
 		});
 
 		try {
-			const keystore = new Keystore('/Users/danu/.evmlc/keystore');
+			const keystore = new Keystore(
+				path.join(config.directory, 'keystore')
+			);
 			const acc: V3JSONKeyStore = await keystore.create(password);
 
 			account.address = acc.address;

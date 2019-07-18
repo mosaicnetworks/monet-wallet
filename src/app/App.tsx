@@ -7,7 +7,6 @@ import { ToastContainer } from 'react-toastify';
 import { initialize } from '../modules/configuration';
 
 import Wrapper from '../components/Wrapper';
-
 import Accounts from '../containers/Accounts';
 import Configuration from '../containers/Configuration';
 import POA from '../containers/POA';

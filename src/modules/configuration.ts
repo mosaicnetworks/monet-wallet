@@ -6,7 +6,6 @@ import { toast } from 'react-toastify';
 import { ConfigurationSchema, DataDirectory } from 'evm-lite-datadir';
 
 import { BaseAction, ThunkResult } from '.';
-
 import { list } from './accounts';
 
 // Set configuration data directory
