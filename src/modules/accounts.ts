@@ -173,10 +173,7 @@ export default function reducer(
 		case GET_SUCCESS:
 			const accounts = state.all.map(acc => {
 				const acc2 = {
-					balance: 0,
-					nonce: 0,
-					address: acc.address,
-					bytecode: ''
+					...acc
 				};
 
 				if (
@@ -411,52 +408,35 @@ export function get(
 	address: EVMTypes.Address
 ): ThunkResult<Promise<BaseAccount>> {
 	return async (dispatch, getState) => {
-		// const state = getState();
-		// const config = state.config.data;
-		let account = {
-			address,
-			balance: 0,
-			nonce: 0,
-			bytecode: ''
-		};
+		const { config } = getState();
+		let account = {} as BaseAccount;
 
-		// dispatch({
-		// 	type: GET_REQUEST
-		// });
+		dispatch({
+			type: GET_REQUEST
+		});
 
-		// try {
-		// 	if (!!Object.keys(config).length) {
-		// 		const connection = new EVMLC(
-		// 			config.connection.host,
-		// 			config.connection.port,
-		// 			{
-		// 				from: config.defaults.from,
-		// 				gas: config.defaults.gas,
-		// 				gasPrice: config.defaults.gasPrice
-		// 			}
-		// 		);
+		try {
+			if (!!Object.keys(config).length) {
+				const node = new EVMLC(
+					config.data.connection.host,
+					config.data.connection.port
+				);
 
-		// 		account = await connection.accounts.getAccount(address);
-		// 		account.balance = integerWithCommas(
-		// 			account.balance
-		// 				.toString()
-		// 				.split(',')
-		// 				.join('')
-		// 		);
+				account = await node.getAccount(address);
 
-		// 		dispatch({
-		// 			type: GET_SUCCESS,
-		// 			payload: account
-		// 		});
-		// 	} else {
-		// 		throw Error('Configuration could not loaded.');
-		// 	}
-		// } catch (error) {
-		// 	dispatch({
-		// 		type: GET_ERROR,
-		// 		payload: error.toString()
-		// 	});
-		// }
+				dispatch({
+					type: GET_SUCCESS,
+					payload: account
+				});
+			} else {
+				throw Error('Configuration could not loaded.');
+			}
+		} catch (error) {
+			dispatch({
+				type: GET_ERROR,
+				payload: error.toString()
+			});
+		}
 
 		return account;
 	};

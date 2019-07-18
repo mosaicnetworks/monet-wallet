@@ -28,15 +28,23 @@ const Padding = styled.div`
 	margin-bottom: 0 !important;
 `;
 
-const Whitelist = styled(Padding)`
-	/* position: sticky; */
+const Whitelist = styled(Grid.Column)`
+	margin-top: 15px !important;
+	padding: 0 !important;
+`;
+
+const WhitelistItemPadding = styled.div`
+	padding: 10px !important;
+	padding-left: 20px !important;
 `;
 
 const WhitelistItem = styled.div`
-	padding: 15px;
-	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.03) !important;
+	margin-top: 15px !important;
+	padding-top: 10px !important;
+	padding-bottom: 10px !important;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1) !important;
 	background: #fff;
-	border-bottom: 1px solid #eee;
+	border-top: 1px solid #eee;
 
 	&:nth-child(2n) {
 		border-bottom: none !important;
@@ -116,23 +124,27 @@ const POA: React.FunctionComponent<{}> = () => {
 							</div>
 						</Padding>
 					</Grid.Column>
-					<Grid.Column>
-						<Whitelist>
-							<h3>Whitelist</h3>
-							<div>
-								{poa.whitelist.map(item => (
-									<WhitelistItem key={item.address}>
+					<Whitelist>
+						<Padding>
+							<h2>Whitelist</h2>
+						</Padding>
+						<div>
+							{poa.whitelist.map(item => (
+								<WhitelistItem key={item.address}>
+									<WhitelistItemPadding>
 										<h5>{capitalize(item.moniker)}</h5>
 										<div>
 											{Utils.cleanAddress(item.address)}
 										</div>
-									</WhitelistItem>
-								))}
+									</WhitelistItemPadding>
+								</WhitelistItem>
+							))}
+							<WhitelistItemPadding>
 								{!poa.whitelist.length &&
 									'No whitelist entries found.'}
-							</div>
-						</Whitelist>
-					</Grid.Column>
+							</WhitelistItemPadding>
+						</div>
+					</Whitelist>
 				</Grid>
 			</Container>
 			<FloatingButton bottomOffset={60}>

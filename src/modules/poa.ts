@@ -3,7 +3,8 @@ import {
 	Contract,
 	AbstractSchema,
 	Transaction,
-	TX
+	TX,
+	EVMTypes
 } from 'evm-lite-core';
 
 import Utils from 'evm-lite-utils';
@@ -34,6 +35,11 @@ const WHITELIST_ERROR = '@evm-lite-wallet/poa/WHITELIST/ERROR';
 const NOMINEELIST_REQUEST = '@evm-lite-wallet/poa/NOMINEELIST/REQUEST';
 const NOMINEELIST_SUCCESS = '@evm-lite-wallet/poa/NOMINEELIST/SUCCESS';
 const NOMINEELIST_ERROR = '@evm-lite-wallet/poa/NOMINEELIST/ERROR';
+
+// nominate
+// const NOMINATE_REQUEST = '@evm-lite-wallet/poa/NOMINATE/REQUEST';
+// const NOMINATE_SUCCESS = '@evm-lite-wallet/poa/NOMINATE/SUCCESS';
+// const NOMINATE_ERROR = '@evm-lite-wallet/poa/NOMINATE/ERROR';
 
 interface WhitelistEntry {
 	moniker: string;
@@ -334,6 +340,26 @@ export function nomineelist(): ThunkResult<Promise<void>> {
 				type: NOMINEELIST_SUCCESS,
 				payload: nominees
 			});
+		} catch (error) {
+			dispatch({
+				type: NOMINEELIST_ERROR,
+				payload: error.toString()
+			});
+		}
+	};
+}
+
+export function nominate(
+	from: EVMTypes.Address,
+	verdict: boolean
+): ThunkResult<Promise<void>> {
+	return async dispatch => {
+		dispatch({
+			type: NOMINEELIST_REQUEST
+		});
+
+		try {
+			// pass
 		} catch (error) {
 			dispatch({
 				type: NOMINEELIST_ERROR,
