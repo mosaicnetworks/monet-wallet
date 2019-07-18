@@ -1,10 +1,10 @@
 import React from 'react';
+
 import styled from 'styled-components';
 import Utils from 'evm-lite-utils';
 
-import { Card, Label } from 'semantic-ui-react';
-
 import { BaseAccount } from 'evm-lite-core';
+import { Card, Label } from 'semantic-ui-react';
 
 const Address = styled.span`
 	word-wrap: break-word !important;
@@ -12,50 +12,38 @@ const Address = styled.span`
 	font-weight: 300 !important;
 `;
 
-interface OwnProps {
+interface Props {
 	account: BaseAccount;
 }
 
-type LocalProps = OwnProps;
-
-class Account extends React.Component<LocalProps, any> {
-	public state = {
-		showTxHistory: true
-	};
-
-	public onTXHistoryClick = () => {
-		this.setState({ showTxHistory: !this.state.showTxHistory });
-	};
-
-	public render() {
-		const { account } = this.props;
-
-		return (
-			<Card>
-				<Card.Content>
-					<Card.Header>
-						<Address>{Utils.cleanAddress(account.address)}</Address>
-					</Card.Header>
-				</Card.Content>
-				<Card.Content extra={true}>
-					<div className="ui small two buttons">
-						<Label color="green" basic={false}>
-							Balance
-							<Label.Detail>
-								{typeof account.balance === 'object'
-									? account.balance.toString(10)
-									: account.balance}
-							</Label.Detail>
-						</Label>
-						<Label basic={false}>
-							Nonce
-							<Label.Detail>{account.nonce}</Label.Detail>
-						</Label>
-					</div>
-				</Card.Content>
-			</Card>
-		);
-	}
-}
+const Account: React.FunctionComponent<Props> = props => {
+	return (
+		<Card>
+			<Card.Content>
+				<Card.Header>
+					<Address>
+						{Utils.cleanAddress(props.account.address)}
+					</Address>
+				</Card.Header>
+			</Card.Content>
+			<Card.Content extra={true}>
+				<div className="ui small two buttons">
+					<Label color="green" basic={false}>
+						Balance
+						<Label.Detail>
+							{typeof props.account.balance === 'object'
+								? props.account.balance.toString(10)
+								: props.account.balance}
+						</Label.Detail>
+					</Label>
+					<Label basic={false}>
+						Nonce
+						<Label.Detail>{props.account.nonce}</Label.Detail>
+					</Label>
+				</div>
+			</Card.Content>
+		</Card>
+	);
+};
 
 export default Account;

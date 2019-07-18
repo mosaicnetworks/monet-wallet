@@ -163,7 +163,7 @@ export function reload(): ThunkResult<Promise<void>> {
 	return async dispatch => {
 		dispatch(whitelist()).then(() =>
 			dispatch(nomineelist()).then(() =>
-				toast('Proof of Authority data reloaded.')
+				toast.info('Proof of Authority data reloaded.')
 			)
 		);
 	};

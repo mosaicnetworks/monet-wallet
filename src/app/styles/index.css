@@ -56,11 +56,11 @@ h5 {
 }
 
 .ui.blue {
-	background: rgba(31, 66, 146, 0.9) !important;
+	background: rgba(31, 66, 146, 1) !important;
 }
 
 .ui.green {
-	background: rgb(23, 103, 57) !important;
+	background: #0d4b0d !important;
 }
 
 .ui.yellow {
@@ -154,16 +154,25 @@ input[type='password'] {
 }
 
 .toast-custom {
+	box-shadow: 0 4px 20px -6px #000 !important;
 	padding: 5px 20px !important;
 	color: #333;
 }
 
 .Toastify__toast--error {
+	box-shadow: 0 4px 20px -6px #000 !important;
 	color: white !important;
 	background: rgb(204, 29, 40) !important;
 }
 
 .Toastify__toast--success {
+	box-shadow: 0 4px 20px -6px #000 !important;
 	background: #0d4b0d !important;
 	color: white !important;
+}
+
+.Toastify__toast--info {
+	box-shadow: 0 4px 20px -6px #000 !important;
+	color: white !important;
+	background: rgba(31, 66, 146, 1) !important;
 }

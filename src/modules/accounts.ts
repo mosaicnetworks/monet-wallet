@@ -383,7 +383,9 @@ export function create(password: string): ThunkResult<Promise<BaseAccount>> {
 				payload: account
 			});
 
-			toast(`Account created: 0x${account.address.slice(0, 15)}...`);
+			toast.success(
+				`Account created: 0x${account.address.slice(0, 15)}...`
+			);
 		} catch (error) {
 			dispatch({
 				type: CREATE_ERROR,

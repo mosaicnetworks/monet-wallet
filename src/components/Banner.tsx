@@ -26,22 +26,18 @@ interface Props {
 	style?: any;
 }
 
-class Banner extends React.Component<Props, any> {
-	public render() {
-		const { color } = this.props;
+const Banner: React.FunctionComponent<Props> = props => {
+	const theme = {
+		color: colors[props.color]
+	};
 
-		const theme = {
-			color: colors[color]
-		};
-
-		return (
-			<ThemeProvider theme={theme}>
-				<BannerContainer style={this.props.style}>
-					{this.props.children}
-				</BannerContainer>
-			</ThemeProvider>
-		);
-	}
-}
+	return (
+		<ThemeProvider theme={theme}>
+			<BannerContainer style={props.style}>
+				{props.children}
+			</BannerContainer>
+		</ThemeProvider>
+	);
+};
 
 export default Banner;

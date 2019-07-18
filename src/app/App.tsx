@@ -1,10 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { HashRouter, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 
-import { Store } from '../store';
 import { initialize } from '../modules/configuration';
 
 import Wrapper from '../components/Wrapper';
@@ -13,48 +12,31 @@ import Accounts from '../containers/Accounts';
 import Configuration from '../containers/Configuration';
 import POA from '../containers/POA';
 
-interface StoreProps {}
+const App: React.FunctionComponent<{}> = () => {
+	const dispatch = useDispatch();
 
-interface DispatchProps {
-	handleInitialize: () => void;
-}
+	const init = () => dispatch(initialize());
 
-interface OwnProps {}
+	useEffect(() => {
+		init();
+	});
 
-type LocalProps = OwnProps & DispatchProps & StoreProps;
+	return (
+		<HashRouter>
+			<React.Fragment>
+				<Wrapper>
+					<Route exact={true} path="/" component={Accounts} />
+					<Route path="/config" component={Configuration} />
+					<Route path="/poa" component={POA} />
+				</Wrapper>
+				<ToastContainer
+					autoClose={2000}
+					position={'bottom-left'}
+					toastClassName="toast-custom"
+				/>
+			</React.Fragment>
+		</HashRouter>
+	);
+};
 
-class App extends React.Component<LocalProps, any> {
-	public componentDidMount() {
-		this.props.handleInitialize();
-	}
-
-	public render() {
-		return (
-			<HashRouter>
-				<React.Fragment>
-					<Wrapper>
-						<Route exact={true} path="/" component={Accounts} />
-						<Route path="/config" component={Configuration} />
-						<Route path="/poa" component={POA} />
-					</Wrapper>
-					<ToastContainer
-						autoClose={2000}
-						position={'bottom-left'}
-						toastClassName="toast-custom"
-					/>
-				</React.Fragment>
-			</HashRouter>
-		);
-	}
-}
-
-const mapStoreToProps = (store: Store): StoreProps => ({});
-
-const mapsDispatchToProps = (dispatch: any): DispatchProps => ({
-	handleInitialize: () => dispatch(initialize())
-});
-
-export default connect<StoreProps, DispatchProps, OwnProps, Store>(
-	mapStoreToProps,
-	mapsDispatchToProps
-)(App);
+export default App;

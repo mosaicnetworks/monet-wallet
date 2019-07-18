@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import styled, { ThemeProvider } from 'styled-components';
 
@@ -77,34 +77,20 @@ const Content = styled.div`
 	}
 `;
 
-interface State {
-	visible: boolean;
-	fields: {
-		password: string;
-		verifyPassword: string;
-	};
-}
-
-interface OwnProps {
+interface Props {
 	bottomOffset: number;
 	create: any;
 	accounts: AccountsState;
 }
 
-type Props = OwnProps;
+const AccountCreate: React.FunctionComponent<Props> = props => {
+	const [visible, setVisibility] = useState(false);
+	const [fields, setFields] = useState({
+		password: '',
+		verifyPassword: ''
+	});
 
-class AccountCreate extends React.Component<Props, State> {
-	public state = {
-		visible: false,
-		fields: {
-			password: '',
-			verifyPassword: ''
-		}
-	};
-
-	public handleCreateAccount = () => {
-		const { fields } = this.state;
-
+	const handleCreateAccount = () => {
 		if (!fields.password || !fields.verifyPassword) {
 			toast.error('Both fields must be filled in.');
 			return;
@@ -115,151 +101,125 @@ class AccountCreate extends React.Component<Props, State> {
 			return;
 		}
 
-		this.setState({
-			visible: false,
-			fields: {
-				password: '',
-				verifyPassword: ''
-			}
+		setVisibility(false);
+		setFields({
+			password: '',
+			verifyPassword: ''
 		});
 
-		this.props.create(fields.password);
+		props.create(fields.password);
 	};
 
-	public render() {
-		const { accounts, bottomOffset } = this.props;
-		const { visible } = this.state;
+	const theme = {
+		bottomOffset: props.bottomOffset
+	};
 
-		const theme = {
-			bottomOffset
-		};
-
-		return (
-			<ThemeProvider theme={theme}>
-				<React.Fragment>
-					<Transition
-						items={visible}
-						from={{ right: '0px', display: 'none' }}
-						enter={{ right: '340px', display: 'block' }}
-						leave={{ right: '0px', display: 'none' }}
-						config={config.stiff}
-					>
-						{show =>
-							show &&
-							(props => (
-								<Open
-									style={props}
-									onClick={this.handleCreateAccount}
-								>
-									<Button
-										icon="check"
-										color="green"
-										disabled={accounts.loading.create}
-										loading={accounts.loading.create}
-									/>
-								</Open>
-							))
-						}
-					</Transition>
-					<Transition
-						items={visible}
-						from={{ opacity: 0, right: '0px' }}
-						enter={{ opacity: 1, right: '340px' }}
-						leave={{ opacity: 0, right: '0px' }}
-						config={config.stiff}
-					>
-						{show =>
-							show &&
-							(props => (
-								<Close
-									style={props}
-									onClick={() =>
-										this.setState({
-											visible: !visible
-										})
-									}
-								>
-									<Button
-										icon="times"
-										disabled={accounts.loading.create}
-										loading={accounts.loading.create}
-										color="red"
-									/>
-								</Close>
-							))
-						}
-					</Transition>
-					{!visible && (
-						<Animation direction="right">
-							<Open
-								onClick={() =>
-									this.setState({
-										visible: true
-									})
-								}
-							>
+	return (
+		<ThemeProvider theme={theme}>
+			<React.Fragment>
+				<Transition
+					items={visible}
+					from={{ right: '0px', display: 'none' }}
+					enter={{ right: '340px', display: 'block' }}
+					leave={{ right: '0px', display: 'none' }}
+					config={config.stiff}
+				>
+					{show =>
+						show &&
+						(p => (
+							<Open style={p} onClick={handleCreateAccount}>
 								<Button
-									icon="plus"
-									disabled={accounts.loading.create}
-									loading={accounts.loading.create}
+									icon="check"
 									color="green"
+									disabled={props.accounts.loading.create}
+									loading={props.accounts.loading.create}
 								/>
 							</Open>
-						</Animation>
-					)}
-					<Transition
-						items={visible}
-						from={{ right: '-340px' }}
-						enter={{ right: '0px' }}
-						leave={{ right: '-340px' }}
-						config={config.stiff}
-					>
-						{show =>
-							show &&
-							(props => (
-								<Content style={props}>
-									<h4>Create An Account</h4>
-									<div className="help">
-										Enter a password to encrypt the created
-										account.
-									</div>
-									<div>
-										<Input
-											placeholder="Set Password"
-											type="password"
-											onChange={(e, { value }) =>
-												this.setState({
-													...this.state,
-													fields: {
-														...this.state.fields,
-														password: value
-													}
-												})
-											}
-										/>
-										<br />
-										<Input
-											placeholder="Verify Password"
-											type="password"
-											onChange={(e, { value }) =>
-												this.setState({
-													...this.state,
-													fields: {
-														...this.state.fields,
-														verifyPassword: value
-													}
-												})
-											}
-										/>
-									</div>
-								</Content>
-							))
-						}
-					</Transition>
-				</React.Fragment>
-			</ThemeProvider>
-		);
-	}
-}
+						))
+					}
+				</Transition>
+				<Transition
+					items={visible}
+					from={{ opacity: 0, right: '0px' }}
+					enter={{ opacity: 1, right: '340px' }}
+					leave={{ opacity: 0, right: '0px' }}
+					config={config.stiff}
+				>
+					{show =>
+						show &&
+						(p => (
+							<Close
+								style={p}
+								onClick={() => setVisibility(!visible)}
+							>
+								<Button
+									icon="times"
+									disabled={props.accounts.loading.create}
+									loading={props.accounts.loading.create}
+									color="red"
+								/>
+							</Close>
+						))
+					}
+				</Transition>
+				{!visible && (
+					<Animation direction="right">
+						<Open onClick={() => setVisibility(true)}>
+							<Button
+								icon="plus"
+								disabled={props.accounts.loading.create}
+								loading={props.accounts.loading.create}
+								color="green"
+							/>
+						</Open>
+					</Animation>
+				)}
+				<Transition
+					items={visible}
+					from={{ right: '-340px' }}
+					enter={{ right: '0px' }}
+					leave={{ right: '-340px' }}
+					config={config.stiff}
+				>
+					{show =>
+						show &&
+						(props => (
+							<Content style={props}>
+								<h4>Create An Account</h4>
+								<div className="help">
+									Enter a password to encrypt the created
+									account.
+								</div>
+								<div>
+									<Input
+										placeholder="Set Password"
+										type="password"
+										onChange={(e, { value }) =>
+											setFields({
+												...fields,
+												password: value
+											})
+										}
+									/>
+									<br />
+									<Input
+										placeholder="Verify Password"
+										type="password"
+										onChange={(e, { value }) =>
+											setFields({
+												...fields,
+												verifyPassword: value
+											})
+										}
+									/>
+								</div>
+							</Content>
+						))
+					}
+				</Transition>
+			</React.Fragment>
+		</ThemeProvider>
+	);
+};
 
 export default AccountCreate;

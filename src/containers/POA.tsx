@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import Utils from 'evm-lite-utils';
 
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { config, Spring } from 'react-spring/renderprops';
 import { Header, Grid, Container, Card } from 'semantic-ui-react';
 
@@ -51,133 +51,98 @@ const WhitelistItem = styled.div`
 	}
 `;
 
-interface StoreProps {
-	poa: POAState;
-}
+const POA: React.FunctionComponent<{}> = () => {
+	const dispatch = useDispatch();
 
-interface DispatchProps {
-	handlePOAReload: () => void;
-}
+	const poa = useSelector<Store, POAState>(store => store.poa);
 
-interface OwnProps {}
+	const reloadPOAData = () => dispatch(reload());
 
-interface State {}
-
-type LocalProps = OwnProps & StoreProps & DispatchProps;
-
-class Accounts extends React.Component<LocalProps, State> {
-	public state = {};
-
-	public componentDidMount() {
-		this.props.handlePOAReload();
-	}
-
-	public render() {
-		const { poa } = this.props;
-
-		return (
-			<React.Fragment>
-				<Jumbo>
-					<Spring
-						from={{
-							marginLeft: -50,
-							opacity: 0
-						}}
-						to={{
-							marginLeft: 0,
-							opacity: 1
-						}}
-						config={config.wobbly}
-					>
-						{props => (
-							<Header style={props} as="h2" floated="left">
-								Proof of Authority
-								<Header.Subheader>
-									Create new and manage existing accounts
-								</Header.Subheader>
-							</Header>
-						)}
-					</Spring>
-					<Header as="h2" floated="right">
-						Status
-						<Header.Subheader>
-							<Status>Online</Status>
-						</Header.Subheader>
-					</Header>
-					<Header as="h2" floated="right">
-						Validators
-						<Header.Subheader>3</Header.Subheader>
-					</Header>
-				</Jumbo>
-				<Banner color="orange">
-					All accounts listed here are read in locally from your
-					keystore.
-				</Banner>
-				<Container fluid={true}>
-					<Grid columns="equal">
-						<Grid.Column width={10}>
-							<Padding>
-								<h2>Nominees</h2>
-								<div>
-									<Card.Group>
-										{poa.nominees.map(nominee => (
-											<Nominee
-												key={nominee.address}
-												moniker={nominee.moniker}
-												address={nominee.address}
-												upVotes={nominee.upVotes}
-												downVotes={nominee.downVotes}
-											/>
-										))}
-									</Card.Group>
-									{!poa.nominees.length &&
-										'No nominees found.'}
-								</div>
-							</Padding>
-						</Grid.Column>
-						<Grid.Column>
-							<Whitelist>
-								<h3>Whitelist</h3>
-								<div>
-									{poa.whitelist.map(item => (
-										<WhitelistItem key={item.address}>
-											<h5>{capitalize(item.moniker)}</h5>
-											<div>
-												{Utils.cleanAddress(
-													item.address
-												)}
-											</div>
-										</WhitelistItem>
+	return (
+		<React.Fragment>
+			<Jumbo>
+				<Spring
+					from={{
+						marginLeft: -50,
+						opacity: 0
+					}}
+					to={{
+						marginLeft: 0,
+						opacity: 1
+					}}
+					config={config.wobbly}
+				>
+					{props => (
+						<Header style={props} as="h2" floated="left">
+							Proof of Authority
+							<Header.Subheader>
+								Create new and manage existing accounts
+							</Header.Subheader>
+						</Header>
+					)}
+				</Spring>
+				<Header as="h2" floated="right">
+					Status
+					<Header.Subheader>
+						<Status>Online</Status>
+					</Header.Subheader>
+				</Header>
+				<Header as="h2" floated="right">
+					Validators
+					<Header.Subheader>3</Header.Subheader>
+				</Header>
+			</Jumbo>
+			<Banner color="orange">
+				All accounts listed here are read in locally from your keystore.
+			</Banner>
+			<Container fluid={true}>
+				<Grid columns="equal">
+					<Grid.Column width={10}>
+						<Padding>
+							<h2>Nominees</h2>
+							<div>
+								<Card.Group>
+									{poa.nominees.map(nominee => (
+										<Nominee
+											key={nominee.address}
+											moniker={nominee.moniker}
+											address={nominee.address}
+											upVotes={nominee.upVotes}
+											downVotes={nominee.downVotes}
+										/>
 									))}
-									{!poa.whitelist.length &&
-										'No whitelist entries found.'}
-								</div>
-							</Whitelist>
-						</Grid.Column>
-					</Grid>
-				</Container>
-				<FloatingButton bottomOffset={60}>
-					<LoadingButton
-						isLoading={
-							poa.loading.whitelist || poa.loading.nomineelist
-						}
-						onClickHandler={this.props.handlePOAReload}
-					/>
-				</FloatingButton>
-			</React.Fragment>
-		);
-	}
-}
+								</Card.Group>
+								{!poa.nominees.length && 'No nominees found.'}
+							</div>
+						</Padding>
+					</Grid.Column>
+					<Grid.Column>
+						<Whitelist>
+							<h3>Whitelist</h3>
+							<div>
+								{poa.whitelist.map(item => (
+									<WhitelistItem key={item.address}>
+										<h5>{capitalize(item.moniker)}</h5>
+										<div>
+											{Utils.cleanAddress(item.address)}
+										</div>
+									</WhitelistItem>
+								))}
+								{!poa.whitelist.length &&
+									'No whitelist entries found.'}
+							</div>
+						</Whitelist>
+					</Grid.Column>
+				</Grid>
+			</Container>
+			<FloatingButton bottomOffset={60}>
+				<LoadingButton
+					isLoading={poa.loading.whitelist || poa.loading.nomineelist}
+					onClickHandler={reloadPOAData}
+				/>
+			</FloatingButton>
+		</React.Fragment>
+	);
+};
 
-const mapStoreToProps = (store: Store): StoreProps => ({
-	poa: store.poa
-});
-
-const mapsDispatchToProps = (dispatch: any): DispatchProps => ({
-	handlePOAReload: () => dispatch(reload())
-});
-
-export default connect<StoreProps, DispatchProps, OwnProps, Store>(
-	mapStoreToProps,
-	mapsDispatchToProps
-)(Accounts);
+export default POA;

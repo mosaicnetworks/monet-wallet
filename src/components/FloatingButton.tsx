@@ -1,6 +1,7 @@
 import React from 'react';
 
 import styled, { ThemeProvider } from 'styled-components';
+
 import Animation from './animations/Animation';
 
 const ButtonContainer = styled.div`
@@ -29,22 +30,18 @@ interface Props {
 	bottomOffset: number;
 }
 
-class FloatingButton extends React.Component<Props, any> {
-	public render() {
-		const { bottomOffset } = this.props;
+const FloatingButton: React.FunctionComponent<Props> = props => {
+	const theme = {
+		bottomOffset: props.bottomOffset
+	};
 
-		const theme = {
-			bottomOffset: bottomOffset
-		};
-
-		return (
-			<ThemeProvider theme={theme}>
-				<Animation direction="right">
-					<ButtonContainer>{this.props.children}</ButtonContainer>
-				</Animation>
-			</ThemeProvider>
-		);
-	}
-}
+	return (
+		<ThemeProvider theme={theme}>
+			<Animation direction="right">
+				<ButtonContainer>{props.children}</ButtonContainer>
+			</Animation>
+		</ThemeProvider>
+	);
+};
 
 export default FloatingButton;
