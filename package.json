@@ -5,8 +5,9 @@
 	"dependencies": {
 		"evm-lite-core": "1.0.0-alpha.12",
 		"evm-lite-datadir": "1.0.0-alpha.13",
-		"evm-lite-keystore": "1.0.0-alpha.11",
+		"evm-lite-keystore": "1.0.0-alpha.13",
 		"evm-lite-utils": "1.0.0-alpha.11",
+		"js-scrypt": "^0.2.0",
 		"random-hash": "^4.0.1",
 		"react": "^16.6.1",
 		"react-dom": "^16.6.1",

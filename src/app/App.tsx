@@ -10,6 +10,7 @@ import Wrapper from '../components/Wrapper';
 import Accounts from '../containers/Accounts';
 import Configuration from '../containers/Configuration';
 import POA from '../containers/POA';
+import AccountDetail from '../containers/AccountDetail';
 
 const App: React.FunctionComponent<{}> = () => {
 	const dispatch = useDispatch();
@@ -27,6 +28,11 @@ const App: React.FunctionComponent<{}> = () => {
 					<Route exact={true} path="/" component={Accounts} />
 					<Route path="/config" component={Configuration} />
 					<Route path="/poa" component={POA} />
+					<Route
+						exact={true}
+						path="/account/:address"
+						component={AccountDetail}
+					/>
 				</Wrapper>
 				<ToastContainer
 					autoClose={2000}

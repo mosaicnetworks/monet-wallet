@@ -2833,7 +2833,7 @@ eventsource@^1.0.7:
   dependencies:
     original "^1.0.0"
 
-evm-lite-core@1.0.0-alpha.12, evm-lite-core@^1.0.0-alpha.11, evm-lite-core@^1.0.0-alpha.12:
+evm-lite-core@1.0.0-alpha.12, evm-lite-core@^1.0.0-alpha.12:
   version "1.0.0-alpha.12"
   resolved "https://registry.yarnpkg.com/evm-lite-core/-/evm-lite-core-1.0.0-alpha.12.tgz#7d819f2ff75c05f2b7f664f77d1c6778137fbf7a"
   integrity sha512-m/ztEqAJ+yFk5shV294VJVggdNemZfkYkk77D/R/1x9xR3QD9jbX1coab1c7sPyRZLkJg+5XW/be0knaL0In/g==
@@ -2862,24 +2862,7 @@ evm-lite-datadir@1.0.0-alpha.13:
     toml "^3.0.0"
     tomlify-j0.4 "^3.0.0"
 
-evm-lite-keystore@1.0.0-alpha.11:
-  version "1.0.0-alpha.11"
-  resolved "https://registry.yarnpkg.com/evm-lite-keystore/-/evm-lite-keystore-1.0.0-alpha.11.tgz#ac23cae4db8109b76de3e2ccf52fb0ce29a7bb3a"
-  integrity sha512-1yiDQJEcOBwq6mLuipllP2mVladZb3fImi99Kz8JbdBeiWdiuOn2WbCz3MjzHGevLQS0/wtrgXl/P/upfTTcuw==
-  dependencies:
-    browserify-cipher "^1.0.1"
-    crypto-random-hex "^1.0.0"
-    eth-lib "^0.2.8"
-    evm-lite-core "^1.0.0-alpha.11"
-    evm-lite-utils "^1.0.0-alpha.11"
-    json-bigint "0.3.0"
-    keccak256 "^1.0.0"
-    mkdirp "^0.5.1"
-    randombytes "^2.1.0"
-    scryptsy "^2.0.0"
-    uuid "^3.3.2"
-
-evm-lite-keystore@^1.0.0-alpha.13:
+evm-lite-keystore@1.0.0-alpha.13, evm-lite-keystore@^1.0.0-alpha.13:
   version "1.0.0-alpha.13"
   resolved "https://registry.yarnpkg.com/evm-lite-keystore/-/evm-lite-keystore-1.0.0-alpha.13.tgz#b589cfaf0a2233a0868a8671dc085a52bc635767"
   integrity sha512-5xBiyWEBkZlvZ932IbN79oAjCM2h9mh5sy9lwZ13aeskr9OBjErh4CFqbuRDZLPsheIYvYz+xnvDrzh1SPpFsw==
@@ -3408,6 +3391,11 @@ gauge@~2.7.3:
     string-width "^1.0.1"
     strip-ansi "^3.0.1"
     wide-align "^1.1.0"
+
+generic-pool@~2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/generic-pool/-/generic-pool-2.0.4.tgz#f9718deda82fa125ed5c43e341c9a215a766d9a3"
+  integrity sha1-+XGN7agvoSXtXEPjQcmiFadm2aM=
 
 get-caller-file@^1.0.1:
   version "1.0.3"
@@ -4352,6 +4340,13 @@ jquery@x.*:
   version "3.4.1"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.4.1.tgz#714f1f8d9dde4bdfa55764ba37ef214630d80ef2"
   integrity sha512-36+AdBzCL+y6qjw5Tx7HgzeGCzC81MDDgaUP8ld2zhx58HdqXGoBd+tHdrBMiyjGQs0Hxs/MLZTu/eHNJJuWPw==
+
+js-scrypt@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/js-scrypt/-/js-scrypt-0.2.0.tgz#7a62b701b4616e70ad0cde544627aabb99d7fe39"
+  integrity sha1-emK3AbRhbnCtDN5URiequ5nX/jk=
+  dependencies:
+    generic-pool "~2.0.4"
 
 "js-tokens@^3.0.0 || ^4.0.0", js-tokens@^4.0.0:
   version "4.0.0"

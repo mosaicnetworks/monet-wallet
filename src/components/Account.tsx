@@ -3,6 +3,7 @@ import React from 'react';
 import styled from 'styled-components';
 import Utils from 'evm-lite-utils';
 
+import { Link } from 'react-router-dom';
 import { BaseAccount } from 'evm-lite-core';
 import { Card, Label } from 'semantic-ui-react';
 
@@ -21,9 +22,11 @@ const Account: React.FunctionComponent<Props> = props => {
 		<Card>
 			<Card.Content>
 				<Card.Header>
-					<Address>
-						{Utils.cleanAddress(props.account.address)}
-					</Address>
+					<Link to={`/account/${props.account.address}`}>
+						<Address>
+							{Utils.cleanAddress(props.account.address)}
+						</Address>
+					</Link>
 				</Card.Header>
 			</Card.Content>
 			<Card.Content extra={true}>

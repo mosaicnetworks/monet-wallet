@@ -127,7 +127,10 @@ const config = {
 		__dirname: false
 	},
 	resolve: {
-		extensions: ['.js', '.ts', '.tsx', '.jsx', '.json']
+		extensions: ['.js', '.ts', '.tsx', '.jsx', '.json'],
+		alias: {
+			scrypt: 'js-scrypt'
+		}
 	},
 	performance: {
 		hints: false
