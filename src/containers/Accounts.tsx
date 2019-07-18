@@ -17,7 +17,7 @@ import LoadingButton from '../components/LoadingButton';
 import AccountCreate from '../components/AccountCreate';
 
 const AccountsContainer = styled.div`
-	padding: 5px 10px;
+	padding: 5px 0;
 `;
 
 const Accounts: React.FunctionComponent<{}> = () => {

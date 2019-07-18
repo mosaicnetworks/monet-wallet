@@ -57,15 +57,16 @@ const Close = styled.div`
 const Content = styled.div`
 	position: fixed;
 	bottom: ${props => props.theme.bottomOffset}px;
-	right: -341px;
-	width: 340px !important;
+	right: -464px;
+	width: auto;
 	background: #fff !important;
 	box-shadow: 0 4px 20px -6px #999 !important;
 
 	& h4 {
-		background: rgba(0, 0, 0, 0.04);
-		padding: 10px;
-		letter-spacing: 0.5px;
+		background: rgba(118, 70, 146, 1);
+		color: #fff;
+		font-weight: 300 !important;
+		padding: 10px 20px;
 		margin: 0 !important;
 	}
 
@@ -76,8 +77,8 @@ const Content = styled.div`
 
 	& div.help {
 		background: rgba(0, 0, 0, 0.02);
-		padding: 4px 10px;
-		color: #888;
+		padding: 10px 20px;
+		color: #555;
 		margin-bottom: 14px;
 	}
 `;
@@ -95,7 +96,8 @@ const AccountUnlock: React.FunctionComponent<Props> = props => {
 
 	const accounts = useSelector<Store, AccountsState>(store => store.accounts);
 
-	const unlock = () => dispatch(unlockAccount(props.address, password));
+	const unlock = () =>
+		dispatch(unlockAccount(props.address, password.trim()));
 
 	const handleUnlockAccount = () => {
 		if (!password) {
@@ -103,7 +105,6 @@ const AccountUnlock: React.FunctionComponent<Props> = props => {
 			return;
 		}
 
-		console.log(password);
 		unlock();
 		setPassword('');
 	};
@@ -118,7 +119,7 @@ const AccountUnlock: React.FunctionComponent<Props> = props => {
 				<Transition
 					items={show}
 					from={{ right: '-40px' }}
-					enter={{ right: '340px' }}
+					enter={{ right: '464px' }}
 					leave={{ right: '-40px' }}
 					config={config.stiff}
 				>
@@ -140,7 +141,7 @@ const AccountUnlock: React.FunctionComponent<Props> = props => {
 				<Transition
 					items={show}
 					from={{ opacity: 0, right: '0px' }}
-					enter={{ opacity: 1, right: '340px' }}
+					enter={{ opacity: 1, right: '464px' }}
 					leave={{ opacity: 0, right: '0px' }}
 					config={config.stiff}
 				>
@@ -165,9 +166,9 @@ const AccountUnlock: React.FunctionComponent<Props> = props => {
 				)}
 				<Transition
 					items={show}
-					from={{ right: '-340px' }}
+					from={{ right: '-464px' }}
 					enter={{ right: '0px' }}
-					leave={{ right: '-340px' }}
+					leave={{ right: '-464px' }}
 					config={config.stiff}
 				>
 					{show =>

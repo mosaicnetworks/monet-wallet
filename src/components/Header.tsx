@@ -8,8 +8,6 @@ import { Container, Icon, Image } from 'semantic-ui-react';
 import MONET_LOGO from '../assets/monet_logo.png';
 
 const WalletHeader = styled.div`
-	/* position: fixed; */
-	/* top: 0; */
 	background: rgba(255, 255, 255, 0.95);
 	height: 70px;
 	line-height: 70px !important;

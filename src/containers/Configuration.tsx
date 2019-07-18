@@ -21,8 +21,6 @@ const Column = styled(Grid.Column)`
 	background: #fff;
 	margin: 10px;
 	padding: 0 !important;
-	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.03) !important;
-	border: 1px solid #eee !important;
 
 	& > div {
 		padding: 20px;

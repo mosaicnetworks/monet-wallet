@@ -10,12 +10,14 @@ body {
 }
 
 .card {
-	border-radius: 5px !important;
-	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.03) !important;
+	padding: 3px !important;
+	border-radius: 0px !important;
+	box-shadow: none !important;
 	word-break: break-all;
 	font-family: 'Titillium Web', sans-serif !important;
-	border: 1px solid #eee !important;
+	/* border: 1px solid #eee !important; */
 	/* box-shadow: 0 4px 20px -6px #eee !important; */
+	width: 300px !important;
 }
 
 a {
@@ -101,7 +103,7 @@ button.orange {
 }
 
 button.purple {
-	border-bottom: rgb(83, 48, 96) 3px solid !important;
+	border-bottom: rgba(118, 70, 146, 1) 3px solid !important;
 }
 
 button.yellow {
@@ -146,7 +148,7 @@ input[type='password'] {
 	border: 1px solid #eee !important;
 	padding: 12px !important;
 	margin: 0px !important;
-	min-width: 300px !important;
+	min-width: 340px !important;
 }
 
 .ui.info.message {

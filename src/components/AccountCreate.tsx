@@ -54,25 +54,28 @@ const Close = styled.div`
 const Content = styled.div`
 	position: fixed;
 	bottom: ${props => props.theme.bottomOffset}px;
-	right: -341px;
+	right: -361px;
 	width: auto;
 	background: #fff !important;
 	box-shadow: 0 4px 20px -6px #999 !important;
 
 	& h4 {
-		background: rgba(0, 0, 0, 0.04);
-		padding: 10px;
-		letter-spacing: 0.5px;
+		background: rgba(118, 70, 146, 1);
+		color: #fff;
+		font-weight: 300 !important;
+		padding: 10px 20px;
 		margin: 0 !important;
 	}
+
 	& div {
 		padding: 5px 10px;
 		padding-top: 0px;
 	}
+
 	& div.help {
 		background: rgba(0, 0, 0, 0.02);
-		padding: 4px 10px;
-		color: #888;
+		padding: 10px 20px;
+		color: #555;
 		margin-bottom: 14px;
 	}
 `;
@@ -102,12 +105,13 @@ const AccountCreate: React.FunctionComponent<Props> = props => {
 		}
 
 		setVisibility(false);
+
+		props.create(fields.password.trim());
+
 		setFields({
 			password: '',
 			verifyPassword: ''
 		});
-
-		props.create(fields.password);
 	};
 
 	const theme = {
@@ -120,7 +124,7 @@ const AccountCreate: React.FunctionComponent<Props> = props => {
 				<Transition
 					items={visible}
 					from={{ right: '0px', display: 'none' }}
-					enter={{ right: '340px', display: 'block' }}
+					enter={{ right: '380px', display: 'block' }}
 					leave={{ right: '0px', display: 'none' }}
 					config={config.stiff}
 				>
@@ -141,7 +145,7 @@ const AccountCreate: React.FunctionComponent<Props> = props => {
 				<Transition
 					items={visible}
 					from={{ opacity: 0, right: '0px' }}
-					enter={{ opacity: 1, right: '340px' }}
+					enter={{ opacity: 1, right: '380px' }}
 					leave={{ opacity: 0, right: '0px' }}
 					config={config.stiff}
 				>
@@ -176,9 +180,9 @@ const AccountCreate: React.FunctionComponent<Props> = props => {
 				)}
 				<Transition
 					items={visible}
-					from={{ right: '-340px' }}
+					from={{ right: '-380px' }}
 					enter={{ right: '0px' }}
-					leave={{ right: '-340px' }}
+					leave={{ right: '-380px' }}
 					config={config.stiff}
 				>
 					{show =>
