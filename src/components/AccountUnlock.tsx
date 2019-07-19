@@ -63,8 +63,7 @@ const Content = styled.div`
 	box-shadow: 0 4px 20px -6px #999 !important;
 
 	& h4 {
-		background: rgba(118, 70, 146, 1);
-		color: #fff;
+		background: rgba(0, 0, 0, 0.07);
 		font-weight: 300 !important;
 		padding: 10px 20px;
 		margin: 0 !important;

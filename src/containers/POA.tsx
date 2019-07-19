@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 
 import Utils from 'evm-lite-utils';
@@ -65,6 +65,10 @@ const POA: React.FunctionComponent<{}> = () => {
 	const poa = useSelector<Store, POAState>(store => store.poa);
 
 	const reloadPOAData = () => dispatch(reload());
+
+	useEffect(() => {
+		reloadPOAData();
+	}, []);
 
 	return (
 		<React.Fragment>

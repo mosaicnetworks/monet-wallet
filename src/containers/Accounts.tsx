@@ -11,7 +11,7 @@ import { Store } from '../store';
 
 import Banner from '../components/Banner';
 import Jumbo from '../components/Jumbo';
-import Account from '../components/Account';
+import AccountCard from '../components/AccountCard';
 import FloatingButton from '../components/FloatingButton';
 import LoadingButton from '../components/LoadingButton';
 import AccountCreate from '../components/AccountCreate';
@@ -66,7 +66,7 @@ const Accounts: React.FunctionComponent<{}> = () => {
 			<AccountsContainer>
 				<Card.Group centered={true}>
 					{accounts.all.map(account => (
-						<Account key={account.address} account={account} />
+						<AccountCard key={account.address} account={account} />
 					))}
 				</Card.Group>
 			</AccountsContainer>

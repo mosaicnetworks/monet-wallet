@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 import styled from 'styled-components';
 
+import { Transition } from 'react-spring/renderprops';
 import { ConfigurationSchema } from 'evm-lite-datadir';
 import { useSelector, useDispatch } from 'react-redux';
 import { config as springConfig, Spring } from 'react-spring/renderprops';
@@ -65,12 +66,11 @@ const Configuration: React.FunctionComponent<{}> = () => {
 	const setDataDir = () => dispatch(setDirectory(directory));
 	const handleSaveConfig = () => {
 		let gas: number = fields.gas;
+		let gasPrice: number = fields.gasPrice;
 
 		if (fields.gas < 0) {
 			gas = config.data.defaults.gas;
 		}
-
-		let gasPrice: number = fields.gasPrice;
 
 		if (fields.gasPrice < 0) {
 			gasPrice = config.data.defaults.gasPrice;
@@ -134,138 +134,167 @@ const Configuration: React.FunctionComponent<{}> = () => {
 				These configuration values will be read in by all actions across
 				the wallet and other evm-lite applications as default values.
 			</Banner>
-			<Padding>
-				<Grid columns="equal">
-					<Column>
-						<h3>Connection</h3>
-						<div>
-							The node's connection details. These will be used to
-							fetch account details.
-						</div>
-						<div className="form">
-							<Form>
-								<Form.Field>
-									<label>Host</label>
-									<Input
-										onChange={(_, { value }) =>
-											setFields({
-												...fields,
-												host: value
-											})
-										}
-										defaultValue={
-											config.data.connection.host
-										}
-										placeholder="ex: 127.0.0.1"
-									/>
-								</Form.Field>
-								<Form.Field>
-									<label>Port</label>
-									<Input
-										onChange={(e, { value }) =>
-											setFields({
-												...fields,
-												port: parseInt(value, 10)
-											})
-										}
-										type={'number'}
-										defaultValue={
-											config.data.connection.port
-										}
-										placeholder="ex: 8080"
-									/>
-								</Form.Field>
-								<Form.Field>
-									<Form.Button
-										onClick={handleSaveConfig}
-										color="green"
-										loading={
-											config.loading.save ||
-											config.loading.load
-										}
-										disabled={
-											config.loading.save ||
-											config.loading.load
-										}
-									>
-										Save
-									</Form.Button>
-								</Form.Field>
-							</Form>
-						</div>
-					</Column>
-					<Column>
-						<h3>Defaults</h3>
-						<div>
-							These values will be used as defaults for any
-							transactions sent.
-						</div>
-						<div className="form">
-							<Form>
-								<Form.Field>
-									<label>From</label>
-									<Input
-										onChange={(e, { value }) =>
-											setFields({
-												...fields,
-												from: value
-											})
-										}
-										defaultValue={config.data.defaults.from}
-										placeholder="ex: 0x5c3e95864f7eb2fd0789848f0a3368aa67b8439c"
-									/>
-								</Form.Field>
-								<Form.Field>
-									<label>Gas</label>
-									<Input
-										onChange={(e, { value }) =>
-											setFields({
-												...fields,
-												gas: parseInt(value, 10)
-											})
-										}
-										defaultValue={config.data.defaults.gas}
-										type="number"
-										placeholder="ex: 10000"
-									/>
-								</Form.Field>
-								<Form.Field>
-									<label>Gas Price</label>
-									<Input
-										onChange={(e, { value }) =>
-											setFields({
-												...fields,
-												gasPrice: parseInt(value, 10)
-											})
-										}
-										defaultValue={
-											config.data.defaults.gasPrice
-										}
-										type="number"
-										placeholder="ex: 0"
-									/>
-								</Form.Field>
-								<Form.Field>
-									<Form.Button
-										onClick={handleSaveConfig}
-										color="green"
-										loading={
-											config.loading.save ||
-											config.loading.load
-										}
-										disabled={
-											config.loading.save ||
-											config.loading.load
-										}
-									>
-										Set Defaults
-									</Form.Button>
-								</Form.Field>
-							</Form>
-						</div>
-					</Column>
-				</Grid>
-			</Padding>
+			<Transition
+				items={!config.loading.load}
+				from={{ opacity: 0 }}
+				enter={{ opacity: 1 }}
+				leave={{ opacity: 0 }}
+			>
+				{show =>
+					show &&
+					(p => (
+						<Padding style={p}>
+							<Grid columns="equal">
+								<Column>
+									<h3>Connection</h3>
+									<div>
+										The node's connection details. These
+										will be used to fetch account details.
+									</div>
+									<div className="form">
+										<Form>
+											<Form.Field>
+												<label>Host</label>
+												<Input
+													onChange={(_, { value }) =>
+														setFields({
+															...fields,
+															host: value
+														})
+													}
+													defaultValue={
+														config.data.connection
+															.host
+													}
+													placeholder="ex: 127.0.0.1"
+												/>
+											</Form.Field>
+											<Form.Field>
+												<label>Port</label>
+												<Input
+													onChange={(e, { value }) =>
+														setFields({
+															...fields,
+															port: parseInt(
+																value,
+																10
+															)
+														})
+													}
+													type={'number'}
+													defaultValue={
+														config.data.connection
+															.port
+													}
+													placeholder="ex: 8080"
+												/>
+											</Form.Field>
+											<Form.Field>
+												<Form.Button
+													onClick={handleSaveConfig}
+													color="green"
+													loading={
+														config.loading.save ||
+														config.loading.load
+													}
+													disabled={
+														config.loading.save ||
+														config.loading.load
+													}
+												>
+													Save
+												</Form.Button>
+											</Form.Field>
+										</Form>
+									</div>
+								</Column>
+								<Column>
+									<h3>Defaults</h3>
+									<div>
+										These values will be used as defaults
+										for any transactions sent.
+									</div>
+									<div className="form">
+										<Form>
+											<Form.Field>
+												<label>From</label>
+												<Input
+													onChange={(e, { value }) =>
+														setFields({
+															...fields,
+															from: value
+														})
+													}
+													defaultValue={
+														config.data.defaults
+															.from
+													}
+													placeholder="ex: 0x5c3e95864f7eb2fd0789848f0a3368aa67b8439c"
+												/>
+											</Form.Field>
+											<Form.Field>
+												<label>Gas</label>
+												<Input
+													onChange={(e, { value }) =>
+														setFields({
+															...fields,
+															gas: parseInt(
+																value,
+																10
+															)
+														})
+													}
+													defaultValue={
+														config.data.defaults.gas
+													}
+													type="number"
+													placeholder="ex: 10000"
+												/>
+											</Form.Field>
+											<Form.Field>
+												<label>Gas Price</label>
+												<Input
+													onChange={(e, { value }) =>
+														setFields({
+															...fields,
+															gasPrice: parseInt(
+																value,
+																10
+															)
+														})
+													}
+													defaultValue={
+														config.data.defaults
+															.gasPrice
+													}
+													type="number"
+													placeholder="ex: 0"
+												/>
+											</Form.Field>
+											<Form.Field>
+												<Form.Button
+													onClick={handleSaveConfig}
+													color="green"
+													loading={
+														config.loading.save ||
+														config.loading.load
+													}
+													disabled={
+														config.loading.save ||
+														config.loading.load
+													}
+												>
+													Set Defaults
+												</Form.Button>
+											</Form.Field>
+										</Form>
+									</div>
+								</Column>
+							</Grid>
+						</Padding>
+					))
+				}
+			</Transition>
 		</React.Fragment>
 	);
 };
