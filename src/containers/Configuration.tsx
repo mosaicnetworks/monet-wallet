@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 
-import Utils from 'evm-lite-utils';
 import styled from 'styled-components';
 
 import { Transition } from 'react-spring/renderprops';
 import { ConfigurationSchema } from 'evm-lite-datadir';
 import { useSelector, useDispatch } from 'react-redux';
 import { config as springConfig, Spring } from 'react-spring/renderprops';
-import { Header, Input, Grid, Form, Image } from 'semantic-ui-react';
+import { Header, Input, Grid, Form } from 'semantic-ui-react';
 
 import {
 	ConfigurationState,
@@ -18,6 +17,7 @@ import { Store } from '../store';
 
 import Banner from '../components/Banner';
 import Jumbo from '../components/Jumbo';
+import Avatar from '../components/Avatar';
 
 const Column = styled(Grid.Column)`
 	background: #fff;
@@ -48,14 +48,13 @@ const Padding = styled.div`
 	margin-bottom: 0 !important;
 `;
 
-const Avatar = styled(Image)`
+const AvatarContainer = styled.div`
 	margin-bottom: 5px !important;
-	border-radius: 100px;
 	margin-top: 5px !important;
+	text-align: right !important;
 `;
 
 const AvatarColumn = styled(Grid.Column)`
-	text-align: right !important;
 	align-content: right !important;
 	align-items: right !important;
 `;
@@ -232,14 +231,15 @@ const Configuration: React.FunctionComponent<{}> = () => {
 											<Form.Field>
 												<Grid columns="equal">
 													<AvatarColumn width={2}>
-														<Avatar
-															fluid={true}
-															src={`https://s.gravatar.com/avatar/${Utils.trimHex(
-																config.data
-																	.defaults
-																	.from
-															)}?size=100&default=retro`}
-														/>
+														<AvatarContainer>
+															<Avatar
+																address={
+																	config.data
+																		.defaults
+																		.from
+																}
+															/>
+														</AvatarContainer>
 													</AvatarColumn>
 													<Grid.Column>
 														<label>

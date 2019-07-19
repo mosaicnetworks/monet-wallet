@@ -7,18 +7,19 @@ import { BaseAccount } from 'evm-lite-core';
 import { useSelector, useDispatch } from 'react-redux';
 import { config, Spring } from 'react-spring/renderprops';
 import { RouteComponentProps } from 'react-router-dom';
-import { Header, Image } from 'semantic-ui-react';
+import { Header } from 'semantic-ui-react';
 
 import { Store } from '../store';
 import { get as getAccount, AccountsState } from '../modules/accounts';
 
 import Banner from '../components/Banner';
+import Avatar from '../components/Avatar';
 import Jumbo from '../components/Jumbo';
 import FloatingButton from '../components/FloatingButton';
 import LoadingButton from '../components/LoadingButton';
 import AccountUnlock from '../components/AccountUnlock';
 
-const Avatar = styled(Image)`
+const AvatarCustom = styled(Avatar)`
 	margin-right: 0px !important;
 	border-radius: 100px;
 `;
@@ -66,12 +67,7 @@ const AccountDetail: React.FunctionComponent<Props> = props => {
 				>
 					{p => (
 						<Header style={p} as="h2" floated="left">
-							<Avatar
-								floated="left"
-								src={`https://s.gravatar.com/avatar/${Utils.trimHex(
-									account.address
-								)}?size=100&default=retro`}
-							/>
+							<AvatarCustom address={account.address} />
 							<Header.Content>
 								{Utils.cleanAddress(props.match.params.address)}
 								<Header.Subheader>
@@ -94,7 +90,7 @@ const AccountDetail: React.FunctionComponent<Props> = props => {
 					</Header.Subheader>
 				</Header>
 			</Jumbo>
-			<Banner color={'purple'}>
+			<Banner color={'blue'}>
 				Some information abount accounts go here.
 			</Banner>
 			<AccountUnlock

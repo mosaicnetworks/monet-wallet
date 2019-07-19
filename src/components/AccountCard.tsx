@@ -6,16 +6,14 @@ import Utils from 'evm-lite-utils';
 import { config, Transition } from 'react-spring/renderprops';
 import { Link } from 'react-router-dom';
 import { BaseAccount } from 'evm-lite-core';
-import { Card, Label, Image } from 'semantic-ui-react';
+import { Card, Label } from 'semantic-ui-react';
+
+import Avatar from './Avatar';
 
 const Address = styled.span`
 	word-wrap: break-word !important;
 	text-transform: uppercase !important;
 	font-weight: 300 !important;
-`;
-
-const Avatar = styled(Image)`
-	border-radius: 100px;
 `;
 
 interface Props {
@@ -28,11 +26,9 @@ const Account: React.FunctionComponent<Props> = props => {
 		<Card>
 			<Card.Content>
 				<Avatar
-					floated="right"
 					size="mini"
-					src={`https://s.gravatar.com/avatar/${Utils.trimHex(
-						props.account.address
-					)}?size=100&default=retro`}
+					float="right"
+					address={props.account.address}
 				/>
 				<Card.Header>
 					<Link to={`/account/${props.account.address}`}>
