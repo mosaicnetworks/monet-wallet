@@ -57,8 +57,8 @@ const Close = styled.div`
 const Content = styled.div`
 	position: fixed;
 	bottom: ${props => props.theme.bottomOffset}px;
-	right: -464px;
-	width: auto;
+	right: -400px;
+	width: 400px !important;
 	background: #fff !important;
 	box-shadow: 0 4px 20px -6px #999 !important;
 
@@ -106,6 +106,7 @@ const AccountUnlock: React.FunctionComponent<Props> = props => {
 
 		unlock();
 		setPassword('');
+		setVisibility(false);
 	};
 
 	const theme = {
@@ -118,7 +119,7 @@ const AccountUnlock: React.FunctionComponent<Props> = props => {
 				<Transition
 					items={show}
 					from={{ right: '-40px' }}
-					enter={{ right: '464px' }}
+					enter={{ right: '400px' }}
 					leave={{ right: '-40px' }}
 					config={config.stiff}
 				>
@@ -140,7 +141,7 @@ const AccountUnlock: React.FunctionComponent<Props> = props => {
 				<Transition
 					items={show}
 					from={{ opacity: 0, right: '0px' }}
-					enter={{ opacity: 1, right: '464px' }}
+					enter={{ opacity: 1, right: '400px' }}
 					leave={{ opacity: 0, right: '0px' }}
 					config={config.stiff}
 				>
@@ -165,9 +166,9 @@ const AccountUnlock: React.FunctionComponent<Props> = props => {
 				)}
 				<Transition
 					items={show}
-					from={{ right: '-464px' }}
+					from={{ right: '-400px' }}
 					enter={{ right: '0px' }}
-					leave={{ right: '-464px' }}
+					leave={{ right: '-400px' }}
 					config={config.stiff}
 				>
 					{show =>

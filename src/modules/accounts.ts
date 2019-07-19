@@ -454,40 +454,28 @@ export function unlock(
 	password: string
 ): ThunkResult<Promise<Account | undefined>> {
 	return async (dispatch, getState) => {
-		const state = getState();
-		const config = state.config.data;
-		let account: Account;
+		const { config } = getState();
 
 		dispatch({
 			type: UNLOCK_REQUEST
 		});
 
 		try {
-			if (!!Object.keys(config).length) {
-				let connection: EVMLC | undefined = new EVMLC(
-					config.connection.host,
-					config.connection.port
-				);
+			const keystore = new Keystore(
+				path.join(config.directory, 'keystore')
+			);
 
-				await connection.getInfo().catch(() => {
-					connection = undefined;
-				});
+			const account = Keystore.decrypt(
+				await keystore.get(address),
+				password
+			);
 
-				const keystore = new Keystore('/Users/danu/.evmlc/keystore');
-				account = Keystore.decrypt(
-					await keystore.get(address),
-					password
-				);
+			dispatch({
+				type: UNLOCK_SUCCESS,
+				payload: account
+			});
 
-				dispatch({
-					type: UNLOCK_SUCCESS,
-					payload: account
-				});
-
-				return account;
-			} else {
-				throw Error('Configuration could not loaded.');
-			}
+			return account;
 		} catch (error) {
 			dispatch({
 				type: UNLOCK_ERROR,

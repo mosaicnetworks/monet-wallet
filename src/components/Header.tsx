@@ -2,8 +2,10 @@ import React from 'react';
 
 import styled from 'styled-components';
 
+import { Account } from 'evm-lite-core';
 import { NavLink as Link } from 'react-router-dom';
-import { Container, Icon, Image } from 'semantic-ui-react';
+import { Container, Icon, Image, Label } from 'semantic-ui-react';
+import { config, Transition } from 'react-spring/renderprops';
 
 import MONET_LOGO from '../assets/monet_logo.png';
 
@@ -84,70 +86,93 @@ const HeaderLink = styled.li`
 	}
 `;
 
-const Spacer = styled.div`
-	/* margin-bottom: 76px; */
-`;
-
-interface OwnProps {
-	empty?: null;
+interface Props {
+	unlocked: Account | undefined;
+	reset: any;
 }
 
-class Header extends React.Component<OwnProps, {}> {
-	public render() {
-		return (
-			<Container fluid={true}>
-				<WalletHeader>
-					<Logo>
-						<Link to="/">
-							<Image src={MONET_LOGO} width={40} />
-						</Link>
-					</Logo>
-					<HeaderLinks>
-						<HeaderLink>
-							<Link
-								exact={true}
-								activeClassName="is-active"
-								to="/"
-							>
-								<Icon
-									size={'large'}
-									color={'black'}
-									name="bars"
-								/>
-							</Link>
-						</HeaderLink>
-						<HeaderLink>
-							<Link
-								exact={true}
-								activeClassName="is-active"
-								to="/poa"
-							>
-								<Icon
-									size={'large'}
-									color={'black'}
-									name="connectdevelop"
-								/>
-							</Link>
-						</HeaderLink>
-						<HeaderLink>
-							<Link
-								exact={true}
-								activeClassName="is-active"
-								to="/config"
-							>
-								<Icon
-									size={'large'}
-									color={'black'}
-									name="cog"
-								/>
-							</Link>
-						</HeaderLink>
-					</HeaderLinks>
-				</WalletHeader>
-				<Spacer />
-			</Container>
-		);
+const Header: React.FunctionComponent<Props> = props => {
+	let to: any;
+
+	if (props.unlocked) {
+		to = {
+			pathname: `/account/${props.unlocked.address}`
+		};
 	}
-}
+
+	return (
+		<Container fluid={true}>
+			<WalletHeader>
+				<Logo>
+					<Link to="/">
+						<Image src={MONET_LOGO} width={40} />
+					</Link>
+				</Logo>
+				<HeaderLinks>
+					<HeaderLink
+						style={{
+							marginRight: '10px'
+						}}
+					>
+						<Transition
+							items={!!props.unlocked}
+							from={{ opacity: 0, marginRight: -50 }}
+							enter={{ opacity: 1, marginRight: 10 }}
+							leave={{ opacity: 0 }}
+							config={config.wobbly}
+						>
+							{show =>
+								show &&
+								(p => (
+									<Label style={p}>
+										<Link to={to || ''}>
+											{(props.unlocked &&
+												props.unlocked.address) ||
+												''}
+										</Link>
+										<Icon
+											style={{
+												cursor: 'pointer'
+											}}
+											name="delete"
+											onClick={props.reset}
+										/>
+									</Label>
+								))
+							}
+						</Transition>
+					</HeaderLink>
+					<HeaderLink>
+						<Link exact={true} activeClassName="is-active" to="/">
+							<Icon size={'large'} color={'black'} name="bars" />
+						</Link>
+					</HeaderLink>
+					{/* <HeaderLink>
+					<Link
+						exact={true}
+						activeClassName="is-active"
+						to="/poa"
+					>
+						<Icon
+							size={'large'}
+							color={'black'}
+							name="connectdevelop"
+						/>
+					</Link>
+				</HeaderLink> */}
+					<HeaderLink>
+						<Link
+							exact={true}
+							activeClassName="is-active"
+							to="/config"
+						>
+							<Icon size={'large'} color={'black'} name="cog" />
+						</Link>
+					</HeaderLink>
+				</HeaderLinks>
+			</WalletHeader>
+		</Container>
+	);
+};
 
 export default Header;
