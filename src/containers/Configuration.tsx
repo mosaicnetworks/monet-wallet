@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 
+import Utils from 'evm-lite-utils';
 import styled from 'styled-components';
 
 import { Transition } from 'react-spring/renderprops';
 import { ConfigurationSchema } from 'evm-lite-datadir';
 import { useSelector, useDispatch } from 'react-redux';
 import { config as springConfig, Spring } from 'react-spring/renderprops';
-import { Header, Input, Grid, Form } from 'semantic-ui-react';
+import { Header, Input, Grid, Form, Image } from 'semantic-ui-react';
 
 import {
 	ConfigurationState,
@@ -45,6 +46,18 @@ const Column = styled(Grid.Column)`
 const Padding = styled.div`
 	margin: 25px 20px;
 	margin-bottom: 0 !important;
+`;
+
+const Avatar = styled(Image)`
+	margin-bottom: 5px !important;
+	border-radius: 100px;
+	margin-top: 5px !important;
+`;
+
+const AvatarColumn = styled(Grid.Column)`
+	text-align: right !important;
+	align-content: right !important;
+	align-items: right !important;
 `;
 
 const Configuration: React.FunctionComponent<{}> = () => {
@@ -217,20 +230,40 @@ const Configuration: React.FunctionComponent<{}> = () => {
 									<div className="form">
 										<Form>
 											<Form.Field>
-												<label>From</label>
-												<Input
-													onChange={(e, { value }) =>
-														setFields({
-															...fields,
-															from: value
-														})
-													}
-													defaultValue={
-														config.data.defaults
-															.from
-													}
-													placeholder="ex: 0x5c3e95864f7eb2fd0789848f0a3368aa67b8439c"
-												/>
+												<Grid columns="equal">
+													<AvatarColumn width={2}>
+														<Avatar
+															fluid={true}
+															src={`https://s.gravatar.com/avatar/${Utils.trimHex(
+																config.data
+																	.defaults
+																	.from
+															)}?size=100&default=retro`}
+														/>
+													</AvatarColumn>
+													<Grid.Column>
+														<label>
+															<b>From</b>
+														</label>
+														<Input
+															onChange={(
+																e,
+																{ value }
+															) =>
+																setFields({
+																	...fields,
+																	from: value
+																})
+															}
+															defaultValue={
+																config.data
+																	.defaults
+																	.from
+															}
+															placeholder="ex: 0x5c3e95864f7eb2fd0789848f0a3368aa67b8439c"
+														/>
+													</Grid.Column>
+												</Grid>
 											</Form.Field>
 											<Form.Field>
 												<label>Gas</label>

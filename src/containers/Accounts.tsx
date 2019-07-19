@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import Utils from 'evm-lite-utils';
+
 import { useSelector, useDispatch } from 'react-redux';
 import { config, Spring } from 'react-spring/renderprops';
 import { Header, Card } from 'semantic-ui-react';
@@ -60,13 +62,24 @@ const Accounts: React.FunctionComponent<{}> = () => {
 					<Header.Subheader>Lots!</Header.Subheader>
 				</Header>
 			</Jumbo>
-			<Banner color="purple">
+			<Banner color="blue">
 				All accounts listed here are read in locally from your keystore.
 			</Banner>
 			<AccountsContainer>
 				<Card.Group centered={true}>
 					{accounts.all.map(account => (
-						<AccountCard key={account.address} account={account} />
+						<AccountCard
+							unlocked={
+								(accounts.unlocked &&
+									Utils.cleanAddress(
+										accounts.unlocked.address
+									) ===
+										Utils.cleanAddress(account.address)) ||
+								false
+							}
+							key={account.address}
+							account={account}
+						/>
 					))}
 				</Card.Group>
 			</AccountsContainer>

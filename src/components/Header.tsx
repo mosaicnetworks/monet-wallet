@@ -1,6 +1,7 @@
 import React from 'react';
 
 import styled from 'styled-components';
+import Utils from 'evm-lite-utils';
 
 import { Account } from 'evm-lite-core';
 import { NavLink as Link } from 'react-router-dom';
@@ -127,7 +128,9 @@ const Header: React.FunctionComponent<Props> = props => {
 									<Label style={p}>
 										<Link to={to || ''}>
 											{(props.unlocked &&
-												props.unlocked.address) ||
+												Utils.cleanAddress(
+													props.unlocked.address
+												)) ||
 												''}
 										</Link>
 										<Icon
@@ -147,19 +150,19 @@ const Header: React.FunctionComponent<Props> = props => {
 							<Icon size={'large'} color={'black'} name="bars" />
 						</Link>
 					</HeaderLink>
-					{/* <HeaderLink>
-					<Link
-						exact={true}
-						activeClassName="is-active"
-						to="/poa"
-					>
-						<Icon
-							size={'large'}
-							color={'black'}
-							name="connectdevelop"
-						/>
-					</Link>
-				</HeaderLink> */}
+					<HeaderLink>
+						<Link
+							exact={true}
+							activeClassName="is-active"
+							to="/poa"
+						>
+							<Icon
+								size={'large'}
+								color={'black'}
+								name="connectdevelop"
+							/>
+						</Link>
+					</HeaderLink>
 					<HeaderLink>
 						<Link
 							exact={true}

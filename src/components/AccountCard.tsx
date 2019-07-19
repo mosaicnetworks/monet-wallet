@@ -3,9 +3,10 @@ import React from 'react';
 import styled from 'styled-components';
 import Utils from 'evm-lite-utils';
 
+import { config, Transition } from 'react-spring/renderprops';
 import { Link } from 'react-router-dom';
 import { BaseAccount } from 'evm-lite-core';
-import { Card, Label } from 'semantic-ui-react';
+import { Card, Label, Image } from 'semantic-ui-react';
 
 const Address = styled.span`
 	word-wrap: break-word !important;
@@ -13,14 +14,26 @@ const Address = styled.span`
 	font-weight: 300 !important;
 `;
 
+const Avatar = styled(Image)`
+	border-radius: 100px;
+`;
+
 interface Props {
 	account: BaseAccount;
+	unlocked: boolean;
 }
 
 const Account: React.FunctionComponent<Props> = props => {
 	return (
 		<Card>
 			<Card.Content>
+				<Avatar
+					floated="right"
+					size="mini"
+					src={`https://s.gravatar.com/avatar/${Utils.trimHex(
+						props.account.address
+					)}?size=100&default=retro`}
+				/>
 				<Card.Header>
 					<Link to={`/account/${props.account.address}`}>
 						<Address>
@@ -31,6 +44,25 @@ const Account: React.FunctionComponent<Props> = props => {
 			</Card.Content>
 			<Card.Content extra={true}>
 				<div className="ui small two buttons">
+					<Transition
+						items={props.unlocked}
+						from={{ opacity: 0 }}
+						enter={{ opacity: 1 }}
+						leave={{ opacity: 0 }}
+						config={config.wobbly}
+					>
+						{show =>
+							show &&
+							(props => (
+								<Label
+									style={props}
+									icon="unlock"
+									color={'orange'}
+									basic={false}
+								/>
+							))
+						}
+					</Transition>
 					<Label color="green" basic={false}>
 						Balance
 						<Label.Detail>

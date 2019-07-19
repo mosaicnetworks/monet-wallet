@@ -1,12 +1,13 @@
 import React from 'react';
 
 import Utils from 'evm-lite-utils';
+import styled from 'styled-components';
 
 import { BaseAccount } from 'evm-lite-core';
 import { useSelector, useDispatch } from 'react-redux';
 import { config, Spring } from 'react-spring/renderprops';
 import { RouteComponentProps } from 'react-router-dom';
-import { Header } from 'semantic-ui-react';
+import { Header, Image } from 'semantic-ui-react';
 
 import { Store } from '../store';
 import { get as getAccount, AccountsState } from '../modules/accounts';
@@ -17,9 +18,15 @@ import FloatingButton from '../components/FloatingButton';
 import LoadingButton from '../components/LoadingButton';
 import AccountUnlock from '../components/AccountUnlock';
 
+const Avatar = styled(Image)`
+	margin-right: 0px !important;
+	border-radius: 100px;
+`;
+
 interface RouterProps {
 	address: string;
 }
+
 interface Props extends RouteComponentProps<RouterProps> {}
 
 const AccountDetail: React.FunctionComponent<Props> = props => {
@@ -59,10 +66,18 @@ const AccountDetail: React.FunctionComponent<Props> = props => {
 				>
 					{p => (
 						<Header style={p} as="h2" floated="left">
-							{Utils.cleanAddress(props.match.params.address)}
-							<Header.Subheader>
-								Updated few seconds ago
-							</Header.Subheader>
+							<Avatar
+								floated="left"
+								src={`https://s.gravatar.com/avatar/${Utils.trimHex(
+									account.address
+								)}?size=100&default=retro`}
+							/>
+							<Header.Content>
+								{Utils.cleanAddress(props.match.params.address)}
+								<Header.Subheader>
+									Updated few seconds ago
+								</Header.Subheader>
+							</Header.Content>
 						</Header>
 					)}
 				</Spring>
@@ -79,7 +94,7 @@ const AccountDetail: React.FunctionComponent<Props> = props => {
 					</Header.Subheader>
 				</Header>
 			</Jumbo>
-			<Banner color="purple">
+			<Banner color={'purple'}>
 				Some information abount accounts go here.
 			</Banner>
 			<AccountUnlock

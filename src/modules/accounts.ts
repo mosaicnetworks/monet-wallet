@@ -482,6 +482,7 @@ export function unlock(
 				payload: error.toString()
 			});
 
+			toast.error('Invalid password.');
 			return undefined;
 		}
 	};

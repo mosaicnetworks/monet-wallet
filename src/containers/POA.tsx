@@ -104,7 +104,7 @@ const POA: React.FunctionComponent<{}> = () => {
 					<Header.Subheader>3</Header.Subheader>
 				</Header>
 			</Jumbo>
-			<Banner color="orange">
+			<Banner color="purple">
 				All accounts listed here are read in locally from your keystore.
 			</Banner>
 			<Container fluid={true}>
