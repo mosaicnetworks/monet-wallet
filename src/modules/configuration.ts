@@ -221,7 +221,7 @@ export function save(
 			return newConfig;
 		} catch (error) {
 			dispatch({
-				type: LOAD_ERROR,
+				type: SAVE_ERROR,
 				payload: error.toString()
 			});
 

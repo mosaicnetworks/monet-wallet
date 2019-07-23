@@ -206,12 +206,10 @@ const Configuration: React.FunctionComponent<{}> = () => {
 													onClick={handleSaveConfig}
 													color="green"
 													loading={
-														config.loading.save ||
-														config.loading.load
+														config.loading.save
 													}
 													disabled={
-														config.loading.save ||
-														config.loading.load
+														config.loading.save
 													}
 												>
 													Save
@@ -309,12 +307,10 @@ const Configuration: React.FunctionComponent<{}> = () => {
 													onClick={handleSaveConfig}
 													color="green"
 													loading={
-														config.loading.save ||
-														config.loading.load
+														config.loading.save
 													}
 													disabled={
-														config.loading.save ||
-														config.loading.load
+														config.loading.save
 													}
 												>
 													Set Defaults

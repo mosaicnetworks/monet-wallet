@@ -18,6 +18,7 @@ import Jumbo from '../components/Jumbo';
 import FloatingButton from '../components/FloatingButton';
 import LoadingButton from '../components/LoadingButton';
 import AccountUnlock from '../components/AccountUnlock';
+import AccountTransfer from '../components/AccountTransfer';
 
 const AvatarCustom = styled(Avatar)`
 	margin-right: 0px !important;
@@ -50,6 +51,12 @@ const AccountDetail: React.FunctionComponent<Props> = props => {
 				bytecode: ''
 			}
 	);
+
+	const unlocked =
+		(accounts.unlocked &&
+			Utils.cleanAddress(accounts.unlocked.address) ===
+				Utils.cleanAddress(account.address)) ||
+		false;
 
 	return (
 		<React.Fragment>
@@ -93,6 +100,7 @@ const AccountDetail: React.FunctionComponent<Props> = props => {
 			<Banner color={'blue'}>
 				Some information abount accounts go here.
 			</Banner>
+			<AccountTransfer unlocked={unlocked} />
 			<AccountUnlock
 				bottomOffset={105}
 				address={props.match.params.address}

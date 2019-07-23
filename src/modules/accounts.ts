@@ -465,9 +465,12 @@ export function unlock(
 				path.join(config.directory, 'keystore')
 			);
 
+			console.log(password.replace(/(\r\n|\n|\r)/gm, ''));
+			const keyfile = await keystore.get(address);
+			console.log(keyfile);
 			const account = Keystore.decrypt(
-				await keystore.get(address),
-				password
+				keyfile,
+				password.trim().replace(/(\r\n|\n|\r)/gm, '')
 			);
 
 			dispatch({

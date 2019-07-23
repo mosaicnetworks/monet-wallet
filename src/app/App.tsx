@@ -19,7 +19,7 @@ const App: React.FunctionComponent<{}> = () => {
 
 	useEffect(() => {
 		init();
-	});
+	}, []);
 
 	return (
 		<HashRouter>

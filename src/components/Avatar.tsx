@@ -13,16 +13,18 @@ interface Props {
 	address: string;
 	size?: SemanticSIZES;
 	float?: 'right' | 'left';
+	avatar?: boolean;
 }
 
 const Avatar: React.FunctionComponent<Props> = props => {
 	return (
 		<AvatarContainer
 			floated={props.float}
-			size={props.size}
 			src={`https://s.gravatar.com/avatar/${Utils.trimHex(
 				props.address
 			)}?size=100&default=retro`}
+			avatar={props.avatar}
+			size={props.size}
 		/>
 	);
 };
