@@ -36,7 +36,8 @@ const AccountDetail: React.FunctionComponent<Props> = props => {
 
 	const get = () =>
 		dispatch(getAccount(Utils.cleanAddress(props.match.params.address)));
-	// temp fix need to update this later.
+
+	// temp fix need to update this later with reselctjs
 	const accounts = useSelector<Store, AccountsState>(store => store.accounts);
 	const account = useSelector<Store, BaseAccount>(
 		store =>

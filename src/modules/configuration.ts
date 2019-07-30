@@ -145,7 +145,10 @@ export function load(): ThunkResult<Promise<ConfigurationSchema>> {
 		});
 
 		try {
-			const datadir = new DataDirectory(store.config.directory);
+			const datadir = new DataDirectory(
+				store.config.directory,
+				'monetcli'
+			);
 
 			config = await datadir.config.load();
 
@@ -175,7 +178,7 @@ export function setDirectory(path: string): ThunkResult<Promise<string>> {
 			return path;
 		}
 
-		new DataDirectory(path);
+		new DataDirectory(path, 'monetcli');
 
 		dispatch({
 			type: SET_DIRECTORY_SUCCESS,
@@ -207,7 +210,10 @@ export function save(
 		});
 
 		try {
-			const datadir = new DataDirectory(state.config.directory);
+			const datadir = new DataDirectory(
+				state.config.directory,
+				'monetcli'
+			);
 
 			await datadir.config.save(newConfig);
 
