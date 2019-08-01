@@ -149,7 +149,6 @@ input[type='password'] {
 	border: 1px solid #eee !important;
 	padding: 12px !important;
 	margin: 0px !important;
-	min-width: 340px !important;
 }
 
 .ui.info.message {

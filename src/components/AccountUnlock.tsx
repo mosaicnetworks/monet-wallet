@@ -81,6 +81,10 @@ const SContent = styled.div`
 		color: #555;
 		margin-bottom: 14px;
 	}
+
+	& input {
+		width: 340px !important;
+	}
 `;
 
 interface Props {
