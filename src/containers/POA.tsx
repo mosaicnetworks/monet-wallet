@@ -13,32 +13,32 @@ import { POAState, reload } from '../modules/poa';
 
 import Banner from '../components/Banner';
 import Nominee from '../components/Nominee';
-import Jumbo from '../components/Jumbo';
+import SJumbo from '../components/Jumbo';
 import FloatingButton from '../components/FloatingButton';
 import LoadingButton from '../components/LoadingButton';
 
 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
-const Status = styled.div`
+const SStatus = styled.div`
 	color: green !important;
 `;
 
-const Padding = styled.div`
+const SPadding = styled.div`
 	margin: 25px 20px;
 	margin-bottom: 0 !important;
 `;
 
-const Whitelist = styled(Grid.Column)`
+const SWhitelist = styled(Grid.Column)`
 	margin-top: 15px !important;
 	padding: 0 !important;
 `;
 
-const WhitelistItemPadding = styled.div`
+const SWhitelistItemPadding = styled.div`
 	padding: 10px !important;
 	padding-left: 20px !important;
 `;
 
-const WhitelistItem = styled.div`
+const SWhitelistItem = styled.div`
 	margin-top: 15px !important;
 	padding-top: 10px !important;
 	padding-bottom: 10px !important;
@@ -72,7 +72,7 @@ const POA: React.FunctionComponent<{}> = () => {
 
 	return (
 		<React.Fragment>
-			<Jumbo>
+			<SJumbo>
 				<Spring
 					from={{
 						marginLeft: -50,
@@ -96,21 +96,21 @@ const POA: React.FunctionComponent<{}> = () => {
 				<Header as="h2" floated="right">
 					Status
 					<Header.Subheader>
-						<Status>Online</Status>
+						<SStatus>Online</SStatus>
 					</Header.Subheader>
 				</Header>
 				<Header as="h2" floated="right">
 					Validators
 					<Header.Subheader>3</Header.Subheader>
 				</Header>
-			</Jumbo>
+			</SJumbo>
 			<Banner color="purple">
 				All accounts listed here are read in locally from your keystore.
 			</Banner>
 			<Container fluid={true}>
 				<Grid columns="equal">
 					<Grid.Column width={10}>
-						<Padding>
+						<SPadding>
 							<h2>Nominees</h2>
 							<div>
 								<Card.Group>
@@ -126,29 +126,29 @@ const POA: React.FunctionComponent<{}> = () => {
 								</Card.Group>
 								{!poa.nominees.length && 'No nominees found.'}
 							</div>
-						</Padding>
+						</SPadding>
 					</Grid.Column>
-					<Whitelist>
-						<Padding>
+					<SWhitelist>
+						<SPadding>
 							<h2>Whitelist</h2>
-						</Padding>
+						</SPadding>
 						<div>
 							{poa.whitelist.map(item => (
-								<WhitelistItem key={item.address}>
-									<WhitelistItemPadding>
+								<SWhitelistItem key={item.address}>
+									<SWhitelistItemPadding>
 										<h5>{capitalize(item.moniker)}</h5>
 										<div>
 											{Utils.cleanAddress(item.address)}
 										</div>
-									</WhitelistItemPadding>
-								</WhitelistItem>
+									</SWhitelistItemPadding>
+								</SWhitelistItem>
 							))}
-							<WhitelistItemPadding>
+							<SWhitelistItemPadding>
 								{!poa.whitelist.length &&
 									'No whitelist entries found.'}
-							</WhitelistItemPadding>
+							</SWhitelistItemPadding>
 						</div>
-					</Whitelist>
+					</SWhitelist>
 				</Grid>
 			</Container>
 			<FloatingButton bottomOffset={60}>

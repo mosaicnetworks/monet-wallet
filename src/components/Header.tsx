@@ -10,7 +10,7 @@ import { config, Transition } from 'react-spring/renderprops';
 
 import MONET_LOGO from '../assets/monet_logo.png';
 
-const WalletHeader = styled.div`
+const SWalletHeader = styled.div`
 	background: rgba(255, 255, 255, 0.95);
 	height: 70px;
 	line-height: 70px !important;
@@ -20,7 +20,7 @@ const WalletHeader = styled.div`
 	width: 100% !important;
 `;
 
-const Logo = styled.div`
+const SLogo = styled.div`
 	font-weight: 300 !important;
 	letter-spacing: 1px;
 	font-size: 25px;
@@ -34,7 +34,7 @@ const Logo = styled.div`
 	}
 `;
 
-const HeaderLinks = styled.div`
+const SHeaderLinks = styled.div`
 	margin-left: 30px;
 	float: right;
 
@@ -61,7 +61,7 @@ const HeaderLinks = styled.div`
 	}
 `;
 
-const HeaderLink = styled.li`
+const SHeaderLink = styled.li`
 	list-style: none;
 	display: inline-block;
 
@@ -103,14 +103,14 @@ const Header: React.FunctionComponent<Props> = props => {
 
 	return (
 		<Container fluid={true}>
-			<WalletHeader>
-				<Logo>
+			<SWalletHeader>
+				<SLogo>
 					<Link to="/">
 						<Image src={MONET_LOGO} width={40} />
 					</Link>
-				</Logo>
-				<HeaderLinks>
-					<HeaderLink
+				</SLogo>
+				<SHeaderLinks>
+					<SHeaderLink
 						style={{
 							marginRight: '10px'
 						}}
@@ -144,13 +144,13 @@ const Header: React.FunctionComponent<Props> = props => {
 								))
 							}
 						</Transition>
-					</HeaderLink>
-					<HeaderLink>
+					</SHeaderLink>
+					<SHeaderLink>
 						<Link exact={true} activeClassName="is-active" to="/">
 							<Icon size={'large'} color={'black'} name="bars" />
 						</Link>
-					</HeaderLink>
-					<HeaderLink>
+					</SHeaderLink>
+					<SHeaderLink>
 						<Link
 							exact={true}
 							activeClassName="is-active"
@@ -162,8 +162,8 @@ const Header: React.FunctionComponent<Props> = props => {
 								name="connectdevelop"
 							/>
 						</Link>
-					</HeaderLink>
-					<HeaderLink>
+					</SHeaderLink>
+					<SHeaderLink>
 						<Link
 							exact={true}
 							activeClassName="is-active"
@@ -171,9 +171,9 @@ const Header: React.FunctionComponent<Props> = props => {
 						>
 							<Icon size={'large'} color={'black'} name="cog" />
 						</Link>
-					</HeaderLink>
-				</HeaderLinks>
-			</WalletHeader>
+					</SHeaderLink>
+				</SHeaderLinks>
+			</SWalletHeader>
 		</Container>
 	);
 };

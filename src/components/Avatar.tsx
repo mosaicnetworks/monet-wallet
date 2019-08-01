@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 import { Image, SemanticSIZES } from 'semantic-ui-react';
 
-const AvatarContainer = styled(Image)`
+const SAvatarContainer = styled(Image)`
 	border-radius: 100px;
 `;
 
@@ -18,7 +18,7 @@ interface Props {
 
 const Avatar: React.FunctionComponent<Props> = props => {
 	return (
-		<AvatarContainer
+		<SAvatarContainer
 			floated={props.float}
 			src={`https://s.gravatar.com/avatar/${Utils.trimHex(
 				props.address

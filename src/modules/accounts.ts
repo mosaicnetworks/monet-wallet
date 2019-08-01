@@ -10,7 +10,7 @@ import {
 	TransactionReceipt
 } from 'evm-lite-core';
 
-import { Keystore, V3JSONKeyStore } from 'evm-lite-keystore';
+import { Keystore, V3Keyfile, MonikerBaseAccount } from 'evm-lite-keystore';
 import { toast } from 'react-toastify';
 
 import { BaseAction, ThunkResult } from '.';
@@ -53,7 +53,7 @@ const TRANSFER_ERROR = '@evm-lite-wallet/accounts/TRANSFER/ERROR';
 // Accounts state structure
 export interface AccountsState {
 	// Entire list of accounts
-	readonly all: BaseAccount[];
+	readonly all: MonikerBaseAccount[];
 
 	// Currently unlocked account
 	readonly unlocked?: Account;
@@ -298,11 +298,11 @@ export default function reducer(
  * Should list all acounts from the keystore. It will update the redux state
  * and set the `all` attribute to the desired result.
  */
-export function list(): ThunkResult<Promise<BaseAccount[]>> {
+export function list(): ThunkResult<Promise<MonikerBaseAccount[]>> {
 	return async (dispatch, getState) => {
 		const state = getState();
 
-		let accounts: BaseAccount[] = [];
+		let accounts: MonikerBaseAccount[] = [];
 
 		dispatch({
 			type: LIST_REQUEST
@@ -320,18 +320,24 @@ export function list(): ThunkResult<Promise<BaseAccount[]>> {
 			const keystore = new Keystore(
 				path.join(state.config.directory, 'keystore')
 			);
+			const mk = await keystore.list();
 
-			accounts = (await keystore.list()).map(keystore => ({
-				address: keystore.address,
+			accounts = Object.keys(mk).map(moniker => ({
+				address: mk[moniker].address,
 				balance: 0,
 				nonce: 0,
-				bytecode: ''
+				bytecode: '',
+				moniker
 			}));
 
 			if (node) {
 				accounts = await Promise.all(
 					accounts.map(async account => {
-						return await node!.getAccount(account.address);
+						const acc = await node!.getAccount(account.address);
+						return {
+							...acc,
+							moniker: account.moniker
+						};
 					})
 				);
 			}
@@ -375,7 +381,7 @@ export function create(password: string): ThunkResult<Promise<BaseAccount>> {
 			const keystore = new Keystore(
 				path.join(config.directory, 'keystore')
 			);
-			const acc: V3JSONKeyStore = await keystore.create(password);
+			const acc: V3Keyfile = await keystore.create('danu', password);
 
 			account.address = acc.address;
 

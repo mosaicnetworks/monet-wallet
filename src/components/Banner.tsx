@@ -8,7 +8,7 @@ const colors = {
 	blue: 'rgba(24, 64, 150, 1)'
 };
 
-const BannerContainer = styled.div`
+const SBannerContainer = styled.div`
 	background: ${props => props.theme.color} !important;
 	color: #fff !important;
 	padding: 20px;
@@ -26,9 +26,9 @@ const Banner: React.FunctionComponent<Props> = props => {
 
 	return (
 		<ThemeProvider theme={theme}>
-			<BannerContainer style={props.style}>
+			<SBannerContainer style={props.style}>
 				{props.children}
-			</BannerContainer>
+			</SBannerContainer>
 		</ThemeProvider>
 	);
 };

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-const Jumbo = styled.div`
+const SJumbo = styled.div`
 	background: #fff !important;
 	width: 100% !important;
 	padding: 30px;
@@ -11,4 +11,4 @@ const Jumbo = styled.div`
 	z-index: 10000;
 `;
 
-export default Jumbo;
+export default SJumbo;

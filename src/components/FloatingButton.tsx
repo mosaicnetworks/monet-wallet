@@ -4,7 +4,7 @@ import styled, { ThemeProvider } from 'styled-components';
 
 import Animation from './animations/Animation';
 
-const ButtonContainer = styled.div`
+const SButtonContainer = styled.div`
 	position: fixed;
 	bottom: ${props => props.theme.bottomOffset}px;
 	right: 0;
@@ -38,7 +38,7 @@ const FloatingButton: React.FunctionComponent<Props> = props => {
 	return (
 		<ThemeProvider theme={theme}>
 			<Animation direction="right">
-				<ButtonContainer>{props.children}</ButtonContainer>
+				<SButtonContainer>{props.children}</SButtonContainer>
 			</Animation>
 		</ThemeProvider>
 	);

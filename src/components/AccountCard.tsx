@@ -1,26 +1,31 @@
 import React from 'react';
 
 import styled from 'styled-components';
-import Utils from 'evm-lite-utils';
+import utils from 'evm-lite-utils';
 
 import { config, Transition } from 'react-spring/renderprops';
 import { Link } from 'react-router-dom';
-import { BaseAccount } from 'evm-lite-core';
+import { MonikerBaseAccount } from 'evm-lite-keystore';
 import { Card, Label } from 'semantic-ui-react';
 
 import Avatar from './Avatar';
 
-const Address = styled.span`
+const SMoniker = styled.span`
 	word-wrap: break-word !important;
-	text-transform: uppercase !important;
-	font-weight: 300 !important;
+	/* text-transform: uppercase !important; */
+	font-weight: 400 !important;
+`;
+
+const SAddress = styled.span`
+	font-family: 'Cousine', monospace !important;
 `;
 
 interface Props {
-	account: BaseAccount;
+	account: MonikerBaseAccount;
 	unlocked: boolean;
 }
 
+const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 const Account: React.FunctionComponent<Props> = props => {
 	return (
 		<Card>
@@ -32,11 +37,14 @@ const Account: React.FunctionComponent<Props> = props => {
 				/>
 				<Card.Header>
 					<Link to={`/account/${props.account.address}`}>
-						<Address>
-							{Utils.cleanAddress(props.account.address)}
-						</Address>
+						<SMoniker>{capitalize(props.account.moniker)}</SMoniker>
 					</Link>
 				</Card.Header>
+				<Card.Meta>
+					<SAddress>
+						{utils.cleanAddress(props.account.address)}
+					</SAddress>
+				</Card.Meta>
 			</Card.Content>
 			<Card.Content extra={true}>
 				<div className="ui small two buttons">
@@ -63,7 +71,7 @@ const Account: React.FunctionComponent<Props> = props => {
 						Balance
 						<Label.Detail>
 							{typeof props.account.balance === 'object'
-								? props.account.balance.toString(10)
+								? props.account.balance.toNumber()
 								: props.account.balance}
 						</Label.Detail>
 					</Label>

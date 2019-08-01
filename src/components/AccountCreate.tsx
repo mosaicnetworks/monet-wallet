@@ -10,7 +10,7 @@ import { AccountsState } from '../modules/accounts';
 
 import Animation from './animations/Animation';
 
-const Open = styled.div`
+const SOpen = styled.div`
 	position: fixed;
 	bottom: ${props => props.theme.bottomOffset}px;
 	right: 0;
@@ -32,7 +32,7 @@ const Open = styled.div`
 	}
 `;
 
-const Close = styled.div`
+const SClose = styled.div`
 	position: fixed;
 	bottom: ${props => props.theme.bottomOffset + 40}px;
 	right: 0;
@@ -51,7 +51,7 @@ const Close = styled.div`
 	}
 `;
 
-const Content = styled.div`
+const SContent = styled.div`
 	position: fixed;
 	bottom: ${props => props.theme.bottomOffset}px;
 	right: -361px;
@@ -130,14 +130,14 @@ const AccountCreate: React.FunctionComponent<Props> = props => {
 					{show =>
 						show &&
 						(p => (
-							<Open style={p} onClick={handleCreateAccount}>
+							<SOpen style={p} onClick={handleCreateAccount}>
 								<Button
 									icon="check"
 									color="green"
 									disabled={props.accounts.loading.create}
 									loading={props.accounts.loading.create}
 								/>
-							</Open>
+							</SOpen>
 						))
 					}
 				</Transition>
@@ -151,7 +151,7 @@ const AccountCreate: React.FunctionComponent<Props> = props => {
 					{show =>
 						show &&
 						(p => (
-							<Close
+							<SClose
 								style={p}
 								onClick={() => setVisibility(!visible)}
 							>
@@ -161,20 +161,20 @@ const AccountCreate: React.FunctionComponent<Props> = props => {
 									loading={props.accounts.loading.create}
 									color="red"
 								/>
-							</Close>
+							</SClose>
 						))
 					}
 				</Transition>
 				{!visible && (
 					<Animation direction="right">
-						<Open onClick={() => setVisibility(true)}>
+						<SOpen onClick={() => setVisibility(true)}>
 							<Button
 								icon="plus"
 								disabled={props.accounts.loading.create}
 								loading={props.accounts.loading.create}
 								color="green"
 							/>
-						</Open>
+						</SOpen>
 					</Animation>
 				)}
 				<Transition
@@ -187,7 +187,7 @@ const AccountCreate: React.FunctionComponent<Props> = props => {
 					{show =>
 						show &&
 						(props => (
-							<Content style={props}>
+							<SContent style={props}>
 								<h4>Create An Account</h4>
 								<div className="help">
 									Enter a password to encrypt the created
@@ -216,7 +216,7 @@ const AccountCreate: React.FunctionComponent<Props> = props => {
 										}
 									/>
 								</div>
-							</Content>
+							</SContent>
 						))
 					}
 				</Transition>

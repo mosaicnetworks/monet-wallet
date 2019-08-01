@@ -12,7 +12,7 @@ import { AccountsState, unlock as unlockAccount } from '../modules/accounts';
 
 import Animation from './animations/Animation';
 
-const Open = styled.div`
+const SOpen = styled.div`
 	position: fixed;
 	bottom: ${props => props.theme.bottomOffset}px;
 	right: 0;
@@ -33,7 +33,7 @@ const Open = styled.div`
 	}
 `;
 
-const Close = styled.div`
+const SClose = styled.div`
 	position: fixed;
 	bottom: ${props => props.theme.bottomOffset + 40}px;
 	right: 0;
@@ -54,7 +54,7 @@ const Close = styled.div`
 	}
 `;
 
-const Content = styled.div`
+const SContent = styled.div`
 	position: fixed;
 	bottom: ${props => props.theme.bottomOffset}px;
 	right: -400px;
@@ -126,7 +126,7 @@ const AccountUnlock: React.FunctionComponent<Props> = props => {
 					{show =>
 						show &&
 						(props => (
-							<Open style={props}>
+							<SOpen style={props}>
 								<Button
 									icon="check"
 									color="green"
@@ -134,7 +134,7 @@ const AccountUnlock: React.FunctionComponent<Props> = props => {
 									disabled={accounts.loading.unlock}
 									loading={accounts.loading.unlock}
 								/>
-							</Open>
+							</SOpen>
 						))
 					}
 				</Transition>
@@ -148,20 +148,20 @@ const AccountUnlock: React.FunctionComponent<Props> = props => {
 					{show =>
 						show &&
 						(props => (
-							<Close
+							<SClose
 								style={props}
 								onClick={() => setVisibility(!show)}
 							>
 								<Button icon="times" color="red" />
-							</Close>
+							</SClose>
 						))
 					}
 				</Transition>
 				{!show && (
 					<Animation direction="right">
-						<Open onClick={() => setVisibility(true)}>
+						<SOpen onClick={() => setVisibility(true)}>
 							<Button icon="lock" color="orange" />
-						</Open>
+						</SOpen>
 					</Animation>
 				)}
 				<Transition
@@ -174,7 +174,7 @@ const AccountUnlock: React.FunctionComponent<Props> = props => {
 					{show =>
 						show &&
 						(props => (
-							<Content style={props}>
+							<SContent style={props}>
 								<h4>Unlock account</h4>
 								<div className="help">
 									Unlocked accounts can be used to sign
@@ -189,7 +189,7 @@ const AccountUnlock: React.FunctionComponent<Props> = props => {
 										}
 									/>
 								</div>
-							</Content>
+							</SContent>
 						))
 					}
 				</Transition>

@@ -5,11 +5,11 @@ import Utils from 'evm-lite-utils';
 
 import { Card, Button, Image } from 'semantic-ui-react';
 
-const Green = styled.span`
+const SGreen = styled.span`
 	color: green !important;
 `;
 
-const Red = styled.span`
+const SRed = styled.span`
 	color: red !important;
 `;
 
@@ -43,8 +43,8 @@ const Nominee: React.FunctionComponent<Props> = props => {
 					</Card.Description>
 				</Card.Content>
 				<Card.Content extra={true}>
-					<Green>Up Votes:</Green> {props.upVotes} -{' '}
-					<Red>Down Votes:</Red> {props.downVotes}
+					<SGreen>Up Votes:</SGreen> {props.upVotes} -{' '}
+					<SRed>Down Votes:</SRed> {props.downVotes}
 				</Card.Content>
 				<Card.Content extra={true}>
 					<div className="ui two buttons">

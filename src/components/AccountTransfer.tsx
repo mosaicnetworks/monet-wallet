@@ -6,12 +6,12 @@ import { Header, Grid, Form, Message, Icon } from 'semantic-ui-react';
 
 import Avatar from './Avatar';
 
-const PaddedContent = styled.div`
+const SPaddedContent = styled.div`
 	margin-top: 20px;
 	padding: 0 20px !important;
 `;
 
-const Content = styled.div`
+const SContent = styled.div`
 	background: #fff;
 	padding: 20px;
 	margin-bottom: 20px;
@@ -25,7 +25,7 @@ const AccountTransfer: React.FunctionComponent<Props> = props => {
 	const [to, setTo] = useState('');
 
 	return (
-		<PaddedContent>
+		<SPaddedContent>
 			<Header as="h3">Transfer</Header>
 			{!props.unlocked && (
 				<Message icon={true} negative={true}>
@@ -40,7 +40,7 @@ const AccountTransfer: React.FunctionComponent<Props> = props => {
 
 			<Grid columns="equal">
 				<Grid.Column>
-					<Content>
+					<SContent>
 						<Form>
 							<Grid columns="equal">
 								<Grid.Column width={2}>
@@ -63,11 +63,11 @@ const AccountTransfer: React.FunctionComponent<Props> = props => {
 								</Grid.Column>
 							</Grid>
 						</Form>
-					</Content>
+					</SContent>
 				</Grid.Column>
 				<Grid.Column />
 			</Grid>
-		</PaddedContent>
+		</SPaddedContent>
 	);
 };
 

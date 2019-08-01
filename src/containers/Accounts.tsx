@@ -12,13 +12,13 @@ import { AccountsState, list, create } from '../modules/accounts';
 import { Store } from '../store';
 
 import Banner from '../components/Banner';
-import Jumbo from '../components/Jumbo';
+import SJumbo from '../components/Jumbo';
 import AccountCard from '../components/AccountCard';
 import FloatingButton from '../components/FloatingButton';
 import LoadingButton from '../components/LoadingButton';
 import AccountCreate from '../components/AccountCreate';
 
-const AccountsContainer = styled.div`
+const SAccountsContainer = styled.div`
 	padding: 5px 0;
 `;
 
@@ -32,7 +32,7 @@ const Accounts: React.FunctionComponent<{}> = () => {
 
 	return (
 		<React.Fragment>
-			<Jumbo>
+			<SJumbo>
 				<Spring
 					from={{
 						marginLeft: -50,
@@ -61,11 +61,11 @@ const Accounts: React.FunctionComponent<{}> = () => {
 					Total Balance
 					<Header.Subheader>Lots!</Header.Subheader>
 				</Header>
-			</Jumbo>
+			</SJumbo>
 			<Banner color="blue">
 				All accounts listed here are read in locally from your keystore.
 			</Banner>
-			<AccountsContainer>
+			<SAccountsContainer>
 				<Card.Group centered={true}>
 					{accounts.all.map(account => (
 						<AccountCard
@@ -82,7 +82,7 @@ const Accounts: React.FunctionComponent<{}> = () => {
 						/>
 					))}
 				</Card.Group>
-			</AccountsContainer>
+			</SAccountsContainer>
 			<AccountCreate
 				bottomOffset={105}
 				accounts={accounts}

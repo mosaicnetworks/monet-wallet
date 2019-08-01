@@ -14,13 +14,17 @@ import { get as getAccount, AccountsState } from '../modules/accounts';
 
 import Banner from '../components/Banner';
 import Avatar from '../components/Avatar';
-import Jumbo from '../components/Jumbo';
+import SJumbo from '../components/Jumbo';
 import FloatingButton from '../components/FloatingButton';
 import LoadingButton from '../components/LoadingButton';
 import AccountUnlock from '../components/AccountUnlock';
 import AccountTransfer from '../components/AccountTransfer';
 
-const AvatarCustom = styled(Avatar)`
+const SAddress = styled.span`
+	font-family: 'Cousine', monospace !important;
+`;
+
+const SAvatarCustom = styled(Avatar)`
 	margin-right: 0px !important;
 	border-radius: 100px;
 `;
@@ -61,7 +65,7 @@ const AccountDetail: React.FunctionComponent<Props> = props => {
 
 	return (
 		<React.Fragment>
-			<Jumbo>
+			<SJumbo>
 				<Spring
 					from={{
 						marginLeft: -50,
@@ -75,9 +79,13 @@ const AccountDetail: React.FunctionComponent<Props> = props => {
 				>
 					{p => (
 						<Header style={p} as="h2" floated="left">
-							<AvatarCustom address={account.address} />
+							<SAvatarCustom address={account.address} />
 							<Header.Content>
-								{Utils.cleanAddress(props.match.params.address)}
+								<SAddress>
+									{Utils.cleanAddress(
+										props.match.params.address
+									)}
+								</SAddress>
 								<Header.Subheader>
 									Updated few seconds ago
 								</Header.Subheader>
@@ -97,7 +105,7 @@ const AccountDetail: React.FunctionComponent<Props> = props => {
 							: account.balance}
 					</Header.Subheader>
 				</Header>
-			</Jumbo>
+			</SJumbo>
 			<Banner color={'blue'}>
 				Some information abount accounts go here.
 			</Banner>

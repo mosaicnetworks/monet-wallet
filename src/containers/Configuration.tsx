@@ -16,10 +16,10 @@ import {
 import { Store } from '../store';
 
 import Banner from '../components/Banner';
-import Jumbo from '../components/Jumbo';
+import SJumbo from '../components/Jumbo';
 import Avatar from '../components/Avatar';
 
-const Column = styled(Grid.Column)`
+const SColumn = styled(Grid.Column)`
 	background: #fff;
 	margin: 10px;
 	padding: 0 !important;
@@ -43,18 +43,18 @@ const Column = styled(Grid.Column)`
 	}
 `;
 
-const Padding = styled.div`
+const SPadding = styled.div`
 	margin: 25px 20px;
 	margin-bottom: 0 !important;
 `;
 
-const AvatarContainer = styled.div`
+const SAvatarContainer = styled.div`
 	margin-bottom: 5px !important;
 	margin-top: 5px !important;
 	text-align: right !important;
 `;
 
-const AvatarColumn = styled(Grid.Column)`
+const SAvatarColumn = styled(Grid.Column)`
 	align-content: right !important;
 	align-items: right !important;
 `;
@@ -105,7 +105,7 @@ const Configuration: React.FunctionComponent<{}> = () => {
 
 	return (
 		<React.Fragment>
-			<Jumbo>
+			<SJumbo>
 				<Spring
 					from={{
 						marginLeft: -50,
@@ -141,7 +141,7 @@ const Configuration: React.FunctionComponent<{}> = () => {
 						/>
 					</Header.Subheader>
 				</Header>
-			</Jumbo>
+			</SJumbo>
 			<Banner color="blue">
 				These configuration values will be read in by all actions across
 				the wallet and other evm-lite applications as default values.
@@ -155,9 +155,9 @@ const Configuration: React.FunctionComponent<{}> = () => {
 				{show =>
 					show &&
 					(p => (
-						<Padding style={p}>
+						<SPadding style={p}>
 							<Grid columns="equal">
-								<Column>
+								<SColumn>
 									<h3>Connection</h3>
 									<div>
 										The node's connection details. These
@@ -217,8 +217,8 @@ const Configuration: React.FunctionComponent<{}> = () => {
 											</Form.Field>
 										</Form>
 									</div>
-								</Column>
-								<Column>
+								</SColumn>
+								<SColumn>
 									<h3>Defaults</h3>
 									<div>
 										These values will be used as defaults
@@ -228,8 +228,8 @@ const Configuration: React.FunctionComponent<{}> = () => {
 										<Form>
 											<Form.Field>
 												<Grid columns="equal">
-													<AvatarColumn width={2}>
-														<AvatarContainer>
+													<SAvatarColumn width={2}>
+														<SAvatarContainer>
 															<Avatar
 																address={
 																	config.data
@@ -237,8 +237,8 @@ const Configuration: React.FunctionComponent<{}> = () => {
 																		.from
 																}
 															/>
-														</AvatarContainer>
-													</AvatarColumn>
+														</SAvatarContainer>
+													</SAvatarColumn>
 													<Grid.Column>
 														<label>
 															<b>From</b>
@@ -318,9 +318,9 @@ const Configuration: React.FunctionComponent<{}> = () => {
 											</Form.Field>
 										</Form>
 									</div>
-								</Column>
+								</SColumn>
 							</Grid>
-						</Padding>
+						</SPadding>
 					))
 				}
 			</Transition>
