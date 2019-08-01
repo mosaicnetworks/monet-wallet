@@ -3,11 +3,11 @@ import React from 'react';
 import Utils from 'evm-lite-utils';
 import styled from 'styled-components';
 
-import { BaseAccount } from 'evm-lite-core';
 import { useSelector, useDispatch } from 'react-redux';
 import { config, Spring } from 'react-spring/renderprops';
 import { RouteComponentProps } from 'react-router-dom';
 import { Header } from 'semantic-ui-react';
+import { MonikerBaseAccount } from 'evm-lite-keystore';
 
 import { Store } from '../store';
 import { get as getAccount, AccountsState } from '../modules/accounts';
@@ -35,6 +35,8 @@ interface RouterProps {
 
 interface Props extends RouteComponentProps<RouterProps> {}
 
+const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
 const AccountDetail: React.FunctionComponent<Props> = props => {
 	const dispatch = useDispatch();
 
@@ -43,7 +45,7 @@ const AccountDetail: React.FunctionComponent<Props> = props => {
 
 	// temp fix need to update this later with reselctjs
 	const accounts = useSelector<Store, AccountsState>(store => store.accounts);
-	const account = useSelector<Store, BaseAccount>(
+	const account = useSelector<Store, MonikerBaseAccount>(
 		store =>
 			store.accounts.all.filter(
 				acc =>
@@ -81,13 +83,13 @@ const AccountDetail: React.FunctionComponent<Props> = props => {
 						<Header style={p} as="h2" floated="left">
 							<SAvatarCustom address={account.address} />
 							<Header.Content>
-								<SAddress>
-									{Utils.cleanAddress(
-										props.match.params.address
-									)}
-								</SAddress>
+								{capitalize(account.moniker || '')}
 								<Header.Subheader>
-									Updated few seconds ago
+									<SAddress>
+										{Utils.cleanAddress(
+											props.match.params.address
+										)}
+									</SAddress>
 								</Header.Subheader>
 							</Header.Content>
 						</Header>
@@ -106,14 +108,9 @@ const AccountDetail: React.FunctionComponent<Props> = props => {
 					</Header.Subheader>
 				</Header>
 			</SJumbo>
-			<Banner color={'blue'}>
-				Some information abount accounts go here.
-			</Banner>
+			<Banner color={'blue'}>Last updated a few seconds ago.</Banner>
 			<AccountTransfer unlocked={unlocked} />
-			<AccountUnlock
-				bottomOffset={105}
-				address={props.match.params.address}
-			/>
+			<AccountUnlock bottomOffset={105} account={account} />
 			<FloatingButton bottomOffset={60}>
 				<LoadingButton
 					isLoading={accounts.loading.get}

@@ -4,6 +4,12 @@
 
 A user interface to interact with EVM-Lite.
 
+## Preview
+
+<img  alt="Monet Logo" src="./assets/accounts.png" title="Accounts Page"/>
+
+<img  alt="Monet Logo" src="./assets/config.png" title="Accounts Page"/>
+
 ## Development
 
 To build and run `EVM-Lite Wallet`, download / clone this repository, then simply follow the instructions below.

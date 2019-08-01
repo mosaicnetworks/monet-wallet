@@ -27,19 +27,19 @@ interface Schema extends AbstractSchema {
 }
 
 // whitelist
-const WHITELIST_REQUEST = '@evm-lite-wallet/poa/WHITELIST/REQUEST';
-const WHITELIST_SUCCESS = '@evm-lite-wallet/poa/WHITELIST/SUCCESS';
-const WHITELIST_ERROR = '@evm-lite-wallet/poa/WHITELIST/ERROR';
+const WHITELIST_REQUEST = '@monet/poa/WHITELIST/REQUEST';
+const WHITELIST_SUCCESS = '@monet/poa/WHITELIST/SUCCESS';
+const WHITELIST_ERROR = '@monet/poa/WHITELIST/ERROR';
 
 // nominee list
-const NOMINEELIST_REQUEST = '@evm-lite-wallet/poa/NOMINEELIST/REQUEST';
-const NOMINEELIST_SUCCESS = '@evm-lite-wallet/poa/NOMINEELIST/SUCCESS';
-const NOMINEELIST_ERROR = '@evm-lite-wallet/poa/NOMINEELIST/ERROR';
+const NOMINEELIST_REQUEST = '@monet/poa/NOMINEELIST/REQUEST';
+const NOMINEELIST_SUCCESS = '@monet/poa/NOMINEELIST/SUCCESS';
+const NOMINEELIST_ERROR = '@monet/poa/NOMINEELIST/ERROR';
 
 // nominate
-// const NOMINATE_REQUEST = '@evm-lite-wallet/poa/NOMINATE/REQUEST';
-// const NOMINATE_SUCCESS = '@evm-lite-wallet/poa/NOMINATE/SUCCESS';
-// const NOMINATE_ERROR = '@evm-lite-wallet/poa/NOMINATE/ERROR';
+// const NOMINATE_REQUEST = '@monet/poa/NOMINATE/REQUEST';
+// const NOMINATE_SUCCESS = '@monet/poa/NOMINATE/SUCCESS';
+// const NOMINATE_ERROR = '@monet/poa/NOMINATE/ERROR';
 
 interface WhitelistEntry {
 	moniker: string;

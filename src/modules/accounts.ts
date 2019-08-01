@@ -1,6 +1,6 @@
 import * as path from 'path';
 
-import Utils from 'evm-lite-utils';
+import utils from 'evm-lite-utils';
 
 import {
 	Account,
@@ -16,30 +16,30 @@ import { toast } from 'react-toastify';
 import { BaseAction, ThunkResult } from '.';
 
 // Lists all accounts in keystore
-const LIST_REQUEST = '@evm-lite-wallet/accounts/LIST/REQUEST';
-const LIST_SUCCESS = '@evm-lite-wallet/accounts/LIST/SUCCESS';
-const LIST_ERROR = '@evm-lite-wallet/accounts/LIST/ERROR';
+const LIST_REQUEST = '@monet/accounts/LIST/REQUEST';
+const LIST_SUCCESS = '@monet/accounts/LIST/SUCCESS';
+const LIST_ERROR = '@monet/accounts/LIST/ERROR';
 
 // Creates account in keystore
-const CREATE_REQUEST = '@evm-lite-wallet/accounts/CREATE/REQUEST';
-const CREATE_SUCCESS = '@evm-lite-wallet/accounts/CREATE/SUCCESS';
-const CREATE_ERROR = '@evm-lite-wallet/accounts/CREATE/ERROR';
+const CREATE_REQUEST = '@monet/accounts/CREATE/REQUEST';
+const CREATE_SUCCESS = '@monet/accounts/CREATE/SUCCESS';
+const CREATE_ERROR = '@monet/accounts/CREATE/ERROR';
 
 // Get account balance and nonce from node
-const GET_REQUEST = '@evm-lite-wallet/accounts/GET/REQUEST';
-const GET_SUCCESS = '@evm-lite-wallet/accounts/GET/SUCCESS';
-const GET_ERROR = '@evm-lite-wallet/accounts/GET/ERROR';
+const GET_REQUEST = '@monet/accounts/GET/REQUEST';
+const GET_SUCCESS = '@monet/accounts/GET/SUCCESS';
+const GET_ERROR = '@monet/accounts/GET/ERROR';
 
 // For decrypting an account
-const UNLOCK_REQUEST = '@evm-lite-wallet/accounts/UNLOCK/REQUEST';
-const UNLOCK_SUCCESS = '@evm-lite-wallet/accounts/UNLOCK/SUCCESS';
-const UNLOCK_ERROR = '@evm-lite-wallet/accounts/UNLOCK/ERROR';
-const UNLOCK_RESET = '@evm-lite-wallet/accounts/UNLOCK/RESET';
+const UNLOCK_REQUEST = '@monet/accounts/UNLOCK/REQUEST';
+const UNLOCK_SUCCESS = '@monet/accounts/UNLOCK/SUCCESS';
+const UNLOCK_ERROR = '@monet/accounts/UNLOCK/ERROR';
+const UNLOCK_RESET = '@monet/accounts/UNLOCK/RESET';
 
 // For transferring tokens/coins from an account
-const TRANSFER_REQUEST = '@evm-lite-wallet/accounts/TRANSFER/REQUEST';
-const TRANSFER_SUCCESS = '@evm-lite-wallet/accounts/TRANSFER/SUCCESS';
-const TRANSFER_ERROR = '@evm-lite-wallet/accounts/TRANSFER/ERROR';
+const TRANSFER_REQUEST = '@monet/accounts/TRANSFER/REQUEST';
+const TRANSFER_SUCCESS = '@monet/accounts/TRANSFER/SUCCESS';
+const TRANSFER_ERROR = '@monet/accounts/TRANSFER/ERROR';
 
 /**
  * Should comma seperate the integer/ string.
@@ -177,8 +177,8 @@ export default function reducer(
 				};
 
 				if (
-					Utils.cleanAddress(acc.address) ===
-					Utils.cleanAddress(action.payload.address)
+					utils.cleanAddress(acc.address) ===
+					utils.cleanAddress(action.payload.address)
 				) {
 					acc2.balance = action.payload.balance;
 					acc2.nonce = action.payload.nonce;
@@ -357,12 +357,21 @@ export function list(): ThunkResult<Promise<MonikerBaseAccount[]>> {
 	};
 }
 
+export type IAccountsCreate = (
+	moniker: string,
+	password: string
+) => Promise<MonikerBaseAccount>;
+
 /**
  * Creates an ethereum account and appends it into the list of all accounts.
  *
+ * @param moniker - The moniker for the created account
  * @param password - The string to used to encrypt the newly created account
  */
-export function create(password: string): ThunkResult<Promise<BaseAccount>> {
+export function create(
+	moniker: string,
+	password: string
+): ThunkResult<Promise<MonikerBaseAccount>> {
 	return async (dispatch, getState) => {
 		const { config } = getState();
 
@@ -370,7 +379,8 @@ export function create(password: string): ThunkResult<Promise<BaseAccount>> {
 			address: '',
 			balance: 0,
 			nonce: 0,
-			bytecode: ''
+			bytecode: '',
+			moniker
 		};
 
 		dispatch({
@@ -381,7 +391,7 @@ export function create(password: string): ThunkResult<Promise<BaseAccount>> {
 			const keystore = new Keystore(
 				path.join(config.directory, 'keystore')
 			);
-			const acc: V3Keyfile = await keystore.create('danu', password);
+			const acc: V3Keyfile = await keystore.create(moniker, password);
 
 			account.address = acc.address;
 
@@ -452,11 +462,11 @@ export function get(
  * Should decrypt an account and set the result into the redux state. The account
  * will be removed after the session is closed or manually reset.
  *
- * @param address - The address of the account to unlock
+ * @param moniker - The moniker of the account to unlock
  * @param password - The associated password for the address in question
  */
 export function unlock(
-	address: EVMTypes.Address,
+	moniker: string,
 	password: string
 ): ThunkResult<Promise<Account | undefined>> {
 	return async (dispatch, getState) => {
@@ -471,9 +481,7 @@ export function unlock(
 				path.join(config.directory, 'keystore')
 			);
 
-			console.log(password.replace(/(\r\n|\n|\r)/gm, ''));
-			const keyfile = await keystore.get(address);
-			console.log(keyfile);
+			const keyfile = await keystore.get(moniker);
 			const account = Keystore.decrypt(
 				keyfile,
 				password.trim().replace(/(\r\n|\n|\r)/gm, '')

@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 
 import styled from 'styled-components';
 
-import { Header, Grid, Form, Message, Icon } from 'semantic-ui-react';
-
-import Avatar from './Avatar';
+import { Header, Form } from 'semantic-ui-react';
 
 const SPaddedContent = styled.div`
 	margin-top: 20px;
@@ -12,9 +10,11 @@ const SPaddedContent = styled.div`
 `;
 
 const SContent = styled.div`
-	background: #fff;
-	padding: 20px;
 	margin-bottom: 20px;
+`;
+
+const SRed = styled.span`
+	color: red !important;
 `;
 
 interface Props {
@@ -27,46 +27,26 @@ const AccountTransfer: React.FunctionComponent<Props> = props => {
 	return (
 		<SPaddedContent>
 			<Header as="h3">Transfer</Header>
-			{!props.unlocked && (
-				<Message icon={true} negative={true}>
-					<Icon name="lock" />
-					<Message.Content>
-						<Message.Header>Unlock Account</Message.Header>
-						You cannot make a transfer from this account unless
-						unlocked using the button on the bottom right.
-					</Message.Content>
-				</Message>
-			)}
-
-			<Grid columns="equal">
-				<Grid.Column>
-					<SContent>
-						<Form>
-							<Grid columns="equal">
-								<Grid.Column width={2}>
-									{to && <Avatar address={to} />}
-								</Grid.Column>
-								<Grid.Column>
-									<Form.Input
-										style={{
-											marginTop: '10px !important'
-										}}
-										placeholder="To Address"
-										onChange={(_, { value }) =>
-											setTo(value)
-										}
-									/>
-									<Form.Button
-										color="blue"
-										content={'Next'}
-									/>
-								</Grid.Column>
-							</Grid>
-						</Form>
-					</SContent>
-				</Grid.Column>
-				<Grid.Column />
-			</Grid>
+			<SContent>
+				{props.unlocked && (
+					<Form>
+						<Form.Group inline={true}>
+							<Form.Input
+								defaultValue={to}
+								style={{
+									marginTop: '10px !important'
+								}}
+								placeholder="To Address"
+								onChange={(_, { value }) => setTo(value)}
+							/>
+							<Form.Button color="blue" content={'Next'} />
+						</Form.Group>
+					</Form>
+				)}
+				{!props.unlocked && (
+					<SRed>Unlock account to initiate transfer of funds.</SRed>
+				)}
+			</SContent>
 		</SPaddedContent>
 	);
 };

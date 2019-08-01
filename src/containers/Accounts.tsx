@@ -25,7 +25,8 @@ const SAccountsContainer = styled.div`
 const Accounts: React.FunctionComponent<{}> = () => {
 	const dispatch = useDispatch();
 
-	const createAccount = (password: string) => dispatch(create(password));
+	const createAccount = (moniker: string, password: string) =>
+		dispatch(create(moniker, password)) as any;
 	const refreshAccounts = () => dispatch(list());
 
 	const accounts = useSelector<Store, AccountsState>(store => store.accounts);

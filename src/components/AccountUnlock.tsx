@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import { config, Transition } from 'react-spring/renderprops';
 import { Button, Input } from 'semantic-ui-react';
+import { MonikerBaseAccount } from 'evm-lite-keystore';
 
 import { Store } from '../store';
 import { AccountsState, unlock as unlockAccount } from '../modules/accounts';
@@ -83,7 +84,7 @@ const SContent = styled.div`
 `;
 
 interface Props {
-	address: string;
+	account: MonikerBaseAccount;
 	bottomOffset: number;
 }
 
@@ -95,8 +96,8 @@ const AccountUnlock: React.FunctionComponent<Props> = props => {
 
 	const accounts = useSelector<Store, AccountsState>(store => store.accounts);
 
-	const unlock = () =>
-		dispatch(unlockAccount(props.address, password.trim()));
+	const unlock = (moniker: string) =>
+		dispatch(unlockAccount(moniker, password.trim()));
 
 	const handleUnlockAccount = () => {
 		if (!password) {
@@ -104,7 +105,7 @@ const AccountUnlock: React.FunctionComponent<Props> = props => {
 			return;
 		}
 
-		unlock();
+		unlock(props.account.moniker);
 		setPassword('');
 		setVisibility(false);
 	};

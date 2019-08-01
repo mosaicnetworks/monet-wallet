@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-
 import styled, { ThemeProvider } from 'styled-components';
+
+import utils from 'evm-lite-utils';
 
 import { toast } from 'react-toastify';
 import { config, Transition } from 'react-spring/renderprops';
 import { Button, Input } from 'semantic-ui-react';
 
-import { AccountsState } from '../modules/accounts';
+import { AccountsState, IAccountsCreate } from '../modules/accounts';
 
 import Animation from './animations/Animation';
 
@@ -81,33 +82,39 @@ const SContent = styled.div`
 
 interface Props {
 	bottomOffset: number;
-	create: any;
+	create: IAccountsCreate;
 	accounts: AccountsState;
 }
 
 const AccountCreate: React.FunctionComponent<Props> = props => {
 	const [visible, setVisibility] = useState(false);
 	const [fields, setFields] = useState({
+		moniker: '',
 		password: '',
 		verifyPassword: ''
 	});
 
 	const handleCreateAccount = () => {
-		if (!fields.password || !fields.verifyPassword) {
-			toast.error('Both fields must be filled in.');
-			return;
+		if (!fields.password || !fields.verifyPassword || !fields.moniker) {
+			return toast.error('Both fields must be filled in.');
 		}
 
 		if (fields.password !== fields.verifyPassword) {
-			toast.error('Passwords do not match.');
-			return;
+			return toast.error('Passwords do not match.');
+		}
+
+		if (!utils.validMoniker(fields.moniker)) {
+			return toast.error(
+				'Moniker can only contain letters, numbers and undercores.'
+			);
 		}
 
 		setVisibility(false);
 
-		props.create(fields.password.trim());
+		props.create(fields.moniker, fields.password.trim());
 
 		setFields({
+			moniker: '',
 			password: '',
 			verifyPassword: ''
 		});
@@ -194,6 +201,17 @@ const AccountCreate: React.FunctionComponent<Props> = props => {
 									account.
 								</div>
 								<div>
+									<Input
+										placeholder="Moniker"
+										type="text"
+										onChange={(e, { value }) =>
+											setFields({
+												...fields,
+												moniker: value
+											})
+										}
+									/>
+									<br />
 									<Input
 										placeholder="Set Password"
 										type="password"

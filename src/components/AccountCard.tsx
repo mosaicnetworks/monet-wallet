@@ -67,7 +67,7 @@ const Account: React.FunctionComponent<Props> = props => {
 							))
 						}
 					</Transition>
-					<Label color="green" basic={false}>
+					<Label color="orange" basic={false}>
 						Balance
 						<Label.Detail>
 							{typeof props.account.balance === 'object'
