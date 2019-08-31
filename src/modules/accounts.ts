@@ -538,33 +538,27 @@ export function transfer(
 			}
 
 			if (!!Object.keys(config).length) {
-				const evmlc = makeMonet(
+				const node = makeMonet(
 					config.connection.host,
 					config.connection.port
 				);
 
-				await evmlc.getInfo();
+				await node.getInfo();
 
-				// const transaction = Account.prepareTransfer(coto, value);
-				// await transaction.submit(state.accounts.unlocked, {
-				// 	timeout: 3
-				// });
-
-				// if (!transaction.hash) {
-				// 	throw Error(
-				// 		'Transaction hash not found after ' +
-				// 			'transfer was submitted to node.'
-				// 	);
-				// }
-
-				const receipt = {} as IReceipt;
+				const receipt = await node.transfer(
+					state.accounts.unlocked,
+					to,
+					value,
+					gas,
+					gasPrice
+				);
 
 				dispatch({
 					type: TRANSFER_SUCCESS,
 					payload: receipt
 				});
 
-				return receipt!;
+				return receipt;
 			} else {
 				throw Error('Configuration could not loaded.');
 			}
