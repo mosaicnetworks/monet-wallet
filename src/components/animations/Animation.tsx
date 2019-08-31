@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { Spring, config } from 'react-spring/renderprops';
+import { config, Spring } from 'react-spring/renderprops';
 
 interface Props {
 	direction: 'left' | 'right';

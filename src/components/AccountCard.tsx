@@ -1,11 +1,11 @@
 import React from 'react';
 
-import styled from 'styled-components';
 import utils from 'evm-lite-utils';
+import styled from 'styled-components';
 
-import { config, Transition } from 'react-spring/renderprops';
+import { IMonikerBaseAccount } from 'evm-lite-keystore';
 import { Link } from 'react-router-dom';
-import { MonikerBaseAccount } from 'evm-lite-keystore';
+import { config, Transition } from 'react-spring/renderprops';
 import { Card, Label } from 'semantic-ui-react';
 
 import Avatar from './Avatar';
@@ -21,7 +21,7 @@ const SAddress = styled.span`
 `;
 
 interface Props {
-	account: MonikerBaseAccount;
+	account: IMonikerBaseAccount;
 	unlocked: boolean;
 }
 

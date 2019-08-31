@@ -3,10 +3,6 @@
 	"version": "1.0.0-alpha.0",
 	"private": true,
 	"dependencies": {
-		"evm-lite-core": "1.0.0-alpha.19",
-		"evm-lite-datadir": "1.0.0-alpha.19",
-		"evm-lite-keystore": "1.0.0-alpha.19",
-		"evm-lite-utils": "1.0.0-alpha.19",
 		"js-scrypt": "^0.2.0",
 		"random-hash": "^4.0.1",
 		"react": "^16.6.1",

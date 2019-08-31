@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import styled from 'styled-components';
 
-import { Header, Form, Grid, Icon } from 'semantic-ui-react';
+import { Form, Grid, Header, Icon } from 'semantic-ui-react';
 
 const SPaddedContent = styled.div`
 	margin-top: 20px;

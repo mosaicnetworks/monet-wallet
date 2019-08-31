@@ -5,17 +5,17 @@ import Utils from 'evm-lite-utils';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { config, Spring } from 'react-spring/renderprops';
-import { Header, Grid, Container, Card } from 'semantic-ui-react';
+import { Card, Container, Grid, Header } from 'semantic-ui-react';
 
 import { Store } from '../store';
 
 import { POAState, reload } from '../modules/poa';
 
 import Banner from '../components/Banner';
-import Nominee from '../components/Nominee';
-import SJumbo from '../components/Jumbo';
 import FloatingButton from '../components/FloatingButton';
+import SJumbo from '../components/Jumbo';
 import LoadingButton from '../components/LoadingButton';
+import Nominee from '../components/Nominee';
 
 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 

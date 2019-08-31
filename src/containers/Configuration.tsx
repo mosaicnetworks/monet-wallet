@@ -2,22 +2,22 @@ import React, { useState } from 'react';
 
 import styled from 'styled-components';
 
+import { IConfiguration } from 'evm-lite-datadir';
+import { useDispatch, useSelector } from 'react-redux';
 import { Transition } from 'react-spring/renderprops';
-import { ConfigurationSchema } from 'evm-lite-datadir';
-import { useSelector, useDispatch } from 'react-redux';
 import { config as springConfig, Spring } from 'react-spring/renderprops';
-import { Header, Input, Grid, Form } from 'semantic-ui-react';
+import { Form, Grid, Header, Input } from 'semantic-ui-react';
 
 import {
 	ConfigurationState,
-	setDirectory,
-	save
+	save,
+	setDirectory
 } from '../modules/configuration';
 import { Store } from '../store';
 
+import Avatar from '../components/Avatar';
 import Banner from '../components/Banner';
 import SJumbo from '../components/Jumbo';
-import Avatar from '../components/Avatar';
 
 const SColumn = styled(Grid.Column)`
 	background: #fff;
@@ -88,7 +88,7 @@ const Configuration: React.FunctionComponent<{}> = () => {
 			gasPrice = config.data.defaults.gasPrice;
 		}
 
-		let newConfig: ConfigurationSchema = {
+		const newConfig: IConfiguration = {
 			connection: {
 				host: fields.host || config.data.connection.host,
 				port: fields.port || config.data.connection.port

@@ -2,15 +2,12 @@ import * as path from 'path';
 
 import utils from 'evm-lite-utils';
 
-import {
-	Account,
-	BaseAccount,
-	EVMTypes,
-	EVMLC,
-	TransactionReceipt
-} from 'evm-lite-core';
+import { IBaseAccount, IReceipt } from 'evm-lite-client';
+import { Babble } from 'evm-lite-consensus';
 
-import { Keystore, V3Keyfile, MonikerBaseAccount } from 'evm-lite-keystore';
+import Node, { Account } from 'evm-lite-core';
+import Keystore, { IMonikerBaseAccount, IV3Keyfile } from 'evm-lite-keystore';
+
 import { toast } from 'react-toastify';
 
 import { BaseAction, ThunkResult } from '.';
@@ -41,19 +38,16 @@ const TRANSFER_REQUEST = '@monet/accounts/TRANSFER/REQUEST';
 const TRANSFER_SUCCESS = '@monet/accounts/TRANSFER/SUCCESS';
 const TRANSFER_ERROR = '@monet/accounts/TRANSFER/ERROR';
 
-/**
- * Should comma seperate the integer/ string.
- *
- * @param x - The value to comma sepetate.
- */
-// function integerWithCommas(x: number | string) {
-// 	return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-// }
+const makeMonet = (host: string, port: number) => {
+	const b = new Babble(host, port);
+
+	return new Node(host, port, b);
+};
 
 // Accounts state structure
 export interface AccountsState {
 	// Entire list of accounts
-	readonly all: MonikerBaseAccount[];
+	readonly all: IMonikerBaseAccount[];
 
 	// Currently unlocked account
 	readonly unlocked?: Account;
@@ -62,7 +56,7 @@ export interface AccountsState {
 	// Latest transaction hash
 	readonly transactions: {
 		all: any[];
-		lastestReceipt?: TransactionReceipt;
+		lastestReceipt?: IReceipt;
 	};
 
 	// A single error field to be used by this module for any action
@@ -298,20 +292,20 @@ export default function reducer(
  * Should list all acounts from the keystore. It will update the redux state
  * and set the `all` attribute to the desired result.
  */
-export function list(): ThunkResult<Promise<MonikerBaseAccount[]>> {
+export function list(): ThunkResult<Promise<IMonikerBaseAccount[]>> {
 	return async (dispatch, getState) => {
 		const state = getState();
 
-		let accounts: MonikerBaseAccount[] = [];
+		let accounts: IMonikerBaseAccount[] = [];
 
 		dispatch({
 			type: LIST_REQUEST
 		});
 
 		try {
-			let node: EVMLC | undefined;
+			let node: Node<Babble> | undefined;
 
-			node = new EVMLC('localhost', 8080);
+			node = makeMonet('localhost', 8080);
 
 			await node.getInfo().catch(() => {
 				node = undefined;
@@ -360,7 +354,7 @@ export function list(): ThunkResult<Promise<MonikerBaseAccount[]>> {
 export type IAccountsCreate = (
 	moniker: string,
 	password: string
-) => Promise<MonikerBaseAccount>;
+) => Promise<IMonikerBaseAccount>;
 
 /**
  * Creates an ethereum account and appends it into the list of all accounts.
@@ -371,7 +365,7 @@ export type IAccountsCreate = (
 export function create(
 	moniker: string,
 	password: string
-): ThunkResult<Promise<MonikerBaseAccount>> {
+): ThunkResult<Promise<IMonikerBaseAccount>> {
 	return async (dispatch, getState) => {
 		const { config } = getState();
 
@@ -391,7 +385,7 @@ export function create(
 			const keystore = new Keystore(
 				path.join(config.directory, 'keystore')
 			);
-			const acc: V3Keyfile = await keystore.create(moniker, password);
+			const acc: IV3Keyfile = await keystore.create(moniker, password);
 
 			account.address = acc.address;
 
@@ -420,12 +414,10 @@ export function create(
  *
  * @param address - The address to fetch from the node
  */
-export function get(
-	address: EVMTypes.Address
-): ThunkResult<Promise<BaseAccount>> {
+export function get(address: string): ThunkResult<Promise<IBaseAccount>> {
 	return async (dispatch, getState) => {
 		const { config } = getState();
-		let account = {} as BaseAccount;
+		let account = {} as IBaseAccount;
 
 		dispatch({
 			type: GET_REQUEST
@@ -433,7 +425,7 @@ export function get(
 
 		try {
 			if (!!Object.keys(config).length) {
-				const node = new EVMLC(
+				const node = makeMonet(
 					config.data.connection.host,
 					config.data.connection.port
 				);
@@ -526,12 +518,12 @@ export function resetUnlock(): ThunkResult<void> {
  * @param gasPrice - The price per `gas` to pay for the transaction
  */
 export function transfer(
-	from: EVMTypes.Address,
-	to: EVMTypes.Address,
-	value: EVMTypes.Value,
-	gas: EVMTypes.Gas,
-	gasPrice: EVMTypes.GasPrice
-): ThunkResult<Promise<TransactionReceipt>> {
+	from: string,
+	to: string,
+	value: number,
+	gas: number,
+	gasPrice: number
+): ThunkResult<Promise<IReceipt>> {
 	return async (dispatch, getState) => {
 		const state = getState();
 		const config = state.config.data;
@@ -546,7 +538,7 @@ export function transfer(
 			}
 
 			if (!!Object.keys(config).length) {
-				const evmlc = new EVMLC(
+				const evmlc = makeMonet(
 					config.connection.host,
 					config.connection.port
 				);
@@ -565,7 +557,7 @@ export function transfer(
 				// 	);
 				// }
 
-				const receipt = {} as TransactionReceipt;
+				const receipt = {} as IReceipt;
 
 				dispatch({
 					type: TRANSFER_SUCCESS,
@@ -582,7 +574,7 @@ export function transfer(
 				payload: error.toString()
 			});
 
-			return {} as TransactionReceipt;
+			return {} as IReceipt;
 		}
 	};
 }

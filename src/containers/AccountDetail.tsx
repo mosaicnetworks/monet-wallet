@@ -3,22 +3,22 @@ import React from 'react';
 import Utils from 'evm-lite-utils';
 import styled from 'styled-components';
 
-import { useSelector, useDispatch } from 'react-redux';
-import { config, Spring } from 'react-spring/renderprops';
+import { IMonikerBaseAccount } from 'evm-lite-keystore';
+import { useDispatch, useSelector } from 'react-redux';
 import { RouteComponentProps } from 'react-router-dom';
+import { config, Spring } from 'react-spring/renderprops';
 import { Header } from 'semantic-ui-react';
-import { MonikerBaseAccount } from 'evm-lite-keystore';
 
+import { AccountsState, get as getAccount } from '../modules/accounts';
 import { Store } from '../store';
-import { get as getAccount, AccountsState } from '../modules/accounts';
 
-import Banner from '../components/Banner';
-import Avatar from '../components/Avatar';
-import SJumbo from '../components/Jumbo';
-import FloatingButton from '../components/FloatingButton';
-import LoadingButton from '../components/LoadingButton';
-import AccountUnlock from '../components/AccountUnlock';
 import AccountTransfer from '../components/AccountTransfer';
+import AccountUnlock from '../components/AccountUnlock';
+import Avatar from '../components/Avatar';
+import Banner from '../components/Banner';
+import FloatingButton from '../components/FloatingButton';
+import SJumbo from '../components/Jumbo';
+import LoadingButton from '../components/LoadingButton';
 
 const SAddress = styled.span`
 	font-family: 'Cousine', monospace !important;
@@ -45,7 +45,7 @@ const AccountDetail: React.FunctionComponent<Props> = props => {
 
 	// temp fix need to update this later with reselctjs
 	const accounts = useSelector<Store, AccountsState>(store => store.accounts);
-	const account = useSelector<Store, MonikerBaseAccount>(
+	const account = useSelector<Store, IMonikerBaseAccount>(
 		store =>
 			store.accounts.all.filter(
 				acc =>

@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { useSelector, useDispatch } from 'react-redux';
 import { Account } from 'evm-lite-core';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { Store } from '../store';
 import { resetUnlock } from '../modules/accounts';
+import { Store } from '../store';
 
 import Header from '../components/Header';
 

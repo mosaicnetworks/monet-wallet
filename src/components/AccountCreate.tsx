@@ -3,8 +3,8 @@ import styled, { ThemeProvider } from 'styled-components';
 
 import utils from 'evm-lite-utils';
 
-import { toast } from 'react-toastify';
 import { config, Transition } from 'react-spring/renderprops';
+import { toast } from 'react-toastify';
 import { Button, Input } from 'semantic-ui-react';
 
 import { AccountsState, IAccountsCreate } from '../modules/accounts';

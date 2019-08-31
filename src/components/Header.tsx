@@ -1,12 +1,12 @@
 import React from 'react';
 
-import styled from 'styled-components';
 import Utils from 'evm-lite-utils';
+import styled from 'styled-components';
 
 import { Account } from 'evm-lite-core';
 import { NavLink as Link } from 'react-router-dom';
-import { Container, Icon, Image, Label } from 'semantic-ui-react';
 import { config, Transition } from 'react-spring/renderprops';
+import { Container, Icon, Image, Label } from 'semantic-ui-react';
 
 import MONET_LOGO from '../assets/monet_logo.png';
 

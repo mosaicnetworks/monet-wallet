@@ -1,11 +1,7 @@
 import utils from 'evm-lite-utils';
 
+import Datadir, { IConfiguration, osdatadir } from 'evm-lite-datadir';
 import { toast } from 'react-toastify';
-import {
-	ConfigurationSchema,
-	DataDirectory,
-	osdatadir
-} from 'evm-lite-datadir';
 
 import { BaseAction, ThunkResult } from '.';
 import { list } from './accounts';
@@ -29,7 +25,7 @@ export interface ConfigurationState {
 	readonly directory: string;
 
 	// The configuration data values
-	readonly data: ConfigurationSchema;
+	readonly data: IConfiguration;
 
 	// This error attribute is used by all actions
 	readonly error?: string;
@@ -43,7 +39,7 @@ export interface ConfigurationState {
 
 const initialState: ConfigurationState = {
 	directory: osdatadir('Monet'),
-	data: {} as ConfigurationSchema,
+	data: {} as IConfiguration,
 	loading: {
 		load: false,
 		save: false
@@ -131,23 +127,20 @@ export default function reducer(
 	}
 }
 
-export function load(): ThunkResult<Promise<ConfigurationSchema>> {
+export function load(): ThunkResult<Promise<IConfiguration>> {
 	return async (dispatch, getStore) => {
 		const store = getStore();
 
-		let config = {} as ConfigurationSchema;
+		let config = {} as IConfiguration;
 
 		dispatch({
 			type: LOAD_REQUEST
 		});
 
 		try {
-			const datadir = new DataDirectory(
-				store.config.directory,
-				'monetcli'
-			);
+			const datadir = new Datadir(store.config.directory, 'monetcli');
 
-			config = await datadir.config.load();
+			config = await datadir.readConfig();
 
 			dispatch({
 				type: LOAD_SUCCESS,
@@ -175,7 +168,7 @@ export function setDirectory(path: string): ThunkResult<Promise<string>> {
 			return path;
 		}
 
-		new DataDirectory(path, 'monetcli');
+		new Datadir(path, 'monetcli');
 
 		dispatch({
 			type: SET_DIRECTORY_SUCCESS,
@@ -197,8 +190,8 @@ export function initialize(): ThunkResult<Promise<void>> {
 }
 
 export function save(
-	newConfig: ConfigurationSchema
-): ThunkResult<Promise<ConfigurationSchema>> {
+	newConfig: IConfiguration
+): ThunkResult<Promise<IConfiguration>> {
 	return async (dispatch, getState) => {
 		const state = getState();
 
@@ -207,12 +200,9 @@ export function save(
 		});
 
 		try {
-			const datadir = new DataDirectory(
-				state.config.directory,
-				'monetcli'
-			);
+			const datadir = new Datadir(state.config.directory, 'monetcli');
 
-			await datadir.config.save(newConfig);
+			await datadir.saveConfig(newConfig);
 
 			dispatch({
 				type: SAVE_SUCCESS,
@@ -228,7 +218,7 @@ export function save(
 				payload: error.toString()
 			});
 
-			return {} as ConfigurationSchema;
+			return {} as IConfiguration;
 		}
 	};
 }

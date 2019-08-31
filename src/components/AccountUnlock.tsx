@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 
 import styled, { ThemeProvider } from 'styled-components';
 
-import { useSelector, useDispatch } from 'react-redux';
-import { toast } from 'react-toastify';
+import { IMonikerBaseAccount } from 'evm-lite-keystore';
+import { useDispatch, useSelector } from 'react-redux';
 import { config, Transition } from 'react-spring/renderprops';
+import { toast } from 'react-toastify';
 import { Button, Input } from 'semantic-ui-react';
-import { MonikerBaseAccount } from 'evm-lite-keystore';
 
-import { Store } from '../store';
 import { AccountsState, unlock as unlockAccount } from '../modules/accounts';
+import { Store } from '../store';
 
 import Animation from './animations/Animation';
 
@@ -88,7 +88,7 @@ const SContent = styled.div`
 `;
 
 interface Props {
-	account: MonikerBaseAccount;
+	account: IMonikerBaseAccount;
 	bottomOffset: number;
 }
 

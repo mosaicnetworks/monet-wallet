@@ -4,9 +4,9 @@ import { combineReducers } from 'redux';
 
 import { Store } from '../store';
 
-import poa from './poa';
 import accounts from './accounts';
 import config from './configuration';
+import poa from './poa';
 
 export type ThunkResult<R> = ThunkAction<R, Store, undefined, BaseAction<any>>;
 export interface BaseAction<Payload> {

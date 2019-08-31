@@ -1,29 +1,36 @@
-import {
-	EVMLC,
+import Node, {
 	Contract,
-	AbstractSchema,
-	Transaction,
-	TX,
-	EVMTypes
+	IAbstractSchema,
+	ITransaction,
+	Transaction
 } from 'evm-lite-core';
 
 import Utils from 'evm-lite-utils';
 
+import { Babble } from 'evm-lite-consensus';
 import { toast } from 'react-toastify';
 
 import { BaseAction, ThunkResult } from '.';
 
-interface Schema extends AbstractSchema {
-	checkAuthorised(tx: TX, address: string): Transaction;
-	submitNominee(tx: TX, address: string, moniker: string): Transaction;
-	castNomineeVote(tx: TX, address: string, verdict: boolean): Transaction;
-	getCurrentNomineeVotes(tx: TX, address: string): Transaction;
-	getWhiteListCount(tx: TX): Transaction;
-	getWhiteListAddressFromIdx(tx: TX, id: number): Transaction;
-	getMoniker(tx: TX, address: string): Transaction;
-	getNomineeCount(tx: TX): Transaction;
-	getNomineeAddressFromIdx(tx: TX, id: number): Transaction;
-	isNominee(tx: TX, address: string): Transaction;
+interface Schema extends IAbstractSchema {
+	checkAuthorised(tx: ITransaction, address: string): Transaction;
+	submitNominee(
+		tx: ITransaction,
+		address: string,
+		moniker: string
+	): Transaction;
+	castNomineeVote(
+		tx: ITransaction,
+		address: string,
+		verdict: boolean
+	): Transaction;
+	getCurrentNomineeVotes(tx: ITransaction, address: string): Transaction;
+	getWhiteListCount(tx: ITransaction): Transaction;
+	getWhiteListAddressFromIdx(tx: ITransaction, id: number): Transaction;
+	getMoniker(tx: ITransaction, address: string): Transaction;
+	getNomineeCount(tx: ITransaction): Transaction;
+	getNomineeAddressFromIdx(tx: ITransaction, id: number): Transaction;
+	isNominee(tx: ITransaction, address: string): Transaction;
 }
 
 // whitelist
@@ -63,6 +70,12 @@ const hexToString = (hex: string) => {
 	}
 
 	return data.replace(/\u0000/g, '').trim();
+};
+
+const makeMonet = (host: string, port: number) => {
+	const b = new Babble(host, port);
+
+	return new Node(host, port, b);
 };
 
 // Proof of Authority State
@@ -183,14 +196,14 @@ export function whitelist(): ThunkResult<Promise<void>> {
 
 		try {
 			const { config } = getState();
-			const node = new EVMLC(
+			const node = makeMonet(
 				config.data.connection.host,
 				config.data.connection.port
 			);
 
 			let poa: { address: string; abi: any[] };
 
-			const r = await node.getPOAContract();
+			const r = await node.getPOA();
 			poa = {
 				...r,
 				// @ts-ignore
@@ -203,7 +216,7 @@ export function whitelist(): ThunkResult<Promise<void>> {
 				gasPrice: config.data.defaults.gasPrice
 			});
 
-			const whitelistCount = (await node.callTransaction<any>(
+			const whitelistCount = (await node.callTx<any>(
 				transaction
 			)).toNumber(0);
 
@@ -223,7 +236,7 @@ export function whitelist(): ThunkResult<Promise<void>> {
 					i
 				);
 
-				whitelistEntry.address = await node.callTransaction(tx);
+				whitelistEntry.address = await node.callTx(tx);
 
 				const monikerTx = contract.methods.getMoniker(
 					{
@@ -233,7 +246,7 @@ export function whitelist(): ThunkResult<Promise<void>> {
 					whitelistEntry.address
 				);
 
-				const hex: string = await node.callTransaction(monikerTx);
+				const hex: string = await node.callTx(monikerTx);
 
 				whitelistEntry.moniker = hexToString(hex);
 
@@ -261,14 +274,14 @@ export function nomineelist(): ThunkResult<Promise<void>> {
 
 		try {
 			const { config } = getState();
-			const node = new EVMLC(
+			const node = makeMonet(
 				config.data.connection.host,
 				config.data.connection.port
 			);
 
 			let poa: { address: string; abi: any[] };
 
-			const r = await node.getPOAContract();
+			const r = await node.getPOA();
 			poa = {
 				...r,
 				// @ts-ignore
@@ -281,9 +294,9 @@ export function nomineelist(): ThunkResult<Promise<void>> {
 				gasPrice: config.data.defaults.gasPrice
 			});
 
-			const nomineeCount = (await node.callTransaction<any>(
-				transaction
-			)).toNumber(0);
+			const nomineeCount = (await node.callTx<any>(transaction)).toNumber(
+				0
+			);
 
 			const nominees: Nominee[] = [];
 
@@ -303,7 +316,7 @@ export function nomineelist(): ThunkResult<Promise<void>> {
 					i
 				);
 
-				nominee.address = await node.callTransaction(tx);
+				nominee.address = await node.callTx(tx);
 
 				const monikerTx = contract.methods.getMoniker(
 					{
@@ -313,7 +326,7 @@ export function nomineelist(): ThunkResult<Promise<void>> {
 					nominee.address
 				);
 
-				const hex: string = await node.callTransaction(monikerTx);
+				const hex: string = await node.callTx(monikerTx);
 
 				nominee.moniker = hexToString(hex);
 
@@ -326,7 +339,7 @@ export function nomineelist(): ThunkResult<Promise<void>> {
 					Utils.cleanAddress(nominee.address)
 				);
 
-				let votes: [string, string] = await node.callTransaction<
+				const votes: [string, string] = await node.callTx<
 					[string, string]
 				>(votesTransaction);
 
@@ -350,7 +363,7 @@ export function nomineelist(): ThunkResult<Promise<void>> {
 }
 
 export function nominate(
-	from: EVMTypes.Address,
+	from: string,
 	verdict: boolean
 ): ThunkResult<Promise<void>> {
 	return async dispatch => {

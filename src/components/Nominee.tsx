@@ -1,9 +1,9 @@
 import React from 'react';
 
-import styled from 'styled-components';
 import Utils from 'evm-lite-utils';
+import styled from 'styled-components';
 
-import { Card, Button, Image } from 'semantic-ui-react';
+import { Button, Card, Image } from 'semantic-ui-react';
 
 const SGreen = styled.span`
 	color: green !important;
