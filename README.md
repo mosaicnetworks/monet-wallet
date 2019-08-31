@@ -1,8 +1,8 @@
 <img width="75px" height="75px" align="right" alt="Monet Logo" src="./src/assets/monet_logo.png" title="Monet Logo"/>
 
-# EVM-Lite Wallet
+# Monet Wallet
 
-A user interface to interact with EVM-Lite.
+A user interface to interact with Monet.
 
 ## Preview
 
@@ -12,7 +12,7 @@ A user interface to interact with EVM-Lite.
 
 ## Development
 
-To build and run `EVM-Lite Wallet`, download / clone this repository, then simply follow the instructions below.
+To build and run Monet Wallet, download / clone this repository, then simply follow the instructions below.
 
 You will need to install `yarn` to proceed to development.
 
