@@ -1,208 +1,250 @@
-import * as React from 'react';
+import React, { useState } from 'react';
+import styled, { ThemeProvider } from 'styled-components';
 
-import { connect } from 'react-redux';
-import { InjectedAlertProp, withAlert } from 'react-alert';
-import { Button, Divider, Form, Header, Label, Modal } from 'semantic-ui-react';
+import utils from 'evm-lite-utils';
 
-import { ConfigLoadReducer, KeystoreCreatePayLoad, KeystoreCreateReducer, Store } from '../redux';
+import { config, Transition } from 'react-spring/renderprops';
+import { toast } from 'react-toastify';
+import { Button, Input } from 'semantic-ui-react';
 
-import redux from '../redux.config';
+import { AccountsState, IAccountsCreate } from '../modules/accounts';
 
-interface AlertProps {
-	alert: InjectedAlertProp;
+import Animation from './animations/Animation';
+
+const SOpen = styled.div`
+	position: fixed;
+	bottom: ${props => props.theme.bottomOffset}px;
+	right: 0;
+	width: auto;
+	color: white !important;
+	border-top-left-radius: 7px;
+	border-bottom-left-radius: 7px;
+
+	&:hover {
+		cursor: pointer;
+	}
+
+	& button {
+		border-top-right-radius: 0px !important;
+		border-bottom-right-radius: 0px !important;
+		margin: 0 !important;
+		margin-left: -2px !important;
+		box-shadow: 0 4px 20px -6px #000 !important;
+	}
+`;
+
+const SClose = styled.div`
+	position: fixed;
+	bottom: ${props => props.theme.bottomOffset + 40}px;
+	right: 0;
+	width: auto;
+	color: white !important;
+	border-top-left-radius: 7px;
+	border-bottom-left-radius: 7px;
+	& button {
+		border-top-right-radius: 0px !important;
+		border-bottom-right-radius: 0px !important;
+		margin: 0 !important;
+		margin-left: -2px !important;
+	}
+	&:hover {
+		cursor: pointer;
+	}
+`;
+
+const SContent = styled.div`
+	position: fixed;
+	bottom: ${props => props.theme.bottomOffset}px;
+	right: -361px;
+	width: auto;
+	background: #fff !important;
+	box-shadow: 0 4px 20px -6px #999 !important;
+
+	& h4 {
+		background: rgba(0, 0, 0, 0.07);
+		font-weight: 300 !important;
+		padding: 10px 20px;
+		margin: 0 !important;
+	}
+
+	& div {
+		padding: 5px 10px;
+		padding-top: 0px;
+	}
+
+	& div.help {
+		background: rgba(0, 0, 0, 0.02);
+		padding: 10px 20px;
+		color: #555;
+		margin-bottom: 14px;
+	}
+
+	& input {
+		width: 340px !important;
+	}
+`;
+
+interface Props {
+	bottomOffset: number;
+	create: IAccountsCreate;
+	accounts: AccountsState;
 }
 
-interface StoreProps {
-	configLoadTask: ConfigLoadReducer;
-	keystoreCreateTask: KeystoreCreateReducer;
-}
+const AccountCreate: React.FunctionComponent<Props> = props => {
+	const [visible, setVisibility] = useState(false);
+	const [fields, setFields] = useState({
+		moniker: '',
+		password: '',
+		verifyPassword: ''
+	});
 
-interface DispatchProps {
-	handleCreateAccount: (payload: KeystoreCreatePayLoad) => void;
-}
+	const handleCreateAccount = () => {
+		if (!fields.password || !fields.verifyPassword || !fields.moniker) {
+			return toast.error('Both fields must be filled in.');
+		}
 
-interface OwnProps {
-	empty?: null;
-}
+		if (fields.password !== fields.verifyPassword) {
+			return toast.error('Passwords do not match.');
+		}
 
-type LocalProps = OwnProps & DispatchProps & StoreProps & AlertProps;
+		if (!utils.validMoniker(fields.moniker)) {
+			return toast.error(
+				'Moniker can only contain letters, numbers and undercores.'
+			);
+		}
 
-interface State {
-	open: boolean;
-	fields: {
-		password: string;
-		verifyPassword: string;
-	};
-	errors: {
-		fieldError: string;
-	};
-}
+		setVisibility(false);
 
-class AccountCreate extends React.Component<LocalProps, State> {
-	public state = {
-		open: false,
-		fields: {
+		props.create(fields.moniker, fields.password.trim());
+
+		setFields({
+			moniker: '',
 			password: '',
 			verifyPassword: ''
-		},
-		errors: {
-			fieldError: ''
-		}
-	};
-
-	public open = () => this.setState({ open: true });
-	public close = () => this.setState({ open: false });
-
-	public componentWillUpdate(
-		nextProps: Readonly<LocalProps>,
-		nextContext: any
-	): void {
-		if (
-			!this.props.keystoreCreateTask.error &&
-			!!nextProps.keystoreCreateTask.error
-		) {
-			nextProps.alert.error(nextProps.keystoreCreateTask.error);
-		}
-
-		if (
-			!this.props.keystoreCreateTask.response &&
-			!!nextProps.keystoreCreateTask.response
-		) {
-			nextProps.alert.success(
-				`Account created: ${
-					nextProps.keystoreCreateTask.response.address
-					}`
-			);
-			this.close();
-		}
-	}
-
-	public handleChangeVerifyPassword = (e: any) => {
-		this.setState({
-			fields: {
-				...this.state.fields,
-				password: e.target.value
-			}
 		});
 	};
 
-	public handleChangePassword = (e: any) => {
-		this.setState({
-			fields: {
-				...this.state.fields,
-				verifyPassword: e.target.value
-			}
-		});
+	const theme = {
+		bottomOffset: props.bottomOffset
 	};
 
-	public handleCreate = async () => {
-		this.setState({
-			errors: {
-				fieldError: ''
-			}
-		});
-
-		const { fields } = this.state;
-
-		if (!fields.password || !fields.verifyPassword) {
-			this.props.alert.error('Both fields must not be empty.');
-			return;
-		}
-		if (fields.password !== fields.verifyPassword) {
-			this.props.alert.error('Passwords do not match.');
-			return;
-		}
-		if (this.props.configLoadTask.response) {
-			this.props.handleCreateAccount({
-				password: this.state.fields.password,
-				keystore: this.props.configLoadTask.response.storage.keystore
-			});
-		}
-	};
-
-	public render() {
-		const { configLoadTask } = this.props;
-
-		return (
+	return (
+		<ThemeProvider theme={theme}>
 			<React.Fragment>
-				<Modal
-					open={this.state.open}
-					onClose={this.close}
-					trigger={
-						<Button
-							content="Create"
-							color={'green'}
-							icon="plus"
-							onClick={this.open}
-							labelPosition="left"
-						/>
-					}
+				<Transition
+					items={visible}
+					from={{ right: '0px', display: 'none' }}
+					enter={{ right: '380px', display: 'block' }}
+					leave={{ right: '0px', display: 'none' }}
+					config={config.stiff}
 				>
-					<Modal.Header>Create an Account</Modal.Header>
-					<Modal.Content>
-						<Header as={'h4'}>Information</Header>
-						Enter a password to encrypt your account. The created
-						account will be placed in the keystore directory
-						specified in the configuration tab. If you would like to
-						create the account in a different directory, update the
-						configuration for keystore. <br/>
-						<br/>
-						<Label>
-							Keystore
-							<Label.Detail>
-								{configLoadTask.response &&
-								configLoadTask.response.storage.keystore}
-							</Label.Detail>
-						</Label>
-						<br/>
-						<br/>
-						<Divider/>
-						<Modal.Description>
-							<Form>
-								<Form.Field>
-									<label>Password: </label>
-									<input
-										onChange={this.handleChangePassword}
-									/>
-								</Form.Field>
-								<Form.Field>
-									<label>Verify Password: </label>
-									<input
-										onChange={
-											this.handleChangeVerifyPassword
+					{show =>
+						show &&
+						(p => (
+							<SOpen style={p} onClick={handleCreateAccount}>
+								<Button
+									icon="check"
+									color="green"
+									disabled={props.accounts.loading.create}
+									loading={props.accounts.loading.create}
+								/>
+							</SOpen>
+						))
+					}
+				</Transition>
+				<Transition
+					items={visible}
+					from={{ opacity: 0, right: '0px' }}
+					enter={{ opacity: 1, right: '380px' }}
+					leave={{ opacity: 0, right: '0px' }}
+					config={config.stiff}
+				>
+					{show =>
+						show &&
+						(p => (
+							<SClose
+								style={p}
+								onClick={() => setVisibility(!visible)}
+							>
+								<Button
+									icon="times"
+									disabled={props.accounts.loading.create}
+									loading={props.accounts.loading.create}
+									color="red"
+								/>
+							</SClose>
+						))
+					}
+				</Transition>
+				{!visible && (
+					<Animation direction="right">
+						<SOpen onClick={() => setVisibility(true)}>
+							<Button
+								icon="plus"
+								disabled={props.accounts.loading.create}
+								loading={props.accounts.loading.create}
+								color="green"
+							/>
+						</SOpen>
+					</Animation>
+				)}
+				<Transition
+					items={visible}
+					from={{ right: '-380px' }}
+					enter={{ right: '0px' }}
+					leave={{ right: '-380px' }}
+					config={config.stiff}
+				>
+					{show =>
+						show &&
+						(props => (
+							<SContent style={props}>
+								<h4>Create An Account</h4>
+								<div className="help">
+									Enter a password to encrypt the created
+									account.
+								</div>
+								<div>
+									<Input
+										placeholder="Moniker"
+										type="text"
+										onChange={(e, { value }) =>
+											setFields({
+												...fields,
+												moniker: value
+											})
 										}
 									/>
-								</Form.Field>
-							</Form>
-						</Modal.Description>
-					</Modal.Content>
-					<Modal.Actions>
-						<Button onClick={this.close}>Close</Button>
-						<Button
-							onClick={this.handleCreate}
-							color={'green'}
-							type="submit"
-						>
-							Create
-						</Button>
-					</Modal.Actions>
-				</Modal>
+									<br />
+									<Input
+										placeholder="Set Password"
+										type="password"
+										onChange={(e, { value }) =>
+											setFields({
+												...fields,
+												password: value
+											})
+										}
+									/>
+									<br />
+									<Input
+										placeholder="Verify Password"
+										type="password"
+										onChange={(e, { value }) =>
+											setFields({
+												...fields,
+												verifyPassword: value
+											})
+										}
+									/>
+								</div>
+							</SContent>
+						))
+					}
+				</Transition>
 			</React.Fragment>
-		);
-	}
-}
+		</ThemeProvider>
+	);
+};
 
-const mapStoreToProps = (store: Store): StoreProps => ({
-	configLoadTask: store.config.load,
-	keystoreCreateTask: store.keystore.create
-});
-
-const mapDispatchToProps = (dispatch: any): DispatchProps => ({
-	handleCreateAccount: payload =>
-		dispatch(redux.actions.keystore.create.init(payload))
-});
-
-export default connect<StoreProps, DispatchProps, OwnProps, Store>(
-	mapStoreToProps,
-	mapDispatchToProps
-)(withAlert<AlertProps>(AccountCreate));
+export default AccountCreate;

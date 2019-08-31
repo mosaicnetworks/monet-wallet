@@ -1,32 +1,39 @@
+import { app, BrowserWindow, nativeImage } from 'electron';
 import * as path from 'path';
-import * as electron from 'electron';
 
-const app = electron.app;
-let main: electron.BrowserWindow | null;
+const application = app;
+let main: BrowserWindow | null;
 
 function createWindow() {
-	main = new electron.BrowserWindow({
-		width: 1200,
-		height: 820,
-		icon: path.join(__dirname, 'assets/monet.png')
+	const icon = nativeImage.createFromPath(
+		path.join(__dirname, 'src/assets/logo.png')
+	);
+
+	main = new BrowserWindow({
+		width: 1350,
+		height: 757,
+		icon
 	});
-	main.loadURL(`file://${__dirname}/index.html`);
-	// main.loadURL(`http://localhost:8081`);
+
+	// createMenu();
+
+	// main.loadURL(`file://${__dirname}/index.html`);
+	main.loadURL(`http://localhost:8081`);
 
 	main.on('closed', () => {
 		main = null;
 	});
 }
 
-app.on('ready', createWindow);
+application.on('ready', createWindow);
 
-app.on('window-all-closed', () => {
+application.on('window-all-closed', () => {
 	if (process.platform !== 'darwin') {
 		app.quit();
 	}
 });
 
-app.on('activate', () => {
+application.on('activate', () => {
 	if (main === null) {
 		createWindow();
 	}

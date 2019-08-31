@@ -1,139 +1,181 @@
-import * as React from 'react';
+import React from 'react';
 
-import { Link } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { Container, Icon, Label } from 'semantic-ui-react';
+import Utils from 'evm-lite-utils';
+import styled from 'styled-components';
 
-import {
-	ApplicationConnectivityCheckReducer,
-	ApplicationDataDirectoryPayLoad,
-	ApplicationDirectoryChangeReducer,
-	KeystoreListReducer,
-	Store
-} from '../redux';
+import { Account } from 'evm-lite-core';
+import { NavLink as Link } from 'react-router-dom';
+import { config, Transition } from 'react-spring/renderprops';
+import { Container, Icon, Image, Label } from 'semantic-ui-react';
 
-import redux from '../redux.config';
-import Defaults from '../classes/Defaults';
-// @ts-ignore
-import logo from '../assets/logo.png';
+import MONET_LOGO from '../assets/monet_logo.png';
 
-import './styles/Header.css';
+const SWalletHeader = styled.div`
+	background: rgba(255, 255, 255, 0.95);
+	height: 70px;
+	line-height: 70px !important;
+	color: #333 !important;
+	z-index: 2000;
+	box-shadow: 0 4px 6px -10px #f1f1f1 !important;
+	width: 100% !important;
+`;
 
-interface StoreProps {
-	keystoreListTask: KeystoreListReducer;
-	directorySetTask: ApplicationDirectoryChangeReducer;
-	connectivityTask: ApplicationConnectivityCheckReducer;
-}
+const SLogo = styled.div`
+	font-weight: 300 !important;
+	letter-spacing: 1px;
+	font-size: 25px;
+	margin-left: 10px;
+	float: left;
+	margin-top: 15px;
+	text-transform: uppercase;
 
-interface DispatchProps {
-	handleDataDirectoryInit: (
-		directory: ApplicationDataDirectoryPayLoad
-	) => void;
-}
+	& a {
+		color: #333 !important;
+	}
+`;
 
-interface OwnProps {
-	empty?: null;
-}
+const SHeaderLinks = styled.div`
+	margin-left: 30px;
+	float: right;
 
-type LocalProps = OwnProps & StoreProps & DispatchProps;
-
-class Header extends React.Component<LocalProps, any> {
-	public state = { width: 0, height: 0 };
-
-	public handleReloadApp = () => {
-		const directory = this.props.directorySetTask.payload;
-
-		this.props.handleDataDirectoryInit(directory || Defaults.dataDirectory);
-	};
-
-	public updateWindowDimensions = () => {
-		this.setState({ width: window.innerWidth, height: window.innerHeight });
-	};
-
-	public componentDidMount() {
-		this.updateWindowDimensions();
-		window.addEventListener('resize', this.updateWindowDimensions);
+	& li {
+		list-style: none;
+		display: inline-block;
 	}
 
-	public componentWillUnmount() {
-		window.removeEventListener('resize', this.updateWindowDimensions);
+	& li a {
+		display: inline-block;
+		padding: 0 20px;
+		color: #555 !important;
 	}
 
-	public render() {
-		const { keystoreListTask } = this.props;
+	& li a:hover {
+		background: #fcfcfc !important;
+		color: black !important;
+		-webkit-transition: all 600ms cubic-bezier(0.23, 1, 0.32, 1) !important;
+		transition: all 600ms cubic-bezier(0.23, 1, 0.32, 1) !important;
+	}
 
-		return (
-			<Container fluid={true} style={{ paddingLeft: '20px !important' }}>
-				<div className="header-main">
-					<div className="logo">
-						<Link to="/">
-							<img src={logo} width={45} />
+	& .ui.label {
+		padding: 10px;
+	}
+`;
+
+const SHeaderLink = styled.li`
+	list-style: none;
+	display: inline-block;
+
+	& a {
+		display: inline-block;
+		padding: 0 20px;
+		color: #555 !important;
+	}
+
+	& a:hover {
+		background: #fcfcfc !important;
+		color: black !important;
+		-webkit-transition: all 600ms cubic-bezier(0.23, 1, 0.32, 1) !important;
+		transition: all 600ms cubic-bezier(0.23, 1, 0.32, 1) !important;
+	}
+
+	&.search {
+		margin-right: 20px !important;
+	}
+
+	&.search input {
+		width: 300px !important;
+	}
+`;
+
+interface Props {
+	unlocked: Account | undefined;
+	reset: any;
+}
+
+const Header: React.FunctionComponent<Props> = props => {
+	let to: any;
+
+	if (props.unlocked) {
+		to = {
+			pathname: `/account/${props.unlocked.address}`
+		};
+	}
+
+	return (
+		<Container fluid={true}>
+			<SWalletHeader>
+				<SLogo>
+					<Link to="/">
+						<Image src={MONET_LOGO} width={40} />
+					</Link>
+				</SLogo>
+				<SHeaderLinks>
+					<SHeaderLink
+						style={{
+							marginRight: '10px'
+						}}
+					>
+						<Transition
+							items={!!props.unlocked}
+							from={{ opacity: 0, marginRight: -50 }}
+							enter={{ opacity: 1, marginRight: 10 }}
+							leave={{ opacity: 0 }}
+							config={config.wobbly}
+						>
+							{show =>
+								show &&
+								(p => (
+									<Label style={p}>
+										<Link to={to || ''}>
+											{(props.unlocked &&
+												Utils.cleanAddress(
+													props.unlocked.address
+												)) ||
+												''}
+										</Link>
+										<Icon
+											style={{
+												cursor: 'pointer'
+											}}
+											name="delete"
+											onClick={props.reset}
+										/>
+									</Label>
+								))
+							}
+						</Transition>
+					</SHeaderLink>
+					<SHeaderLink>
+						<Link exact={true} activeClassName="is-active" to="/">
+							<Icon size={'large'} color={'black'} name="bars" />
 						</Link>
-					</div>
-					<div className="links">
-						<li>
-							<Link to="/">
-								<Label>
-									{(keystoreListTask.response &&
-										keystoreListTask.response.length) ||
-										'0'}
-								</Label>
-								<Icon
-									size={'big'}
-									color={'black'}
-									name="list alternate outline"
-								/>
-							</Link>
-						</li>
-						<li>
-							<Link to="/configuration">
-								<Icon size={'big'} color={'black'} name="cog" />
-							</Link>
-						</li>
-						{/* <li>
-							<Link to="/contract">
-								<Icon
-									size={'big'}
-									color={'black'}
-									name="file"
-								/>
-							</Link>
-						</li> */}
-						<li>
-							<a>
-								<Label
-									horizontal={true}
-									color={
-										this.props.connectivityTask.response
-											? 'green'
-											: 'red'
-									}
-								>
-									{this.props.connectivityTask.response
-										? 'Online'
-										: 'Offline'}
-								</Label>
-							</a>
-						</li>
-					</div>
-				</div>
-			</Container>
-		);
-	}
-}
+					</SHeaderLink>
+					<SHeaderLink>
+						<Link
+							exact={true}
+							activeClassName="is-active"
+							to="/poa"
+						>
+							<Icon
+								size={'large'}
+								color={'black'}
+								name="connectdevelop"
+							/>
+						</Link>
+					</SHeaderLink>
+					<SHeaderLink>
+						<Link
+							exact={true}
+							activeClassName="is-active"
+							to="/config"
+						>
+							<Icon size={'large'} color={'black'} name="cog" />
+						</Link>
+					</SHeaderLink>
+				</SHeaderLinks>
+			</SWalletHeader>
+		</Container>
+	);
+};
 
-const mapStoreToProps = (store: Store): StoreProps => ({
-	keystoreListTask: store.keystore.list,
-	directorySetTask: store.app.directory,
-	connectivityTask: store.app.connectivity
-});
-
-const mapDispatchToProps = (dispatch: any): DispatchProps => ({
-	handleDataDirectoryInit: directory =>
-		dispatch(redux.actions.application.directory.init(directory))
-});
-
-export default connect<StoreProps, DispatchProps, OwnProps, Store>(
-	mapStoreToProps,
-	mapDispatchToProps
-)(Header);
+export default Header;

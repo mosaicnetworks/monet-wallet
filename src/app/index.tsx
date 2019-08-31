@@ -1,36 +1,24 @@
-import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
+import React from 'react';
+
 import { Provider } from 'react-redux';
-import { Provider as AlertProvider } from 'react-alert';
 import { PersistGate } from 'redux-persist/integration/react';
 
-import redux from '../redux.config';
-
-import AlertTemplate from 'react-alert-template-basic';
+import getStores from '../store';
 import App from './App';
 
-import './styles/index.css';
 import 'semantic-ui-css/semantic.min.css';
+import 'react-toastify/dist/ReactToastify.css';
+import '../index.css';
 
-const options = {
-	timeout: 5000,
-	offset: '20px',
-	zIndex: 3000000
-};
+const stores = getStores();
 
 ReactDOM.render(
-	<Provider store={redux.stores.store}>
-		<AlertProvider
-			template={AlertTemplate}
-			position={'bottom right'}
-			{...options}
-			transition={'scale'}
-		>
-			<PersistGate loading={null} persistor={redux.stores.persistor}>
-				<App />
-			</PersistGate>
-		</AlertProvider>
+	<Provider store={stores.store}>
+		<PersistGate loading={null} persistor={stores.persistor}>
+			<App />
+		</PersistGate>
 	</Provider>,
 	document.getElementById('root') as HTMLElement
 );

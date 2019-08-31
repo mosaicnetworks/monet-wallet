@@ -1,0 +1,180 @@
+@import url('https://fonts.googleapis.com/css?family=Titillium+Web:300,400&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Cousine&display=swap');
+
+body {
+	font-family: 'Titillium Web', sans-serif !important;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	background: #f4f5f7 !important;
+	margin: 0 !important;
+	padding: 0 !important;
+}
+
+.card {
+	padding: 3px !important;
+	border-radius: 0px !important;
+	box-shadow: none !important;
+	word-break: break-all;
+	font-family: 'Titillium Web', sans-serif !important;
+	/* box-shadow: 0 4px 20px -6px #ddd !important; */
+	/* border: 1px solid #eee !important; */
+	width: 320px !important;
+}
+
+a {
+	font-family: 'Titillium Web', sans-serif !important;
+}
+
+.ui.label {
+	border-radius: 2px !important;
+}
+
+.ui.label a {
+	background: transparent !important;
+	color: #000 !important;
+	margin: 0 !important;
+	padding: 0 10px !important;
+}
+
+.ui.label a:hover {
+	background: transparent !important;
+	color: #000 !important;
+}
+
+h2,
+h1,
+h3,
+h4,
+h5 {
+	font-family: 'Titillium Web', sans-serif !important;
+}
+
+.cards {
+	margin: 0 !important;
+}
+
+.content {
+	padding-left: 20px !important;
+	padding-right: 20px !important;
+}
+
+.ui.blue {
+	background: rgba(31, 66, 146, 1) !important;
+}
+
+.ui.green {
+	background: #0d4b0d !important;
+}
+
+.ui.yellow {
+	background: rgb(254, 218, 55) !important;
+}
+
+.ui.inverted.green.segment {
+	background-color: rgb(23, 103, 57) !important;
+}
+
+.ui.purple {
+	background: rgb(126, 66, 149) !important;
+}
+
+.ui.red {
+	background: rgb(204, 29, 40) !important;
+}
+
+button {
+	font-family: 'Titillium Web', sans-serif !important;
+	border-radius: 0 !important;
+}
+
+button.blue {
+	border-bottom: #0f2e94 3px solid !important;
+}
+
+button.green {
+	border-bottom: #0d4b0d 3px solid !important;
+}
+
+button.red {
+	border-bottom: #880202 3px solid !important;
+}
+
+button.orange {
+	border-bottom: rgb(173, 97, 3) 3px solid !important;
+}
+
+button.purple {
+	border-bottom: rgba(118, 70, 146, 1) 3px solid !important;
+}
+
+button.yellow {
+	border-bottom: rgb(150, 130, 38) 3px solid !important;
+}
+
+.is-active {
+	background: #fcfcfc !important;
+	color: #4183c4 !important;
+}
+
+.ui.horizontal.segments {
+	border: 0 !important;
+	box-shadow: none !important;
+	margin-top: 0 !important;
+	margin-bottom: 0 !important;
+	font-size: 25px !important;
+	box-shadow: 0 4px 20px -6px #eee !important;
+	/* box-shadow: 0 1px 1px rgba(0, 0, 0, 0.03) !important; */
+	/* margin-bottom: 1px !important; */
+}
+
+.ui.horizontal.segments .segment {
+	border: 0 !important;
+	padding: 20px;
+}
+
+.selection {
+	border: 1px solid #eee !important;
+	padding: 16px !important;
+	margin-bottom: 4px !important;
+}
+
+.dropdown {
+	padding: 16px !important;
+}
+
+input[type='text'],
+input[type='number'],
+input[type='password'] {
+	font-family: 'Titillium Web', sans-serif !important;
+	border: 1px solid #eee !important;
+	padding: 12px !important;
+	margin: 0px !important;
+}
+
+.ui.info.message {
+	border-radius: 2px !important;
+}
+
+.toast-custom {
+	box-shadow: 0 4px 20px -6px #000 !important;
+	padding: 5px 20px !important;
+	color: #333;
+}
+
+.Toastify__toast--error {
+	box-shadow: 0 4px 20px -6px #000 !important;
+	color: white !important;
+	background: rgb(204, 29, 40) !important;
+}
+
+.Toastify__toast--success {
+	box-shadow: 0 4px 20px -6px #000 !important;
+	background: #0d4b0d !important;
+	color: white !important;
+}
+
+.Toastify__toast--info {
+	box-shadow: 0 4px 20px -6px #000 !important;
+	color: white !important;
+	background: rgba(31, 66, 146, 1) !important;
+}
