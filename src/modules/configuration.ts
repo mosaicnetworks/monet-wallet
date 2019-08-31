@@ -168,7 +168,7 @@ export function setDirectory(path: string): ThunkResult<Promise<string>> {
 			return path;
 		}
 
-		new Datadir(path, 'monetcli');
+		const {} = new Datadir(path, 'monetcli');
 
 		dispatch({
 			type: SET_DIRECTORY_SUCCESS,
