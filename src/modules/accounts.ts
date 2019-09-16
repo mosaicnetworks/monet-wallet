@@ -1,11 +1,10 @@
 import * as path from 'path';
 
-import utils from 'evm-lite-utils';
+import utils, { Currency } from 'evm-lite-utils';
 
 import { IBaseAccount, IReceipt } from 'evm-lite-client';
-import { Babble } from 'evm-lite-consensus';
+import { Account, IEVMAccount, Monet } from 'evm-lite-core';
 
-import Node, { Account } from 'evm-lite-core';
 import Keystore, { IMonikerBaseAccount, IV3Keyfile } from 'evm-lite-keystore';
 
 import { toast } from 'react-toastify';
@@ -38,26 +37,17 @@ const TRANSFER_REQUEST = '@monet/accounts/TRANSFER/REQUEST';
 const TRANSFER_SUCCESS = '@monet/accounts/TRANSFER/SUCCESS';
 const TRANSFER_ERROR = '@monet/accounts/TRANSFER/ERROR';
 
-const makeMonet = (host: string, port: number) => {
-	const b = new Babble(host, port);
-
-	return new Node(host, port, b);
-};
+export interface IMonikerEVMAccount extends IEVMAccount {
+	moniker: string;
+}
 
 // Accounts state structure
 export interface AccountsState {
 	// Entire list of accounts
-	readonly all: IMonikerBaseAccount[];
+	readonly all: IMonikerEVMAccount[];
 
 	// Currently unlocked account
 	readonly unlocked?: Account;
-
-	// Entrie list of transactions (not specific to an account)
-	// Latest transaction hash
-	readonly transactions: {
-		all: any[];
-		lastestReceipt?: IReceipt;
-	};
 
 	// A single error field to be used by this module for any action
 	readonly error?: string;
@@ -75,9 +65,6 @@ export interface AccountsState {
 // Initial State of the accounts module
 const initialState: AccountsState = {
 	all: [],
-	transactions: {
-		all: []
-	},
 	loading: {
 		list: false,
 		get: false,
@@ -237,10 +224,6 @@ export default function reducer(
 				loading: {
 					...state.loading,
 					unlock: false
-				},
-				transactions: {
-					...state.transactions,
-					lastestReceipt: undefined
 				}
 			};
 
@@ -248,23 +231,15 @@ export default function reducer(
 		case TRANSFER_REQUEST:
 			return {
 				...state,
-				transactions: {
-					...state.transactions,
-					lastestReceipt: undefined
-				},
 				loading: {
 					...state.loading,
 					transfer: true
 				}
 			};
 		case TRANSFER_SUCCESS:
-			// TODO: Create transaction here.
 			return {
 				...state,
-				transactions: {
-					...state.transactions,
-					lastestReceipt: action.payload
-				},
+
 				loading: {
 					...state.loading,
 					transfer: false
@@ -273,10 +248,6 @@ export default function reducer(
 		case TRANSFER_ERROR:
 			return {
 				...state,
-				transactions: {
-					...state.transactions,
-					lastestReceipt: undefined
-				},
 				loading: {
 					...state.loading,
 					transfer: false
@@ -292,33 +263,35 @@ export default function reducer(
  * Should list all acounts from the keystore. It will update the redux state
  * and set the `all` attribute to the desired result.
  */
-export function list(): ThunkResult<Promise<IMonikerBaseAccount[]>> {
+export function list(): ThunkResult<Promise<IMonikerEVMAccount[]>> {
 	return async (dispatch, getState) => {
-		const state = getState();
+		const { config } = getState();
 
-		let accounts: IMonikerBaseAccount[] = [];
+		let accounts: IMonikerEVMAccount[] = [];
 
 		dispatch({
 			type: LIST_REQUEST
 		});
 
 		try {
-			let node: Node<Babble> | undefined;
-
-			node = makeMonet('localhost', 8080);
+			let node: Monet | undefined = new Monet(
+				config.data.connection.host,
+				config.data.connection.port
+			);
 
 			await node.getInfo().catch(() => {
 				node = undefined;
 			});
 
 			const keystore = new Keystore(
-				path.join(state.config.directory, 'keystore')
+				path.join(config.directory, 'keystore')
 			);
+
 			const mk = await keystore.list();
 
 			accounts = Object.keys(mk).map(moniker => ({
 				address: mk[moniker].address,
-				balance: {} as any,
+				balance: new Currency(0),
 				nonce: 0,
 				bytecode: '',
 				moniker
@@ -365,13 +338,13 @@ export type IAccountsCreate = (
 export function create(
 	moniker: string,
 	password: string
-): ThunkResult<Promise<IMonikerBaseAccount>> {
+): ThunkResult<Promise<IMonikerEVMAccount>> {
 	return async (dispatch, getState) => {
 		const { config } = getState();
 
-		const account = {
+		const account: IMonikerEVMAccount = {
 			address: '',
-			balance: {} as any,
+			balance: new Currency(0),
 			nonce: 0,
 			bytecode: '',
 			moniker
@@ -425,7 +398,7 @@ export function get(address: string): ThunkResult<Promise<IBaseAccount>> {
 
 		try {
 			if (!!Object.keys(config).length) {
-				const node = makeMonet(
+				const node = new Monet(
 					config.data.connection.host,
 					config.data.connection.port
 				);
@@ -518,10 +491,8 @@ export function resetUnlock(): ThunkResult<void> {
  * @param gasPrice - The price per `gas` to pay for the transaction
  */
 export function transfer(
-	from: string,
 	to: string,
 	value: number,
-	gas: number,
 	gasPrice: number
 ): ThunkResult<Promise<IReceipt>> {
 	return async (dispatch, getState) => {
@@ -538,7 +509,7 @@ export function transfer(
 			}
 
 			if (!!Object.keys(config).length) {
-				const node = makeMonet(
+				const node = new Monet(
 					config.connection.host,
 					config.connection.port
 				);
@@ -548,8 +519,8 @@ export function transfer(
 				const receipt = await node.transfer(
 					state.accounts.unlocked,
 					to,
-					value,
-					gas,
+					new Currency(value + 'T'),
+					21000,
 					gasPrice
 				);
 
@@ -557,6 +528,8 @@ export function transfer(
 					type: TRANSFER_SUCCESS,
 					payload: receipt
 				});
+
+				toast.success('Transfer submitted');
 
 				return receipt;
 			} else {
@@ -567,6 +540,8 @@ export function transfer(
 				type: TRANSFER_ERROR,
 				payload: error.toString()
 			});
+
+			toast.error(error.toString());
 
 			return {} as IReceipt;
 		}

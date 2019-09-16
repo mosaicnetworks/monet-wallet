@@ -3,10 +3,11 @@ import React from 'react';
 import utils from 'evm-lite-utils';
 import styled from 'styled-components';
 
-import { IMonikerBaseAccount } from 'evm-lite-keystore';
 import { Link } from 'react-router-dom';
 import { config, Transition } from 'react-spring/renderprops';
 import { Card, Label } from 'semantic-ui-react';
+
+import { IMonikerEVMAccount } from '../modules/accounts';
 
 import Avatar from './Avatar';
 
@@ -21,12 +22,26 @@ const SAddress = styled.span`
 `;
 
 interface Props {
-	account: IMonikerBaseAccount;
+	account: IMonikerEVMAccount;
 	unlocked: boolean;
 }
 
 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 const Account: React.FunctionComponent<Props> = props => {
+	let balance = props.account.balance.format('T');
+	const unit = balance.slice(-1);
+
+	const b = balance.slice(0, -1);
+	const l = b.split('.');
+
+	if (l[1]) {
+		l[1] = l[1].slice(0, 4);
+	}
+
+	balance = l.join('.');
+
+	balance += unit;
+
 	return (
 		<Card>
 			<Card.Content>
@@ -69,11 +84,7 @@ const Account: React.FunctionComponent<Props> = props => {
 					</Transition>
 					<Label color="orange" basic={false}>
 						Balance
-						<Label.Detail>
-							{typeof props.account.balance === 'object'
-								? props.account.balance.toNumber()
-								: props.account.balance}
-						</Label.Detail>
+						<Label.Detail>{balance}</Label.Detail>
 					</Label>
 					<Label basic={false}>
 						Nonce

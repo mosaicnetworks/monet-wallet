@@ -2,7 +2,10 @@ import React, { useState } from 'react';
 
 import styled from 'styled-components';
 
-import { Form, Grid, Header, Icon } from 'semantic-ui-react';
+import { useDispatch } from 'react-redux';
+import { Form, Grid, Header } from 'semantic-ui-react';
+
+import { transfer } from '../modules/accounts';
 
 const SPaddedContent = styled.div`
 	margin-top: 20px;
@@ -22,14 +25,16 @@ interface Props {
 }
 
 const AccountTransfer: React.FunctionComponent<Props> = props => {
+	const dispatch = useDispatch();
+
 	const [to, setTo] = useState('');
 	const [value, setValue] = useState(0);
+	const [gasPrice, setGasPrice] = useState(0);
 
-	// show states
-	// const [show, setShow] = useState({
-	// 	second: false,
-	// 	third: false
-	// });
+	const send = async () => {
+		const r = await dispatch(transfer(to, value, gasPrice));
+		console.log(r);
+	};
 
 	return (
 		<SPaddedContent>
@@ -40,6 +45,7 @@ const AccountTransfer: React.FunctionComponent<Props> = props => {
 						<Grid columns="equal">
 							<Grid.Column>
 								<Form.Group inline={true}>
+									<label>To</label>
 									<Form.Input
 										width={'16'}
 										fluid={true}
@@ -49,18 +55,11 @@ const AccountTransfer: React.FunctionComponent<Props> = props => {
 											setTo(value)
 										}
 									/>
-									<Form.Button
-										color="blue"
-										labelPosition="right"
-										icon={true}
-									>
-										Next
-										<Icon name="arrow right" />
-									</Form.Button>
 								</Form.Group>
 							</Grid.Column>
 							<Grid.Column>
 								<Form.Group inline={true}>
+									<label>Amount (T)</label>
 									<Form.Input
 										width={'16'}
 										defaultValue={value}
@@ -70,37 +69,21 @@ const AccountTransfer: React.FunctionComponent<Props> = props => {
 											setValue(Number(v))
 										}
 									/>
-									<Form.Button
-										color="blue"
-										icon={true}
-										labelPosition="right"
-									>
-										Next
-										<Icon name="arrow right" />
-									</Form.Button>
 								</Form.Group>
 							</Grid.Column>
 							<Grid.Column>
 								<Form.Group inline={true}>
+									<label>Gas Price</label>
 									<Form.Input
 										width={'8'}
-										defaultValue={value}
-										type="number"
-										placeholder="Gas"
-										onChange={(_, { value: v }) =>
-											setValue(Number(v))
-										}
-									/>
-									<Form.Input
-										width={'8'}
-										defaultValue={value}
+										defaultValue={gasPrice}
 										type="number"
 										placeholder="Gas Price"
 										onChange={(_, { value: v }) =>
-											setValue(Number(v))
+											setGasPrice(Number(v))
 										}
 									/>
-									<Form.Button color="green">
+									<Form.Button onClick={send} color="green">
 										Send
 									</Form.Button>
 								</Form.Group>

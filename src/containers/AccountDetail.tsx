@@ -1,15 +1,18 @@
 import React from 'react';
 
-import Utils from 'evm-lite-utils';
+import Utils, { Currency } from 'evm-lite-utils';
 import styled from 'styled-components';
 
-import { IMonikerBaseAccount } from 'evm-lite-keystore';
 import { useDispatch, useSelector } from 'react-redux';
 import { RouteComponentProps } from 'react-router-dom';
 import { config, Spring } from 'react-spring/renderprops';
 import { Header } from 'semantic-ui-react';
 
-import { AccountsState, get as getAccount } from '../modules/accounts';
+import {
+	AccountsState,
+	get as getAccount,
+	IMonikerEVMAccount
+} from '../modules/accounts';
 import { Store } from '../store';
 
 import AccountTransfer from '../components/AccountTransfer';
@@ -45,7 +48,7 @@ const AccountDetail: React.FunctionComponent<Props> = props => {
 
 	// temp fix need to update this later with reselctjs
 	const accounts = useSelector<Store, AccountsState>(store => store.accounts);
-	const account = useSelector<Store, IMonikerBaseAccount>(
+	const account = useSelector<Store, IMonikerEVMAccount>(
 		store =>
 			store.accounts.all.filter(
 				acc =>
@@ -53,7 +56,7 @@ const AccountDetail: React.FunctionComponent<Props> = props => {
 					Utils.cleanAddress(props.match.params.address)
 			)[0] || {
 				address: Utils.cleanAddress(props.match.params.address),
-				balance: 0,
+				balance: new Currency(0),
 				nonce: 0,
 				bytecode: ''
 			}
@@ -102,9 +105,7 @@ const AccountDetail: React.FunctionComponent<Props> = props => {
 				<Header as="h2" floated="right">
 					Balance
 					<Header.Subheader>
-						{typeof account.balance === 'object'
-							? account.balance.toString(10)
-							: account.balance}
+						{account.balance.format('T')}
 					</Header.Subheader>
 				</Header>
 			</SJumbo>
