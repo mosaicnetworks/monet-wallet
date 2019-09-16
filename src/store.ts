@@ -17,7 +17,7 @@ export interface Store {
 	poa: POAState;
 }
 
-const persistConfig: PersistConfig = {
+const persistConfig: PersistConfig<Store> = {
 	key: 'root',
 	storage: dynamicStorage,
 	whitelist: ['config']
