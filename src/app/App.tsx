@@ -6,11 +6,11 @@ import { ToastContainer } from 'react-toastify';
 
 import { initialize } from '../modules/configuration';
 
-import Wrapper from '../containers/Wrapper';
+import AccountDetail from '../containers/AccountDetail';
 import Accounts from '../containers/Accounts';
 import Configuration from '../containers/Configuration';
 import POA from '../containers/POA';
-import AccountDetail from '../containers/AccountDetail';
+import Wrapper from '../containers/Wrapper';
 
 const App: React.FunctionComponent<{}> = () => {
 	const dispatch = useDispatch();
