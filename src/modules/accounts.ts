@@ -318,7 +318,7 @@ export function list(): ThunkResult<Promise<IMonikerBaseAccount[]>> {
 
 			accounts = Object.keys(mk).map(moniker => ({
 				address: mk[moniker].address,
-				balance: 0,
+				balance: {} as any,
 				nonce: 0,
 				bytecode: '',
 				moniker
@@ -371,7 +371,7 @@ export function create(
 
 		const account = {
 			address: '',
-			balance: 0,
+			balance: {} as any,
 			nonce: 0,
 			bytecode: '',
 			moniker

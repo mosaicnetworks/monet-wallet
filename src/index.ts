@@ -10,6 +10,9 @@ function createWindow() {
 	);
 
 	main = new BrowserWindow({
+		webPreferences: {
+			nodeIntegration: true
+		},
 		width: 1350,
 		height: 757,
 		icon

@@ -26,10 +26,11 @@ const AccountTransfer: React.FunctionComponent<Props> = props => {
 	const [value, setValue] = useState(0);
 
 	// show states
-	const [show, setShow] = useState({
-		second: false,
-		third: false
-	});
+	// const [show, setShow] = useState({
+	// 	second: false,
+	// 	third: false
+	// });
+
 	return (
 		<SPaddedContent>
 			<Header as="h3">Transfer</Header>

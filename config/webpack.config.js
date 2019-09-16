@@ -7,8 +7,6 @@ const ForkTSCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
 const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
 
-const CleanWebpackPlugin = require('clean-webpack-plugin');
-
 const autoprefixer = require('autoprefixer');
 
 const resolveRelativeToApp = relativePath =>
@@ -99,7 +97,7 @@ const config = {
 									plugins: () => [
 										require('postcss-flexbugs-fixes'),
 										autoprefixer({
-											browsers: [
+											overrideBrowserslist: [
 												'>1%',
 												'last 4 versions',
 												'Firefox ESR',
@@ -127,10 +125,7 @@ const config = {
 		__dirname: false
 	},
 	resolve: {
-		extensions: ['.js', '.ts', '.tsx', '.jsx', '.json'],
-		alias: {
-			scrypt: 'js-scrypt'
-		}
+		extensions: ['.js', '.ts', '.tsx', '.jsx', '.json']
 	},
 	performance: {
 		hints: false
@@ -168,7 +163,6 @@ module.exports = [
 				new Webpack.DefinePlugin({
 					'process.env.NODE_ENV': JSON.stringify('development')
 				}),
-				new CleanWebpackPlugin(['dist'], { exclude: ['index.js'] }),
 				new HTMLWebpackPlugin({
 					inject: true,
 					template: paths.indexHTML
