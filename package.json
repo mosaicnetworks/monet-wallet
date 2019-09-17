@@ -1,6 +1,6 @@
 {
-	"name": "evm-lite-wallet",
-	"version": "1.0.0-alpha.0",
+	"name": "monet-wallet",
+	"version": "1.0.0",
 	"private": true,
 	"dependencies": {
 		"js-scrypt": "^0.2.0",
