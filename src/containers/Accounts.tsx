@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import Utils from 'evm-lite-utils';
+import Utils, { Currency } from 'evm-lite-utils';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { config, Spring } from 'react-spring/renderprops';
@@ -30,6 +30,25 @@ const Accounts: React.FunctionComponent<{}> = () => {
 	const refreshAccounts = () => dispatch(list());
 
 	const accounts = useSelector<Store, AccountsState>(store => store.accounts);
+
+	let totalBalance = new Currency(0);
+	accounts.all.map(account => {
+		totalBalance = totalBalance.plus(account.balance);
+	});
+
+	let balance = totalBalance.format('T');
+
+	const b = balance.slice(0, -1);
+	const unit = balance.slice(-1);
+	const l = b.split('.');
+
+	if (l[1]) {
+		l[1] = l[1].slice(0, 4);
+	}
+
+	balance = l.join('.');
+
+	balance += unit;
 
 	return (
 		<React.Fragment>
@@ -60,7 +79,7 @@ const Accounts: React.FunctionComponent<{}> = () => {
 				</Header>
 				<Header as="h2" floated="right">
 					Total Balance
-					<Header.Subheader>Lots!</Header.Subheader>
+					<Header.Subheader>{balance}</Header.Subheader>
 				</Header>
 			</SJumbo>
 			<Banner color="blue">
