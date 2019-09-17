@@ -1,14 +1,19 @@
 import React from 'react';
 
-import Utils from 'evm-lite-utils';
 import styled from 'styled-components';
 
-import { Account } from 'evm-lite-core';
 import { NavLink as Link } from 'react-router-dom';
 import { config, Transition } from 'react-spring/renderprops';
 import { Container, Icon, Image, Label } from 'semantic-ui-react';
 
+import { MonikerAccount } from '../monet';
+
 import MONET_LOGO from '../assets/monet_logo.png';
+import Utils from 'evm-lite-utils';
+
+function capitalize(string: string) {
+	return string.charAt(0).toUpperCase() + string.slice(1);
+}
 
 const SWalletHeader = styled.div`
 	background: rgba(255, 255, 255, 0.95);
@@ -88,7 +93,7 @@ const SHeaderLink = styled.li`
 `;
 
 interface Props {
-	unlocked: Account | undefined;
+	unlocked: MonikerAccount | undefined;
 	reset: any;
 }
 
@@ -128,9 +133,12 @@ const Header: React.FunctionComponent<Props> = props => {
 									<Label style={p}>
 										<Link to={to || ''}>
 											{(props.unlocked &&
-												Utils.cleanAddress(
-													props.unlocked.address
-												)) ||
+												`${capitalize(
+													props.unlocked.moniker.slice()
+												)}` +
+													` (${Utils.cleanAddress(
+														props.unlocked.address
+													)})`) ||
 												''}
 										</Link>
 										<Icon

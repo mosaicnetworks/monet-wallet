@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 
 import styled from 'styled-components';
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Form, Grid, Header } from 'semantic-ui-react';
 
 import { transfer } from '../modules/accounts';
+import { Store } from '../store';
 
 const SPaddedContent = styled.div`
 	margin-top: 20px;
@@ -30,6 +31,10 @@ const AccountTransfer: React.FunctionComponent<Props> = props => {
 	const [to, setTo] = useState('');
 	const [value, setValue] = useState(0);
 	const [gasPrice, setGasPrice] = useState(0);
+
+	const loading = useSelector<Store, boolean>(
+		store => store.accounts.loading.transfer
+	);
 
 	const send = async () => {
 		const r = await dispatch(transfer(to, value, gasPrice));
@@ -83,7 +88,12 @@ const AccountTransfer: React.FunctionComponent<Props> = props => {
 											setGasPrice(Number(v))
 										}
 									/>
-									<Form.Button onClick={send} color="green">
+									<Form.Button
+										loading={loading}
+										disabled={loading}
+										onClick={send}
+										color="green"
+									>
 										Send
 									</Form.Button>
 								</Form.Group>

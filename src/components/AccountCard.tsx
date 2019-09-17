@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import { config, Transition } from 'react-spring/renderprops';
 import { Card, Label } from 'semantic-ui-react';
 
-import { IMonikerEVMAccount } from '../modules/accounts';
+import { IMonikerEVMAccount } from '../monet';
 
 import Avatar from './Avatar';
 

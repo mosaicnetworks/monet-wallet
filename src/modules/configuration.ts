@@ -1,9 +1,10 @@
 import utils from 'evm-lite-utils';
 
-import Datadir, { IConfiguration, osdatadir } from 'evm-lite-datadir';
+import { IConfiguration, osdatadir } from 'evm-lite-datadir';
 import { toast } from 'react-toastify';
 
 import { BaseAction, ThunkResult } from '.';
+import { MonetDataDir } from '../monet';
 import { list } from './accounts';
 
 // Set configuration data directory
@@ -138,7 +139,7 @@ export function load(): ThunkResult<Promise<IConfiguration>> {
 		});
 
 		try {
-			const datadir = new Datadir(store.config.directory, 'monetcli');
+			const datadir = new MonetDataDir(store.config.directory);
 
 			config = await datadir.readConfig();
 
@@ -168,7 +169,7 @@ export function setDirectory(path: string): ThunkResult<Promise<string>> {
 			return path;
 		}
 
-		const {} = new Datadir(path, 'monetcli');
+		const {} = new MonetDataDir(path);
 
 		dispatch({
 			type: SET_DIRECTORY_SUCCESS,
@@ -200,7 +201,7 @@ export function save(
 		});
 
 		try {
-			const datadir = new Datadir(state.config.directory, 'monetcli');
+			const datadir = new MonetDataDir(state.config.directory);
 
 			await datadir.saveConfig(newConfig);
 

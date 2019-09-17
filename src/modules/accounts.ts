@@ -1,15 +1,14 @@
 import * as path from 'path';
 
-import utils, { Currency } from 'evm-lite-utils';
-
 import { IBaseAccount, IReceipt } from 'evm-lite-client';
-import { Account, IEVMAccount, Monet } from 'evm-lite-core';
-
-import Keystore, { IMonikerBaseAccount, IV3Keyfile } from 'evm-lite-keystore';
-
+import { Account, Monet } from 'evm-lite-core';
 import { toast } from 'react-toastify';
 
-import { BaseAction, ThunkResult } from '.';
+import Keystore, { IMonikerBaseAccount, IV3Keyfile } from 'evm-lite-keystore';
+import utils, { Currency } from 'evm-lite-utils';
+
+import { BaseAction, errorHandler, ThunkResult } from '.';
+import { IMonikerEVMAccount, MonetDataDir, MonikerAccount } from '../monet';
 
 // Lists all accounts in keystore
 const LIST_REQUEST = '@monet/accounts/LIST/REQUEST';
@@ -37,17 +36,13 @@ const TRANSFER_REQUEST = '@monet/accounts/TRANSFER/REQUEST';
 const TRANSFER_SUCCESS = '@monet/accounts/TRANSFER/SUCCESS';
 const TRANSFER_ERROR = '@monet/accounts/TRANSFER/ERROR';
 
-export interface IMonikerEVMAccount extends IEVMAccount {
-	moniker: string;
-}
-
 // Accounts state structure
 export interface AccountsState {
 	// Entire list of accounts
 	readonly all: IMonikerEVMAccount[];
 
 	// Currently unlocked account
-	readonly unlocked?: Account;
+	readonly unlocked?: MonikerAccount;
 
 	// A single error field to be used by this module for any action
 	readonly error?: string;
@@ -265,60 +260,57 @@ export default function reducer(
  */
 export function list(): ThunkResult<Promise<IMonikerEVMAccount[]>> {
 	return async (dispatch, getState) => {
-		const { config } = getState();
-
 		let accounts: IMonikerEVMAccount[] = [];
+
+		const { config } = getState();
+		const error = errorHandler.bind(null, dispatch, LIST_ERROR);
 
 		dispatch({
 			type: LIST_REQUEST
 		});
 
-		try {
-			let node: Monet | undefined = new Monet(
-				config.data.connection.host,
-				config.data.connection.port
+		let node: Monet | undefined = new Monet(
+			config.data.connection.host,
+			config.data.connection.port
+		);
+
+		await node.getInfo().catch(() => {
+			node = undefined;
+		});
+
+		const datadir = new MonetDataDir(config.directory);
+		const mk = await datadir
+			.listKeyfiles()
+			.catch(() => error('Could not load accounts'));
+
+		accounts = Object.keys(mk).map(moniker => ({
+			address: mk[moniker].address,
+			balance: new Currency(0),
+			nonce: 0,
+			bytecode: '',
+			moniker
+		}));
+
+		if (node) {
+			accounts = await Promise.all(
+				accounts.map(async account => {
+					const acc = await node!
+						.getAccount(account.address)
+						.catch(console.log);
+
+					return {
+						...account,
+						...acc,
+						moniker: account.moniker
+					};
+				})
 			);
-
-			await node.getInfo().catch(() => {
-				node = undefined;
-			});
-
-			const keystore = new Keystore(
-				path.join(config.directory, 'keystore')
-			);
-
-			const mk = await keystore.list();
-
-			accounts = Object.keys(mk).map(moniker => ({
-				address: mk[moniker].address,
-				balance: new Currency(0),
-				nonce: 0,
-				bytecode: '',
-				moniker
-			}));
-
-			if (node) {
-				accounts = await Promise.all(
-					accounts.map(async account => {
-						const acc = await node!.getAccount(account.address);
-						return {
-							...acc,
-							moniker: account.moniker
-						};
-					})
-				);
-			}
-
-			dispatch({
-				type: LIST_SUCCESS,
-				payload: accounts
-			});
-		} catch (error) {
-			dispatch({
-				type: LIST_ERROR,
-				payload: error.toString()
-			});
 		}
+
+		dispatch({
+			type: LIST_SUCCESS,
+			payload: accounts
+		});
 
 		return accounts;
 	};
@@ -358,6 +350,7 @@ export function create(
 			const keystore = new Keystore(
 				path.join(config.directory, 'keystore')
 			);
+
 			const acc: IV3Keyfile = await keystore.create(moniker, password);
 
 			account.address = acc.address;
@@ -441,20 +434,25 @@ export function unlock(
 			type: UNLOCK_REQUEST
 		});
 
-		try {
-			const keystore = new Keystore(
-				path.join(config.directory, 'keystore')
-			);
+		const keystore = new Keystore(path.join(config.directory, 'keystore'));
+		const keyfile = await keystore.get(moniker);
 
-			const keyfile = await keystore.get(moniker);
+		try {
 			const account = Keystore.decrypt(
 				keyfile,
 				password.trim().replace(/(\r\n|\n|\r)/gm, '')
 			);
 
+			const monikerAccount = new MonikerAccount({
+				address: account.address,
+				privateKey: account.privateKey
+			});
+
+			monikerAccount.moniker = moniker;
+
 			dispatch({
 				type: UNLOCK_SUCCESS,
-				payload: account
+				payload: monikerAccount
 			});
 
 			return account;
@@ -465,6 +463,7 @@ export function unlock(
 			});
 
 			toast.error('Invalid password.');
+
 			return undefined;
 		}
 	};
@@ -498,52 +497,49 @@ export function transfer(
 	return async (dispatch, getState) => {
 		const state = getState();
 		const config = state.config.data;
+		const error = errorHandler.bind(null, dispatch, TRANSFER_ERROR);
 
 		dispatch({
 			type: TRANSFER_REQUEST
 		});
 
-		try {
-			if (!state.accounts.unlocked) {
-				throw Error('No account unlocked to sign the transfer.');
-			}
+		if (!state.accounts.unlocked) {
+			throw Error('No account unlocked to sign the transaction');
+		}
 
-			if (!!Object.keys(config).length) {
-				const node = new Monet(
-					config.connection.host,
-					config.connection.port
-				);
+		if (!!Object.keys(config).length) {
+			const node = new Monet(
+				config.connection.host,
+				config.connection.port
+			);
 
-				await node.getInfo();
-
-				const receipt = await node.transfer(
-					state.accounts.unlocked,
-					to,
-					new Currency(value + 'T'),
-					21000,
-					gasPrice
-				);
-
-				dispatch({
-					type: TRANSFER_SUCCESS,
-					payload: receipt
-				});
-
-				toast.success('Transfer submitted');
-
-				return receipt;
-			} else {
-				throw Error('Configuration could not loaded.');
-			}
-		} catch (error) {
-			dispatch({
-				type: TRANSFER_ERROR,
-				payload: error.toString()
+			const info = await node.getInfo().catch(() => {
+				error('No connection detected');
+				return;
 			});
 
-			toast.error(error.toString());
+			if (!info) {
+				return {} as IReceipt;
+			}
 
-			return {} as IReceipt;
+			const receipt = await node.transfer(
+				state.accounts.unlocked,
+				to,
+				new Currency(value + 'T'),
+				21000,
+				gasPrice
+			);
+
+			dispatch({
+				type: TRANSFER_SUCCESS,
+				payload: receipt
+			});
+
+			toast.success('Transfer submitted');
+
+			return receipt;
+		} else {
+			throw Error('Configuration could not loaded.');
 		}
 	};
 }

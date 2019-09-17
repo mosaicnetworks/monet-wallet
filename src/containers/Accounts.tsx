@@ -47,7 +47,7 @@ const Accounts: React.FunctionComponent<{}> = () => {
 				>
 					{props => (
 						<Header style={props} as="h2" floated="left">
-							Account Settings
+							Accounts
 							<Header.Subheader>
 								Create new and manage existing accounts
 							</Header.Subheader>

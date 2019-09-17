@@ -8,11 +8,8 @@ import { RouteComponentProps } from 'react-router-dom';
 import { config, Spring } from 'react-spring/renderprops';
 import { Header } from 'semantic-ui-react';
 
-import {
-	AccountsState,
-	get as getAccount,
-	IMonikerEVMAccount
-} from '../modules/accounts';
+import { AccountsState, get as getAccount } from '../modules/accounts';
+import { IMonikerEVMAccount } from '../monet';
 import { Store } from '../store';
 
 import AccountTransfer from '../components/AccountTransfer';
@@ -111,7 +108,9 @@ const AccountDetail: React.FunctionComponent<Props> = props => {
 			</SJumbo>
 			<Banner color={'blue'}>Last updated a few seconds ago.</Banner>
 			<AccountTransfer unlocked={unlocked} />
-			<AccountUnlock bottomOffset={105} account={account} />
+			{!unlocked && (
+				<AccountUnlock bottomOffset={105} account={account} />
+			)}
 			<FloatingButton bottomOffset={60}>
 				<LoadingButton
 					isLoading={accounts.loading.get}
