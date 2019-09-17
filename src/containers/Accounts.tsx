@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 
 import Utils, { Currency } from 'evm-lite-utils';
@@ -30,6 +30,10 @@ const Accounts: React.FunctionComponent<{}> = () => {
 	const refreshAccounts = () => dispatch(list());
 
 	const accounts = useSelector<Store, AccountsState>(store => store.accounts);
+
+	useEffect(() => {
+		refreshAccounts();
+	}, []);
 
 	let totalBalance = new Currency(0);
 	accounts.all.map(account => {

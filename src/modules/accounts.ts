@@ -535,6 +535,8 @@ export function transfer(
 				payload: receipt
 			});
 
+			dispatch(get(state.accounts.unlocked.address));
+
 			toast.success('Transfer submitted');
 
 			return receipt;
