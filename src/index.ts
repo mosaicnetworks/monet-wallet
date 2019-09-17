@@ -6,7 +6,7 @@ let main: BrowserWindow | null;
 
 function createWindow() {
 	const icon = nativeImage.createFromPath(
-		path.join(__dirname, 'src/assets/logo.png')
+		path.join(__dirname, 'src/assets/monet_logo.png')
 	);
 
 	main = new BrowserWindow({
@@ -21,8 +21,8 @@ function createWindow() {
 
 	// createMenu();
 
-	// main.loadURL(`file://${__dirname}/index.html`);
-	main.loadURL(`http://localhost:8081`);
+	main.loadURL(`file://${__dirname}/index.html`);
+	// main.loadURL(`http://localhost:8081`);
 
 	main.on('closed', () => {
 		main = null;
