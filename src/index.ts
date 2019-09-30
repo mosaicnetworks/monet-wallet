@@ -16,6 +16,8 @@ function createWindow() {
 		width: 1350,
 		height: 757,
 		title: 'Monet Wallet',
+		resizable: false,
+		fullscreen: false,
 		icon
 	});
 

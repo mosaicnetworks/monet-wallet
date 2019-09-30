@@ -8,7 +8,7 @@ import Keystore, { IMonikerBaseAccount, IV3Keyfile } from 'evm-lite-keystore';
 import utils, { Currency } from 'evm-lite-utils';
 
 import { BaseAction, errorHandler, ThunkResult } from '.';
-import { IMonikerEVMAccount, MonetDataDir, MonikerAccount } from '../monet';
+import { MonetDataDir, MonikerAccount, MonikerEVMAccount } from '../monet';
 
 // Lists all accounts in keystore
 const LIST_REQUEST = '@monet/accounts/LIST/REQUEST';
@@ -39,7 +39,7 @@ const TRANSFER_ERROR = '@monet/accounts/TRANSFER/ERROR';
 // Accounts state structure
 export interface AccountsState {
 	// Entire list of accounts
-	readonly all: IMonikerEVMAccount[];
+	readonly all: MonikerEVMAccount[];
 
 	// Currently unlocked account
 	readonly unlocked?: MonikerAccount;
@@ -258,9 +258,9 @@ export default function reducer(
  * Should list all acounts from the keystore. It will update the redux state
  * and set the `all` attribute to the desired result.
  */
-export function list(): ThunkResult<Promise<IMonikerEVMAccount[]>> {
+export function list(): ThunkResult<Promise<MonikerEVMAccount[]>> {
 	return async (dispatch, getState) => {
-		let accounts: IMonikerEVMAccount[] = [];
+		let accounts: MonikerEVMAccount[] = [];
 
 		const { config } = getState();
 		const error = errorHandler.bind(null, dispatch, LIST_ERROR);
@@ -330,11 +330,11 @@ export type IAccountsCreate = (
 export function create(
 	moniker: string,
 	password: string
-): ThunkResult<Promise<IMonikerEVMAccount>> {
+): ThunkResult<Promise<MonikerEVMAccount>> {
 	return async (dispatch, getState) => {
 		const { config } = getState();
 
-		const account: IMonikerEVMAccount = {
+		const account: MonikerEVMAccount = {
 			address: '',
 			balance: new Currency(0),
 			nonce: 0,

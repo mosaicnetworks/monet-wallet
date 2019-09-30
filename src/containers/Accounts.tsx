@@ -1,124 +1,232 @@
-import React, { useEffect } from 'react';
-import styled from 'styled-components';
+import React, { useEffect, useState } from 'react';
 
-import Utils, { Currency } from 'evm-lite-utils';
+import utils, { Currency } from 'evm-lite-utils';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { config, Spring } from 'react-spring/renderprops';
-import { Card, Header } from 'semantic-ui-react';
 
-import { AccountsState, create, list } from '../modules/accounts';
+import styled from 'styled-components';
 
+import Button from 'react-bootstrap/Button';
+import Col from 'react-bootstrap/Col';
+import Container from 'react-bootstrap/Container';
+import Image from 'react-bootstrap/Image';
+import Jumbotron from 'react-bootstrap/Jumbotron';
+import Row from 'react-bootstrap/Row';
+
+import FloatButton from '../components/FloatButton';
+
+import WhiteChev from '../assets/chev-white.svg';
+
+import { AccountsState, list } from '../modules/accounts';
+import { MonikerEVMAccount } from '../monet';
 import { Store } from '../store';
 
-import AccountCard from '../components/AccountCard';
-import AccountCreate from '../components/AccountCreate';
-import Banner from '../components/Banner';
-import FloatingButton from '../components/FloatingButton';
-import SJumbo from '../components/Jumbo';
-import LoadingButton from '../components/LoadingButton';
+const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
-const SAccountsContainer = styled.div`
-	padding: 5px 0;
+const SChevron = styled(Image)`
+	margin-left: 30px;
+`;
+
+const SSidebar = styled(Col)`
+	box-shadow: 0 2px 20px -20px #eee !important;
+
+	h5 {
+		background: #fefefe !important;
+		color: #263c99;
+		padding: 10px 20px !important;
+		margin-bottom: 0px;
+	}
+
+	& ul {
+		max-height: calc(100vh - 86px - 121px - 44px) !important;
+		overflow-y: auto;
+		list-style: none;
+		background: #fff !important;
+		margin: 0 !important;
+		padding: 0 !important;
+	}
+
+	& li {
+		display: block;
+		padding: 10px 20px !important;
+		transition: background-color 100ms ease-in;
+	}
+
+	& li span {
+		color: #666;
+		font-size: 13px;
+		padding: 0px !important;
+		display: block;
+		overflow-y: hidden;
+	}
+
+	& li:hover {
+		cursor: pointer;
+		color: white !important;
+		background: #263c99ee !important;
+
+		& span {
+			color: white;
+		}
+	}
+
+	& .active {
+		color: white !important;
+		box-shadow: 0 4px 6px -10px #fff inset !important;
+		background: #263c99 !important;
+
+		& span {
+			color: white;
+		}
+	}
+`;
+
+const SDetail = styled.div`
+	box-shadow: 0 2px 20px -20px #eee !important;
+
+	h5 {
+		padding: 10px 20px;
+		background: #fff !important;
+		color: #263c99 !important;
+		padding: 10px 20px !important;
+		margin-bottom: 0px;
+	}
 `;
 
 const Accounts: React.FunctionComponent<{}> = () => {
 	const dispatch = useDispatch();
-
-	const createAccount = (moniker: string, password: string) =>
-		dispatch(create(moniker, password)) as any;
 	const refreshAccounts = () => dispatch(list());
 
+	const [activeAccount, setActiveAccount] = useState<MonikerEVMAccount>({
+		address: '',
+		nonce: 0,
+		balance: new Currency(0),
+		bytecode: '',
+		moniker: ''
+	});
+
 	const accounts = useSelector<Store, AccountsState>(store => store.accounts);
+
+	const isSelected = (account: MonikerEVMAccount) =>
+		utils.cleanAddress(activeAccount.address) ===
+		utils.cleanAddress(account.address);
+	const hasSelected = activeAccount.address !== '';
+
+	const bindActiveAccountSetter = (account: MonikerEVMAccount) => (
+		e: any
+	) => {
+		setActiveAccount(account);
+	};
 
 	useEffect(() => {
 		refreshAccounts();
 	}, []);
 
-	let totalBalance = new Currency(0);
-	accounts.all.map(account => {
-		totalBalance = totalBalance.plus(account.balance);
-	});
-
-	let balance = totalBalance.format('T');
-
-	const b = balance.slice(0, -1);
-	const unit = balance.slice(-1);
-	const l = b.split('.');
-
-	if (l[1]) {
-		l[1] = l[1].slice(0, 4);
-	}
-
-	balance = l.join('.');
-
-	balance += unit;
+	useEffect(() => {
+		if (accounts.all.length) {
+			if (!hasSelected) {
+				setActiveAccount(accounts.all[0]);
+			}
+		}
+	}, [accounts.all]);
 
 	return (
-		<React.Fragment>
-			<SJumbo>
-				<Spring
-					from={{
-						marginLeft: -50,
-						opacity: 0
-					}}
-					to={{
-						marginLeft: 0,
-						opacity: 1
-					}}
-					config={config.wobbly}
-				>
-					{props => (
-						<Header style={props} as="h2" floated="left">
-							Accounts
-							<Header.Subheader>
-								Create new and manage existing accounts
-							</Header.Subheader>
-						</Header>
+		<>
+			<Jumbotron fluid={true}>
+				<Container>
+					<Row>
+						<Col md={6} lg={8}>
+							<h3>Dashboard</h3>
+							<p>View & Modify Existing Accounts</p>
+						</Col>
+						<Col>
+							<h4>Balance</h4>
+							<p>
+								{hasSelected
+									? activeAccount.balance.format('T')
+									: 'Not Selected'}
+							</p>
+						</Col>
+						<Col>
+							<h4>Nonce</h4>
+							<p>
+								{hasSelected
+									? activeAccount.nonce
+									: 'Not Selected'}
+							</p>
+						</Col>
+					</Row>
+				</Container>
+			</Jumbotron>
+			<Container>
+				<Row noGutters={true}>
+					<SSidebar md={4}>
+						<h5>Accounts</h5>
+						<ul>
+							{accounts.all.map(account => (
+								<li
+									key={account.address}
+									onClick={bindActiveAccountSetter(account)}
+									className={
+										isSelected(account) ? 'active' : ''
+									}
+								>
+									<Row
+										className="align-items-center"
+										noGutters={true}
+									>
+										<Col md={2}>
+											<Image
+												src={`https://s.gravatar.com/avatar/${utils.trimHex(
+													account.address
+												)}?size=100&default=retro`}
+												width={40}
+											/>
+										</Col>
+										<Col lg={8}>
+											{capitalize(account.moniker)}
+											<span className="address">
+												{account.address}
+											</span>
+										</Col>
+										<Col>
+											<SChevron
+												className="justify-content-end"
+												src={WhiteChev}
+												width={12}
+											/>
+										</Col>
+									</Row>
+								</li>
+							))}
+						</ul>
+					</SSidebar>
+					{hasSelected && (
+						<Col md={8}>
+							<SDetail>
+								<h5>
+									{capitalize(activeAccount.moniker)}
+
+									<span className="address">
+										({activeAccount.address})
+									</span>
+								</h5>
+								<div></div>
+							</SDetail>
+						</Col>
 					)}
-				</Spring>
-				<Header as="h2" floated="right">
-					Accounts
-					<Header.Subheader>{accounts.all.length}</Header.Subheader>
-				</Header>
-				<Header as="h2" floated="right">
-					Total Balance
-					<Header.Subheader>{balance}</Header.Subheader>
-				</Header>
-			</SJumbo>
-			<Banner color="blue">
-				All accounts listed here are read in locally from your keystore.
-			</Banner>
-			<SAccountsContainer>
-				<Card.Group centered={true}>
-					{accounts.all.map(account => (
-						<AccountCard
-							unlocked={
-								(accounts.unlocked &&
-									Utils.cleanAddress(
-										accounts.unlocked.address
-									) ===
-										Utils.cleanAddress(account.address)) ||
-								false
-							}
-							key={account.address}
-							account={account}
-						/>
-					))}
-				</Card.Group>
-			</SAccountsContainer>
-			<AccountCreate
-				bottomOffset={105}
-				accounts={accounts}
-				create={createAccount}
-			/>
-			<FloatingButton bottomOffset={60}>
-				<LoadingButton
-					isLoading={accounts.loading.list}
-					onClickHandler={refreshAccounts}
-				/>
-			</FloatingButton>
-		</React.Fragment>
+				</Row>
+			</Container>
+			<FloatButton bottomOffset={60}>
+				<Button
+					onClick={refreshAccounts}
+					disabled={accounts.loading.list}
+					variant={'warning'}
+				>
+					R
+				</Button>
+			</FloatButton>
+		</>
 	);
 };
 

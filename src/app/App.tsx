@@ -6,11 +6,9 @@ import { ToastContainer } from 'react-toastify';
 
 import { initialize } from '../modules/configuration';
 
-import AccountDetail from '../containers/AccountDetail';
 import Accounts from '../containers/Accounts';
-import Configuration from '../containers/Configuration';
-import POA from '../containers/POA';
-import Wrapper from '../containers/Wrapper';
+
+import Wrapper from '../components/Wrapper';
 
 const App: React.FunctionComponent<{}> = () => {
 	const dispatch = useDispatch();
@@ -26,13 +24,13 @@ const App: React.FunctionComponent<{}> = () => {
 			<React.Fragment>
 				<Wrapper>
 					<Route exact={true} path="/" component={Accounts} />
-					<Route path="/config" component={Configuration} />
-					<Route path="/poa" component={POA} />
-					<Route
+					{/* <Route path="/config" component={Configuration} /> */}
+					{/* <Route path="/poa" component={POA} /> */}
+					{/* <Route
 						exact={true}
 						path="/account/:address"
 						component={AccountDetail}
-					/>
+					/> */}
 				</Wrapper>
 				<ToastContainer
 					autoClose={2000}
