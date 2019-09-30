@@ -8,10 +8,10 @@ import { PersistGate } from 'redux-persist/integration/react';
 import getStores from '../store';
 import App from './App';
 
+import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
-import 'semantic-ui-css/semantic.min.css';
-
 import '../index.css';
+
 const stores = getStores();
 
 ReactDOM.render(
