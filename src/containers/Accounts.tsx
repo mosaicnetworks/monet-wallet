@@ -9,8 +9,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
-import Image from 'react-bootstrap/Image';
 import Jumbotron from 'react-bootstrap/Jumbotron';
+import Media from 'react-bootstrap/Media';
 import Row from 'react-bootstrap/Row';
 
 import FloatButton from '../components/FloatButton';
@@ -24,7 +24,9 @@ const SJumbotron = styled(Jumbotron)`
 	box-shadow: 0 2px 20px -15px #ddd !important;
 `;
 
-const SAvatarImage = styled(Image)``;
+const SHeadingContainer = styled(Container)`
+	padding: 0 5px !important;
+`;
 
 const Accounts: React.FunctionComponent<{}> = () => {
 	const dispatch = useDispatch();
@@ -40,34 +42,43 @@ const Accounts: React.FunctionComponent<{}> = () => {
 	return (
 		<>
 			<SJumbotron fluid={true}>
-				<Container>
-					<Row className="align-items-center">
-						{!!accounts.unlocked && (
-							<Col md={1}>
-								<SAvatarImage
-									src={`https://s.gravatar.com/avatar/${utils.trimHex(
-										accounts.unlocked.address
-									)}?size=100&default=retro`}
-									width={70}
-								/>
-							</Col>
-						)}
+				<SHeadingContainer>
+					<Row noGutters={true} className="align-items-center">
 						<Col md={6} lg={8}>
-							<h3>
-								{capitalize(
-									accounts.unlocked
-										? accounts.unlocked.moniker
-										: 'Dashboard'
-								)}
-							</h3>
-
-							<p>
-								{accounts.unlocked
-									? utils.cleanAddress(
+							{accounts.unlocked ? (
+								<Media>
+									<img
+										width={63}
+										height={64}
+										className="align-self-top mr-3"
+										src={`https://s.gravatar.com/avatar/${utils.trimHex(
 											accounts.unlocked.address
-									  )
-									: 'View Statistics & Modify Existing Accounts'}
-							</p>
+										)}?size=100&default=retro`}
+										alt="Generic placeholder"
+									/>
+									<Media.Body>
+										<h3>
+											{capitalize(
+												accounts.unlocked.moniker
+											)}
+										</h3>
+										<p>
+											{utils.cleanAddress(
+												accounts.unlocked.address
+											)}
+										</p>
+									</Media.Body>
+								</Media>
+							) : (
+								<>
+									<h3>{'Dashboard'}</h3>
+									<p>
+										{
+											'View Statistics & Modify Existing Accounts'
+										}
+									</p>
+								</>
+							)}
 						</Col>
 						<Col>
 							<h4>Balance</h4>
@@ -86,7 +97,7 @@ const Accounts: React.FunctionComponent<{}> = () => {
 							</p>
 						</Col>
 					</Row>
-				</Container>
+				</SHeadingContainer>
 			</SJumbotron>
 			<Container></Container>
 			<FloatButton bottomOffset={60}>
