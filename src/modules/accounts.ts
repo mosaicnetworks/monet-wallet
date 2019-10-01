@@ -36,6 +36,9 @@ const TRANSFER_REQUEST = '@monet/accounts/TRANSFER/REQUEST';
 const TRANSFER_SUCCESS = '@monet/accounts/TRANSFER/SUCCESS';
 const TRANSFER_ERROR = '@monet/accounts/TRANSFER/ERROR';
 
+// Select an account as primary
+const SELECT = '@monet/accounts/SELECT';
+
 // Accounts state structure
 export interface AccountsState {
 	// Entire list of accounts
@@ -43,6 +46,7 @@ export interface AccountsState {
 
 	// Currently unlocked account
 	readonly unlocked?: MonikerAccount;
+	readonly selected?: MonikerEVMAccount;
 
 	// A single error field to be used by this module for any action
 	readonly error?: string;

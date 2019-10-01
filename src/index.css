@@ -1,20 +1,28 @@
 @import url('https://fonts.googleapis.com/css?family=Titillium+Web:300,400&display=swap');
 @import url('https://fonts.googleapis.com/css?family=Cousine&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
 
 body {
-	font-family: 'Titillium Web', sans-serif !important;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
-	background: #f4f5f7 !important;
+	background: #fafafa !important;
 	margin: 0 !important;
 	padding: 0 !important;
+	font-family: 'Roboto', sans-serif !important;
+	font-size: 15px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+	font-family: 'Titillium Web', sans-serif !important;
 }
 
 .bg-light {
 	background: rgba(255, 255, 255, 0.95) !important;
-	height: 70px;
-	line-height: 70px !important;
-	color: #333 !important;
+	color: #000 !important;
 	z-index: 2000;
 	box-shadow: 0 4px 6px -10px #f1f1f1 !important;
 	width: 100% !important;
@@ -32,7 +40,7 @@ a:hover {
 
 .jumbotron {
 	border-radius: 0 !important;
-	padding: 20px 0 !important;
+	padding: 25px 0 !important;
 	background: #fff !important;
 	margin-bottom: 0 !important;
 }
@@ -46,8 +54,14 @@ p {
 	font-size: 15px;
 }
 
-.btn-warning {
-	background: #f16622 !important;
+.btn-primary {
+	background: #263c99 !important;
+	border-radius: 0 !important;
 	border: none !important;
 	color: #eee !important;
+}
+
+.dropdown-menu {
+	border: none !important;
+	box-shadow: 0 2px 20px -10px #ddd !important;
 }
