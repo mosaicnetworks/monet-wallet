@@ -63,6 +63,7 @@ p {
 
 .dropdown-menu {
 	border: none !important;
+	border-radius: 0 !important;
 	box-shadow: 0 2px 20px -10px #ddd !important;
 }
 
@@ -75,6 +76,10 @@ p {
 
 .modal-header {
 	border-bottom: 1px solid #f9f9f9 !important;
+}
+
+.modal-body {
+	padding: 30px 20px !important;
 }
 
 .modal-footer {

@@ -46,7 +46,6 @@ export interface AccountsState {
 
 	// Currently unlocked account
 	readonly unlocked?: MonikerAccount;
-	readonly selected?: MonikerEVMAccount;
 
 	// A single error field to be used by this module for any action
 	readonly error?: string;

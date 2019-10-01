@@ -1,67 +1,79 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 
 import styled from 'styled-components';
 
-import { Currency } from 'evm-lite-utils';
+import utils from 'evm-lite-utils';
+
 import { useDispatch, useSelector } from 'react-redux';
 
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
+import Image from 'react-bootstrap/Image';
 import Jumbotron from 'react-bootstrap/Jumbotron';
 import Row from 'react-bootstrap/Row';
 
 import FloatButton from '../components/FloatButton';
 
 import { AccountsState, list } from '../modules/accounts';
-import { MonikerEVMAccount } from '../monet';
 import { Store } from '../store';
+
+const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
 const SJumbotron = styled(Jumbotron)`
 	box-shadow: 0 2px 20px -15px #ddd !important;
 `;
 
+const SAvatarImage = styled(Image)``;
+
 const Accounts: React.FunctionComponent<{}> = () => {
 	const dispatch = useDispatch();
 	const refreshAccounts = () => dispatch(list());
 
-	const [activeAccount, setActiveAccount] = useState<MonikerEVMAccount>({
-		address: '',
-		nonce: 0,
-		balance: new Currency(0),
-		bytecode: '',
-		moniker: ''
-	});
-
 	const accounts = useSelector<Store, AccountsState>(store => store.accounts);
-	const hasSelected = activeAccount.address !== '';
+	const hasSelected = !!accounts.unlocked;
 
 	useEffect(() => {
 		refreshAccounts();
 	}, []);
 
-	useEffect(() => {
-		if (accounts.all.length) {
-			if (!hasSelected) {
-				setActiveAccount(accounts.all[0]);
-			}
-		}
-	}, [accounts.all]);
-
 	return (
 		<>
 			<SJumbotron fluid={true}>
 				<Container>
-					<Row>
+					<Row className="align-items-center">
+						{!!accounts.unlocked && (
+							<Col md={1}>
+								<SAvatarImage
+									src={`https://s.gravatar.com/avatar/${utils.trimHex(
+										accounts.unlocked.address
+									)}?size=100&default=retro`}
+									width={70}
+								/>
+							</Col>
+						)}
 						<Col md={6} lg={8}>
-							<h3>Dashboard</h3>
-							<p>View & Modify Existing Accounts</p>
+							<h3>
+								{capitalize(
+									accounts.unlocked
+										? accounts.unlocked.moniker
+										: 'Dashboard'
+								)}
+							</h3>
+
+							<p>
+								{accounts.unlocked
+									? utils.cleanAddress(
+											accounts.unlocked.address
+									  )
+									: 'View Statistics & Modify Existing Accounts'}
+							</p>
 						</Col>
 						<Col>
 							<h4>Balance</h4>
 							<p>
 								{hasSelected
-									? activeAccount.balance.format('T')
+									? accounts.unlocked!.balance.format('T')
 									: 'Not Selected'}
 							</p>
 						</Col>
@@ -69,7 +81,7 @@ const Accounts: React.FunctionComponent<{}> = () => {
 							<h4>Nonce</h4>
 							<p>
 								{hasSelected
-									? activeAccount.nonce
+									? accounts.unlocked!.nonce
 									: 'Not Selected'}
 							</p>
 						</Col>
