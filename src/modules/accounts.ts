@@ -37,7 +37,7 @@ const TRANSFER_SUCCESS = '@monet/accounts/TRANSFER/SUCCESS';
 const TRANSFER_ERROR = '@monet/accounts/TRANSFER/ERROR';
 
 // Select an account as primary
-const SELECT = '@monet/accounts/SELECT';
+// const SELECT = '@monet/accounts/SELECT';
 
 // Accounts state structure
 export interface AccountsState {

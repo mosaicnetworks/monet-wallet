@@ -9,6 +9,7 @@ body {
 	margin: 0 !important;
 	padding: 0 !important;
 	font-family: 'Roboto', sans-serif !important;
+	font-family: 'Titillium Web', sans-serif !important;
 	font-size: 15px;
 }
 
@@ -23,7 +24,6 @@ h5 {
 .bg-light {
 	background: rgba(255, 255, 255, 0.95) !important;
 	color: #000 !important;
-	z-index: 2000;
 	box-shadow: 0 4px 6px -10px #f1f1f1 !important;
 	width: 100% !important;
 }
@@ -54,14 +54,29 @@ p {
 	font-size: 15px;
 }
 
-.btn-primary {
-	background: #263c99 !important;
+.btn {
 	border-radius: 0 !important;
-	border: none !important;
-	color: #eee !important;
+}
+
+.btn-primary {
 }
 
 .dropdown-menu {
 	border: none !important;
 	box-shadow: 0 2px 20px -10px #ddd !important;
+}
+
+.modal-content {
+	border: none !important;
+	border-radius: 0 !important;
+	outline: none !important;
+	box-shadow: none !important;
+}
+
+.modal-header {
+	border-bottom: 1px solid #f9f9f9 !important;
+}
+
+.modal-footer {
+	border-top: 1px solid #f9f9f9 !important;
 }
