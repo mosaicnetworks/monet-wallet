@@ -4,19 +4,23 @@ import { useDispatch } from 'react-redux';
 import { HashRouter, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 
-import { initialize } from '../modules/configuration';
+import { listAccounts } from '../modules/accounts';
+import { initConfig } from '../modules/config';
 
 import Accounts from '../containers/Accounts';
+import Settings from '../containers/Settings';
 
 import Wrapper from '../components/Wrapper';
 
 const App: React.FunctionComponent<{}> = () => {
 	const dispatch = useDispatch();
 
-	const init = () => dispatch(initialize());
+	const initConf = () => dispatch(initConfig());
+	const initAccounts = () => dispatch(listAccounts());
 
 	useEffect(() => {
-		init();
+		initConf();
+		initAccounts();
 	}, []);
 
 	return (
@@ -24,13 +28,7 @@ const App: React.FunctionComponent<{}> = () => {
 			<React.Fragment>
 				<Wrapper>
 					<Route exact={true} path="/" component={Accounts} />
-					{/* <Route path="/config" component={Configuration} /> */}
-					{/* <Route path="/poa" component={POA} /> */}
-					{/* <Route
-						exact={true}
-						path="/account/:address"
-						component={AccountDetail}
-					/> */}
+					<Route exact={true} path="/settings" component={Settings} />
 				</Wrapper>
 				<ToastContainer
 					autoClose={2000}

@@ -21,6 +21,7 @@ export type MonetInfo = IBaseInfo & {
 	sync_rate: string;
 	transaction_pool: string;
 	undetermined_events: string;
+	min_gas_price: string;
 };
 
 export type MonikerEVMAccount = IEVMAccount & {

@@ -14,9 +14,18 @@ import '../index.css';
 
 const stores = getStores();
 
+const reset = () => {
+	stores.persistor.purge();
+	stores.persistor.flush();
+};
+
 ReactDOM.render(
 	<Provider store={stores.store}>
-		<PersistGate loading={null} persistor={stores.persistor}>
+		<PersistGate
+			loading={null}
+			onBeforeLift={reset}
+			persistor={stores.persistor}
+		>
 			<App />
 		</PersistGate>
 	</Provider>,

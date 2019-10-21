@@ -1,22 +1,23 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import styled from 'styled-components';
 
 import utils from 'evm-lite-utils';
 
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
-import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import Jumbotron from 'react-bootstrap/Jumbotron';
 import Media from 'react-bootstrap/Media';
 import Row from 'react-bootstrap/Row';
 
-import FloatButton from '../components/FloatButton';
+import Avatar from '../components/Avatar';
+import Transfer from '../components/Transfer';
 
-import { AccountsState, list } from '../modules/accounts';
-import { Store } from '../store';
+import { SContent } from '../components/styled';
+
+import { selectedAccount } from '../selectors';
 
 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
@@ -29,15 +30,17 @@ const SHeadingContainer = styled(Container)`
 `;
 
 const Accounts: React.FunctionComponent<{}> = () => {
-	const dispatch = useDispatch();
-	const refreshAccounts = () => dispatch(list());
+	const selected = useSelector(selectedAccount);
 
-	const accounts = useSelector<Store, AccountsState>(store => store.accounts);
-	const hasSelected = !!accounts.unlocked;
-
-	useEffect(() => {
-		refreshAccounts();
-	}, []);
+	const renderUnlocked = () => (
+		<>
+			<SContent>
+				<Container>
+					<Transfer />
+				</Container>
+			</SContent>
+		</>
+	);
 
 	return (
 		<>
@@ -45,70 +48,41 @@ const Accounts: React.FunctionComponent<{}> = () => {
 				<SHeadingContainer>
 					<Row noGutters={true} className="align-items-center">
 						<Col md={6} lg={8}>
-							{accounts.unlocked ? (
+							{selected ? (
 								<Media>
-									<img
-										width={63}
-										height={64}
-										className="align-self-top mr-3"
-										src={`https://s.gravatar.com/avatar/${utils.trimHex(
-											accounts.unlocked.address
-										)}?size=100&default=retro`}
-										alt="Generic placeholder"
-									/>
+									<Avatar address={selected.address} />
 									<Media.Body>
-										<h3>
-											{capitalize(
-												accounts.unlocked.moniker
-											)}
-										</h3>
-										<p>
+										<h3>{capitalize(selected.moniker)}</h3>
+										<p className={'mono'}>
 											{utils.cleanAddress(
-												accounts.unlocked.address
+												selected.address
 											)}
 										</p>
 									</Media.Body>
 								</Media>
 							) : (
 								<>
-									<h3>{'Dashboard'}</h3>
-									<p>
-										{
-											'View Statistics & Modify Existing Accounts'
-										}
-									</p>
+									<h3>Not Selected</h3>
+									<p>Use the dropdown to select an account</p>
 								</>
 							)}
 						</Col>
 						<Col>
 							<h4>Balance</h4>
-							<p>
-								{hasSelected
-									? accounts.unlocked!.balance.format('T')
-									: 'Not Selected'}
+							<p className={(selected && 'mono') || ''}>
+								{selected ? selected.balance.format('T') : '-'}
 							</p>
 						</Col>
 						<Col>
 							<h4>Nonce</h4>
-							<p>
-								{hasSelected
-									? accounts.unlocked!.nonce
-									: 'Not Selected'}
+							<p className={(selected && 'mono') || ''}>
+								{selected ? selected.nonce : '-'}
 							</p>
 						</Col>
 					</Row>
 				</SHeadingContainer>
 			</SJumbotron>
-			<Container></Container>
-			<FloatButton bottomOffset={60}>
-				<Button
-					onClick={refreshAccounts}
-					disabled={accounts.loading.list}
-					variant={'primary'}
-				>
-					R
-				</Button>
-			</FloatButton>
+			{selected && renderUnlocked()}
 		</>
 	);
 };
