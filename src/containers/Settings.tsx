@@ -10,6 +10,8 @@ import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 
+import Loader from '../components/Loader';
+
 import { SContent } from '../components/styled';
 
 import { save } from '../modules/config';
@@ -50,33 +52,9 @@ const Settings: React.FC<{}> = () => {
 		<SSettings>
 			<SContent>
 				<Container>
+					<h3>Settings</h3>
+					<br />
 					<Row>
-						<Col>
-							<Form.Group controlId="formBasicEmail">
-								<label>Default Gas</label>
-								<Form.Control
-									onChange={(e: any) =>
-										setGas(e.target.value)
-									}
-									type="text"
-									defaultValue={gas.toString()}
-									placeholder="Gas"
-								/>
-								<Form.Text className="text-muted">
-									The default <code>gas</code> to be used for
-									all transactions.
-								</Form.Text>
-							</Form.Group>
-							<Form.Group>
-								<Button
-									disabled={loading}
-									onClick={saveConfig}
-									variant="outline-success"
-								>
-									Save
-								</Button>
-							</Form.Group>
-						</Col>
 						<Col>
 							<Form.Group controlId="formBasicEmail">
 								<label>Default Host</label>
@@ -104,6 +82,34 @@ const Settings: React.FC<{}> = () => {
 								/>
 								<Form.Text className="text-muted">
 									The default <code>port</code>.
+								</Form.Text>
+							</Form.Group>
+
+							<Form.Group>
+								<Button
+									disabled={loading}
+									onClick={saveConfig}
+									variant="outline-success"
+								>
+									Save
+								</Button>{' '}
+								<Loader loading={loading} />
+							</Form.Group>
+						</Col>
+						<Col>
+							<Form.Group controlId="formBasicEmail">
+								<label>Default Gas</label>
+								<Form.Control
+									onChange={(e: any) =>
+										setGas(e.target.value)
+									}
+									type="text"
+									defaultValue={gas.toString()}
+									placeholder="Gas"
+								/>
+								<Form.Text className="text-muted">
+									The default <code>gas</code> to be used for
+									all transactions.
 								</Form.Text>
 							</Form.Group>
 						</Col>

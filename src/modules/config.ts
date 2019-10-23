@@ -199,6 +199,8 @@ export function save(
 			type: SAVE_REQUEST
 		});
 
+		await new Promise(resolve => setTimeout(resolve, 500));
+
 		try {
 			const datadir = new MonetDataDir(state.config.directory);
 
@@ -209,7 +211,9 @@ export function save(
 				payload: newConfig
 			});
 
-			await dispatch(getSelectedAccount());
+			if (state.accounts.selected) {
+				dispatch(getSelectedAccount());
+			}
 
 			toast.success(`Configuration saved.`);
 			return newConfig;

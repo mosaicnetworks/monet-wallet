@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import styled from 'styled-components';
 
-import utils, { Currency } from 'evm-lite-utils';
+import { Currency } from 'evm-lite-utils';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
@@ -10,38 +10,49 @@ import { NavLink } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
-import Form from 'react-bootstrap/Form';
 import Image from 'react-bootstrap/Image';
-import Modal from 'react-bootstrap/Modal';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import Row from 'react-bootstrap/Row';
 
-import { getSelectedAccount, selectAccount } from '../modules/accounts';
+import { getSelectedAccount } from '../modules/accounts';
 
 import { MonikerEVMAccount } from '../monet';
-import { selectAccounts, selectedAccount } from '../selectors';
+import {
+	selectAccounts,
+	selectedAccount,
+	selectGetAccountLoading
+} from '../selectors';
+
+import Avatar from './Avatar';
+import NewAccountModal from './NewAccountModal';
+import SelectAccountModal from './SelectAccountModal';
 
 import Logo from '../assets/monet_logo.png';
-// import Refresh from '../assets/refresh.png';
-import Avatar from './Avatar';
 
 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
 const SDropdown = styled(NavDropdown)`
 	border: 1px solid #eee !important;
 	border-radius: 5px;
-	margin-right: 10px;
+	margin-right: 5px;
+
+	a {
+		color: rgba(0, 0, 0, 0.6);
+	}
 `;
 
 const SRefresh = styled(Button)`
 	/* padding: 10px 13px !important; */
 	/* padding-top: 7px !important; */
+	margin-left: 5px;
+	margin-right: 10px !important;
 `;
 
 const SNav = styled(Nav)`
 	a {
+		color: rgba(0, 0, 0, 0.6);
 		border-radius: 5px;
 	}
 `;
@@ -51,12 +62,14 @@ type Props = {};
 const Header: React.FunctionComponent<Props> = () => {
 	const dispatch = useDispatch();
 
+	const getLoading = useSelector(selectGetAccountLoading);
+
 	const accounts = useSelector(selectAccounts);
 	const selected = useSelector(selectedAccount);
 
-	const [passphrase, setPassphrase] = useState('');
-
 	const [show, setShow] = useState(false);
+	const [showNew, setShowNew] = useState(false);
+
 	const [clickedAccount, setClickedAccount] = useState<MonikerEVMAccount>({
 		address: '',
 		balance: new Currency(0),
@@ -68,8 +81,8 @@ const Header: React.FunctionComponent<Props> = () => {
 	const handleClose = () => setShow(false);
 	const handleShow = () => setShow(true);
 
-	const select = (moniker: string, pass: string) =>
-		dispatch(selectAccount(moniker, pass));
+	const handleCloseNew = () => setShowNew(false);
+	const handleShowNew = () => setShowNew(true);
 
 	const refresh = () => dispatch(getSelectedAccount());
 
@@ -78,50 +91,14 @@ const Header: React.FunctionComponent<Props> = () => {
 		handleShow();
 	};
 
-	const handleSwitchAccount = async () => {
-		await select(clickedAccount.moniker, passphrase);
-
-		handleClose();
-	};
-
 	return (
-		<Navbar className="navi" bg="light" sticky={'top'}>
-			<Modal centered={true} show={show} onHide={handleClose}>
-				<Form>
-					<Modal.Header closeButton>
-						<Modal.Title>Switch Accounts</Modal.Title>
-					</Modal.Header>
-					<Modal.Body>
-						<Row className="align-items-center">
-							<Col md={2}>
-								<Avatar address={clickedAccount.address} />
-							</Col>
-							<Col>
-								<h5>{capitalize(clickedAccount.moniker)}</h5>
-								<span className="mono">
-									{utils.cleanAddress(clickedAccount.address)}
-								</span>
-							</Col>
-						</Row>
-						<br />
-						<Form.Control
-							onChange={(e: any) => setPassphrase(e.target.value)}
-							placeholder="Passphrase"
-							type="password"
-						/>
-					</Modal.Body>
-					<Modal.Footer>
-						<Button
-							type="submit"
-							disabled={passphrase.length < 2}
-							variant="warning"
-							onClick={handleSwitchAccount}
-						>
-							Switch
-						</Button>
-					</Modal.Footer>
-				</Form>
-			</Modal>
+		<Navbar className="navi" bg="light">
+			<NewAccountModal show={showNew} handleClose={handleCloseNew} />
+			<SelectAccountModal
+				account={clickedAccount}
+				show={show}
+				handleClose={handleClose}
+			/>
 			<Container>
 				<Navbar.Brand>
 					<NavLink to="/">
@@ -150,12 +127,9 @@ const Header: React.FunctionComponent<Props> = () => {
 								noGutters={true}
 							>
 								<Col md={2}>
-									<Image
-										src={`https://s.gravatar.com/avatar/${utils.trimHex(
-											account.address
-										)}?size=100&default=retro`}
-										width={20}
-										className="mr-1"
+									<Avatar
+										size={22}
+										address={account.address}
 									/>
 								</Col>
 								<Col md={1} />
@@ -163,15 +137,25 @@ const Header: React.FunctionComponent<Props> = () => {
 							</Row>
 						</NavDropdown.Item>
 					))}
+					<NavDropdown.Divider />
+					<NavDropdown.Item>
+						<NavLink to={'/accounts'}>View All</NavLink>
+					</NavDropdown.Item>
 				</SDropdown>
+				<Button onClick={handleShowNew} variant="outline-success">
+					New
+				</Button>{' '}
 				{selected && (
-					<SRefresh
-						className="text-center"
-						onClick={refresh}
-						variant={'outline-primary'}
-					>
-						Refresh
-					</SRefresh>
+					<>
+						<SRefresh
+							disabled={getLoading}
+							className="text-center"
+							onClick={refresh}
+							variant={'outline-primary'}
+						>
+							{getLoading ? 'Refreshing...' : 'Refresh'}
+						</SRefresh>{' '}
+					</>
 				)}
 			</Container>
 		</Navbar>

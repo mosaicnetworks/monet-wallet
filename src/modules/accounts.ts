@@ -1,4 +1,4 @@
-import { Monet } from 'evm-lite-core';
+import { Account, Monet } from 'evm-lite-core';
 import { Currency } from 'evm-lite-utils';
 
 import { toast } from 'react-toastify';
@@ -15,6 +15,11 @@ import {
 const LIST_INIT = '@monet/accounts/LIST/INIT';
 const LIST_SUCCESS = '@monet/accounts/LIST/SUCCESS';
 const LIST_ERROR = '@monet/accounts/LIST/ERROR';
+
+// Creates account in keystore
+const CREATE_INIT = '@monet/accounts/CREATE/INIT';
+const CREATE_SUCCESS = '@monet/accounts/CREATE/SUCCESS';
+const CREATE_ERROR = '@monet/accounts/CREATE/ERROR';
 
 // For transferring tokens/coins from an account
 const TRANSFER_INIT = '@monet/accounts/TRANSFER/INIT';
@@ -84,7 +89,6 @@ export default function reducer(
 		case GET_SELECTED_INIT:
 			return {
 				...state,
-				selected: undefined,
 				loading: {
 					...state.loading,
 					get: true
@@ -115,7 +119,6 @@ export default function reducer(
 		case LIST_INIT:
 			return {
 				...state,
-				all: [],
 				error: undefined,
 				loading: {
 					...state.loading,
@@ -125,7 +128,7 @@ export default function reducer(
 		case LIST_SUCCESS:
 			return {
 				...state,
-				all: action.payload,
+				all: [...action.payload],
 				loading: {
 					...state.loading,
 					list: false
@@ -169,6 +172,36 @@ export default function reducer(
 				}
 			};
 
+		// Create account
+		case CREATE_INIT:
+			return {
+				...state,
+				error: undefined,
+				loading: {
+					...state.loading,
+					create: true
+				}
+			};
+		case CREATE_SUCCESS:
+			return {
+				...state,
+				error: undefined,
+				all: [...state.all, action.payload],
+				loading: {
+					...state.loading,
+					create: false
+				}
+			};
+		case CREATE_ERROR:
+			return {
+				...state,
+				error: action.payload,
+				loading: {
+					...state.loading,
+					create: false
+				}
+			};
+
 		default:
 			return state;
 	}
@@ -177,11 +210,15 @@ export default function reducer(
 export function getSelectedAccount(): ThunkResult<Promise<void>> {
 	return async (dispatch, getState) => {
 		const state = getState();
-		const selected = state.accounts.selected!;
+		const selected = {
+			...state.accounts.selected!
+		};
 
 		dispatch({
 			type: GET_SELECTED_INIT
 		});
+
+		await new Promise(resolve => setTimeout(resolve, 1000));
 
 		try {
 			const n = new Monet(
@@ -243,7 +280,7 @@ export function selectAccount(
 				payload: monikerAccount
 			});
 
-			await dispatch(getSelectedAccount());
+			dispatch(getSelectedAccount());
 		} catch (e) {
 			dispatch({
 				type: SELECT_ACCOUNT_ERROR,
@@ -255,7 +292,9 @@ export function selectAccount(
 	};
 }
 
-export function listAccounts(): ThunkResult<Promise<void>> {
+export function listAccounts(
+	fetch: boolean = false
+): ThunkResult<Promise<void>> {
 	return async (dispatch, getState) => {
 		let accounts: MonikerEVMAccount[] = [];
 
@@ -278,6 +317,26 @@ export function listAccounts(): ThunkResult<Promise<void>> {
 			bytecode: '',
 			moniker
 		}));
+
+		if (fetch) {
+			const n = new Monet(
+				config.data.connection.host,
+				config.data.connection.port
+			);
+
+			try {
+				await n.getInfo();
+
+				for (const a of accounts) {
+					const acc = await n.getAccount(a.address);
+
+					a.balance = acc.balance;
+					a.nonce = acc.nonce;
+				}
+			} catch (e) {
+				// pass
+			}
+		}
 
 		dispatch({
 			type: LIST_SUCCESS,
@@ -314,7 +373,9 @@ export function transfer(
 			if (info) {
 				try {
 					const receipt = await node.transfer(
-						state.accounts.selected!,
+						Account.fromPrivateKey(
+							state.accounts.selected!.privateKey
+						),
 						to,
 						new Currency(value),
 						21000,
@@ -327,13 +388,55 @@ export function transfer(
 					});
 
 					await dispatch(getSelectedAccount());
-					toast.success('Transfer submitted');
+					toast.success('Transfer successful');
 				} catch (e) {
 					error(e.toString());
 				}
 			}
 		} else {
 			throw Error('Configuration could not loaded.');
+		}
+	};
+}
+
+export function createAccount(
+	moniker: string,
+	password: string
+): ThunkResult<Promise<void>> {
+	return async (dispatch, getState) => {
+		const { config } = getState();
+
+		dispatch({
+			type: CREATE_INIT
+		});
+
+		try {
+			const datadir = new MonetDataDir(config.directory);
+			const keyfile = await datadir.newKeyfile(moniker, password);
+
+			const account: MonikerEVMAccount = {
+				address: keyfile.address,
+				balance: new Currency(0),
+				nonce: 0,
+				bytecode: '',
+				moniker
+			};
+
+			dispatch({
+				type: CREATE_SUCCESS,
+				payload: account
+			});
+
+			toast.success(
+				`Account created: 0x${account.address.slice(0, 15)}...`
+			);
+		} catch (error) {
+			dispatch({
+				type: CREATE_ERROR,
+				payload: error.toString()
+			});
+
+			toast.error(error.toString());
 		}
 	};
 }

@@ -4,6 +4,12 @@
 @import url('https://fonts.googleapis.com/css?family=Open+Sans&display=swap');
 @import url('https://fonts.googleapis.com/css?family=Fira+Code&display=swap');
 
+/* Blue: #1f3b94 */
+/* Red: #5bc0de */
+/* Green: #5cb85c */
+/* Orange: #f0ad4e */
+/* Purple: #7B3992 */
+
 body {
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
@@ -23,7 +29,7 @@ h5 {
 }
 
 .bg-light {
-	background: rgba(255, 255, 255, 0.95) !important;
+	background: rgba(255, 255, 255, 1) !important;
 	color: #000 !important;
 	box-shadow: 0 4px 6px -10px #f1f1f1 !important;
 	width: 100% !important;
@@ -31,8 +37,7 @@ h5 {
 }
 
 a {
-	/* color: inherit !important; */
-	color: rgba(0, 0, 0, 0.6);
+	color: #7b3992;
 }
 
 a:hover {
@@ -61,6 +66,10 @@ p {
 	border-radius: 5px !important;
 }
 
+.btn:focus {
+	box-shadow: none !important;
+}
+
 .btn-primary {
 	background: #1f4292 !important;
 	border: none !important;
@@ -83,6 +92,22 @@ p {
 	color: white !important;
 }
 
+.btn-success {
+	background-color: darkgreen;
+	border-color: darkgreen;
+}
+
+.btn-outline-success {
+	border-color: darkgreen;
+	color: darkgreen !important;
+}
+
+.btn-outline-success:hover {
+	color: #fff !important;
+	background-color: darkgreen !important;
+	border-color: darkgreen;
+}
+
 .btn-warning:hover {
 	background: #e55e2b !important;
 	border: none !important;
@@ -97,7 +122,7 @@ p {
 }
 
 .modal-header {
-	border-bottom: 1px solid #f9f9f9 !important;
+	border-bottom: 1px solid #f3f3f3 !important;
 }
 
 .modal-body {
@@ -105,7 +130,7 @@ p {
 }
 
 .modal-footer {
-	border-top: 1px solid #f9f9f9 !important;
+	border-top: 1px solid #f3f3f3 !important;
 }
 
 .mono {
@@ -129,4 +154,8 @@ p {
 
 .dropdown-item:active {
 	background: #f1f1f1;
+}
+
+hr {
+	border-color: #f3f3f3 !important;
 }

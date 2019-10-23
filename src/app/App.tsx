@@ -7,6 +7,7 @@ import { ToastContainer } from 'react-toastify';
 import { listAccounts } from '../modules/accounts';
 import { initConfig } from '../modules/config';
 
+import Account from '../containers/Account';
 import Accounts from '../containers/Accounts';
 import Settings from '../containers/Settings';
 
@@ -27,8 +28,9 @@ const App: React.FunctionComponent<{}> = () => {
 		<HashRouter>
 			<React.Fragment>
 				<Wrapper>
-					<Route exact={true} path="/" component={Accounts} />
+					<Route exact={true} path="/" component={Account} />
 					<Route exact={true} path="/settings" component={Settings} />
+					<Route exact={true} path="/accounts" component={Accounts} />
 				</Wrapper>
 				<ToastContainer
 					autoClose={2000}
