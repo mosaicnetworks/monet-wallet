@@ -28,9 +28,13 @@ const App: React.FunctionComponent<{}> = () => {
 		<HashRouter>
 			<React.Fragment>
 				<Wrapper>
-					<Route exact={true} path="/" component={Account} />
+					<Route
+						exact={true}
+						path="/account/:address/"
+						component={Account}
+					/>
 					<Route exact={true} path="/settings" component={Settings} />
-					<Route exact={true} path="/accounts" component={Accounts} />
+					<Route exact={true} path="/" component={Accounts} />
 				</Wrapper>
 				<ToastContainer
 					autoClose={2000}

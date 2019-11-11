@@ -13,11 +13,12 @@
 body {
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
-	background: #f8f9fa !important;
+	background: #fff !important;
 	margin: 0 !important;
 	padding: 0 !important;
 	font-size: 15px;
 	font-family: 'Open Sans', sans-serif !important;
+	overflow-x: hidden;
 }
 
 h1,
@@ -25,7 +26,6 @@ h2,
 h3,
 h4,
 h5 {
-	font-family: 'Open Sans', sans-serif !important;
 }
 
 .bg-light {
@@ -39,6 +39,10 @@ a {
 	color: #7b3992;
 }
 
+.container-fluid {
+	padding: 0 !important;
+}
+
 a:hover {
 	text-decoration: none !important;
 	color: inherit !important;
@@ -46,15 +50,19 @@ a:hover {
 
 .jumbotron {
 	border-radius: 0 !important;
-	padding: 30px 0 !important;
+	padding: 10px 0 !important;
 	background: #fff !important;
 	/* margin-bottom: 0 !important; */
-	box-shadow: 0 4px 20px #f1f1f1 !important;
-	margin-bottom: 30px;
+	border-bottom: 1px solid #eee;
+	margin-bottom: 0px;
 }
 
 p {
 	color: rgba(0, 0, 0, 0.7) !important;
+}
+
+.row {
+	padding: 0 !important;
 }
 
 .address {
@@ -159,4 +167,14 @@ p {
 
 hr {
 	border-color: #f3f3f3 !important;
+}
+
+.sticky-top {
+	position: sticky !important;
+	top: 0 !important;
+}
+
+.sticky-top-70 {
+	position: sticky !important;
+	top: 70px !important;
 }
