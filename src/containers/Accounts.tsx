@@ -32,7 +32,7 @@ const SAccount = styled.div`
 
 	&:hover {
 		cursor: pointer;
-		background: #f3f3f3;
+		background: #f1f1f1;
 	}
 
 	span {

@@ -7,12 +7,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
-import Row from 'react-bootstrap/Row';
 import InputGroup from 'react-bootstrap/InputGroup';
+import Row from 'react-bootstrap/Row';
 
 import Avatar from '../components/Avatar';
 
-import { selectTransferLoading, selectAccountError } from '../selectors';
+import { selectAccountError, selectTransferLoading } from '../selectors';
 
 import { transfer } from '../modules/accounts';
 import Loader from './Loader';
@@ -22,7 +22,7 @@ function isLetter(str: string) {
 }
 
 const STransfer = styled.div`
-	padding-top: 10px;
+	padding-top: 20px;
 `;
 
 const SLoader = styled(Loader)`
