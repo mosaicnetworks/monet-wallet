@@ -8,10 +8,10 @@ import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
-import Row from 'react-bootstrap/Row';
+// import Row from 'react-bootstrap/Row';
 
-import Avatar from '../components/Avatar';
-import Loader from './Loader';
+// import Avatar from '../components/Avatar';
+// import Loader from './Loader';
 import Transaction from './Transaction';
 
 import { selectConfig, selectTransferLoading } from '../selectors';
@@ -20,9 +20,9 @@ const STransfer = styled.div`
 	padding-top: 20px;
 `;
 
-const SLoader = styled(Loader)`
-	margin-left: 10px !important;
-`;
+// const SLoader = styled(Loader)`
+// 	margin-left: 10px !important;
+// `;
 
 type Props = {
 	from: string;
@@ -54,12 +54,7 @@ const Transfer: React.FC<Props> = props => {
 				}}
 			/>
 			<Form>
-				<Row>
-					{to.length > 0 && (
-						<Col xs={1}>
-							<Avatar address={to} />
-						</Col>
-					)}
+				<Form.Row>
 					<Col>
 						<Form.Group controlId="formBasicEmail">
 							<Form.Control
@@ -72,8 +67,6 @@ const Transfer: React.FC<Props> = props => {
 								The address you wish to transfer to.
 							</Form.Text>
 						</Form.Group>
-					</Col>
-					<Col>
 						<Form.Group controlId="formBasicPassword">
 							<InputGroup>
 								<Form.Control
@@ -101,8 +94,7 @@ const Transfer: React.FC<Props> = props => {
 								is provided.
 							</Form.Text>
 						</Form.Group>
-					</Col>
-					<Col xs={1}>
+
 						<Button
 							onClick={confirmTx}
 							variant="primary"
@@ -112,10 +104,8 @@ const Transfer: React.FC<Props> = props => {
 							Send
 						</Button>
 					</Col>
-					<Col xs={1}>
-						<SLoader loading={loading} />
-					</Col>
-				</Row>
+					<Col></Col>
+				</Form.Row>
 			</Form>
 		</STransfer>
 	);

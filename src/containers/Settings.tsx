@@ -9,30 +9,24 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
-import Container from 'react-bootstrap/Container';
+// import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
-import Row from 'react-bootstrap/Row';
+// import Row from 'react-bootstrap/Row';
 
 import Header from '../components/Header';
 import Loader from '../components/Loader';
 
-import { save } from '../modules/config';
+import { save, setDirectory } from '../modules/config';
 import { MonetInfo } from '../monet';
-import { selectConfig, selectConfigSaveLoading } from '../selectors';
+import {
+	selectConfig,
+	selectConfigSaveLoading,
+	selectDatadir,
+	selectConfigError
+} from '../selectors';
 
 const SContent = styled.div`
 	padding: 30px !important;
-`;
-
-const SNode = styled.div`
-	padding: 10px 0;
-	/* background: var(--blue); */
-	/* color: white; */
-
-	h5 {
-		color: var(--orange);
-		box-shadow: 1px 1px 0px #000;
-	}
 `;
 
 type Props = {};
@@ -41,29 +35,40 @@ const Settings: React.FC<Props> = props => {
 	const dispatch = useDispatch();
 
 	const config = useSelector(selectConfig);
+	const error = useSelector(selectConfigError);
+	const datadir = useSelector(selectDatadir);
 	const loading = useSelector(selectConfigSaveLoading);
 
 	const [gas, setGas] = useState('');
 	const [host, setHost] = useState('');
 	const [port, setPort] = useState('');
+	const [vdatadir, setVDatadir] = useState('');
 
 	const saveConfig = async () => {
-		const newConfig = {
-			...config
-		};
+		if (datadir !== vdatadir) {
+			await dispatch(setDirectory(vdatadir));
+		}
 
-		newConfig.defaults.gas = Number(gas);
+		if (!error) {
+			const newConfig = {
+				...config
+			};
 
-		newConfig.connection.host = host;
-		newConfig.connection.port = Number(port);
+			newConfig.defaults.gas = Number(gas);
 
-		await dispatch(save(newConfig));
+			newConfig.connection.host = host;
+			newConfig.connection.port = Number(port);
+
+			await dispatch(save(newConfig));
+		}
 	};
 
 	useEffect(() => {
 		setGas(config.defaults.gas.toString());
 		setPort(config.connection.port.toString());
 		setHost(config.connection.host);
+
+		setVDatadir(datadir);
 	}, [config]);
 
 	// node details
@@ -106,8 +111,8 @@ const Settings: React.FC<Props> = props => {
 			</Header>
 			<SContent>
 				<Form>
-					<Form.Row className="">
-						<Col>
+					<Form.Row className="align-items-center">
+						<Col md={6}>
 							<Form.Group controlId="formBasicEmail">
 								<label>Node IP Address</label>
 								<Form.Control
@@ -122,7 +127,7 @@ const Settings: React.FC<Props> = props => {
 									This is the IP address of the Monet node. If
 									you wish to connect to the current live
 									testnet use{' '}
-									<code>camille.monet.network</code>
+									<a href="">camille.monet.network</a>
 								</Form.Text>
 							</Form.Group>
 							<Form.Group controlId="formBasicEmail">
@@ -136,47 +141,25 @@ const Settings: React.FC<Props> = props => {
 									placeholder="Port"
 								/>
 								<Form.Text className="text-muted">
-									The service <code>port</code> of the Monet
-									node. This is usally <code>8080</code>.
+									The service port of the Monet node. This is
+									usally 8080.
 								</Form.Text>
 							</Form.Group>
 						</Col>
-						<Col>
-							<div style={{ padding: '0 30px' }}>
-								<h5>Details</h5>
-								<code>{`${host}:${port}`}</code>
-								<SNode>
-									<Container fluid={true}>
-										<Row className="align-items-center">
-											<Col>
-												<div>Connection</div>
-												<FontAwesomeIcon
-													className={
-														isConnected
-															? 'green'
-															: 'red'
-													}
-													icon={
-														isConnected
-															? faCheck
-															: faTimes
-													}
-												/>
-											</Col>
-											<Col>
-												<div>Min Gas Price</div>
-												<b>{minGasPrice || 0} Attoms</b>
-											</Col>
-										</Row>
-									</Container>
-								</SNode>
-							</div>
+						<Col className="text-center">
+							<h2>
+								<FontAwesomeIcon
+									className={isConnected ? 'green' : 'red'}
+									icon={isConnected ? faCheck : faTimes}
+								/>{' '}
+								Connection
+							</h2>
 						</Col>
 					</Form.Row>
 				</Form>
 				<hr />
 				<Form>
-					<Form.Row>
+					<Form.Row className="align-items-center">
 						<Col>
 							<Form.Group controlId="formBasicEmail">
 								<label>Gas</label>
@@ -189,11 +172,43 @@ const Settings: React.FC<Props> = props => {
 									placeholder="Gas"
 								/>
 								<Form.Text className="text-muted">
-									The default <code>gas</code> to be used for
-									all transactions (excluding transfers). Gas
+									The default gas to be used for all
+									transactions (excluding transfers). Gas
 									price will be pulled automatically from the
 									respective node before transactions are
 									submitted.
+								</Form.Text>
+							</Form.Group>
+						</Col>
+						<Col className="text-center">
+							{!isConnected && <h2>No valid connection</h2>}
+							{isConnected && <h2>{minGasPrice || 0} Attoms</h2>}
+						</Col>
+					</Form.Row>
+				</Form>
+				<hr />
+				<h4>Advanced</h4>
+				<br />
+				<Form>
+					<Form.Row>
+						<Col>
+							<Form.Group controlId="formBasicEmail">
+								<label>Data Directory</label>
+								<Form.Control
+									onChange={(e: any) =>
+										setVDatadir(e.target.value)
+									}
+									type="text"
+									defaultValue={vdatadir}
+									placeholder="Gas"
+								/>
+								<Form.Text className="text-muted">
+									The data directory is the folder in which
+									all settings and encrypted keyfiles are
+									stored. This setting should not be changed
+									unless you are aware of the side effects.
+									For more info visit the{' '}
+									<a href="">documentation.</a>
 								</Form.Text>
 							</Form.Group>
 						</Col>

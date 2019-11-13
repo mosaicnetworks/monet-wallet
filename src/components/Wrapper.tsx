@@ -9,7 +9,7 @@ import Row from 'react-bootstrap/Row';
 import Sidebar from '../components/Sidebar';
 
 const SPadding = styled.div`
-	min-height: 200vh;
+	min-height: 100vh;
 `;
 
 const Wrapper: React.FunctionComponent<{}> = props => {
@@ -17,7 +17,7 @@ const Wrapper: React.FunctionComponent<{}> = props => {
 		<>
 			<Container fluid={true}>
 				<Row noGutters={true}>
-					<Col xs={3}>
+					<Col xs={2}>
 						<Sidebar />
 					</Col>
 					<Col>

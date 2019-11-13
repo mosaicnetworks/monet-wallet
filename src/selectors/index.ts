@@ -18,6 +18,9 @@ export const selectCreateAccountLoading = (store: Store) =>
 export const selectAccountError = (store: Store) => store.accounts.error;
 
 // config selectors
+export const selectDatadir = (store: Store) => store.config.directory;
 export const selectConfig = (store: Store) => store.config.data;
+export const selectConfigError = (store: Store) => store.config.error;
+
 export const selectConfigSaveLoading = (store: Store) =>
 	store.config.loading.save;

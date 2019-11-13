@@ -2,11 +2,11 @@ import React from 'react';
 
 import styled from 'styled-components';
 
-import { faCog } from '@fortawesome/free-solid-svg-icons';
+import { faCog, faUser } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Link } from 'react-router-dom';
 
 import LOGO from '../assets/icon.png';
-import { Link } from 'react-router-dom';
 
 type Props = {};
 
@@ -14,7 +14,7 @@ const SSidebar = styled.div`
 	/* width: 300px; */
 	height: 100vh;
 	background: #fff;
-	box-shadow: 0 2px 40px rgba(0, 0, 0, 0.03);
+	/* box-shadow: 0 2px 40px rgba(0, 0, 0, 0.03); */
 	border-right: 1px solid #eee;
 `;
 
@@ -65,7 +65,7 @@ const SLinks = styled.div`
 
 	a {
 		svg {
-			margin-right: 6px;
+			margin-right: 13px;
 		}
 
 		transition: background 0.1s cubic-bezier(1, 1, 1, 1);
@@ -95,10 +95,10 @@ const Sidebar: React.FunctionComponent<Props> = () => {
 				<h3>Actions</h3>
 				<ul>
 					<li>
-						<Link to={'/'}>Accounts</Link>
-					</li>
-					<li>
-						<a href="">Proof of Authority</a>
+						<Link to={'/'}>
+							<FontAwesomeIcon icon={faUser} />
+							Accounts
+						</Link>
 					</li>
 				</ul>
 			</SLinks>

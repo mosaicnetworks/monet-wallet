@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 
-import utils, { Currency } from 'evm-lite-utils';
+import { Currency } from 'evm-lite-utils';
 import styled from 'styled-components';
 
-import { faCircleNotch, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Monet } from 'evm-lite-core';
 import { useSelector } from 'react-redux';
 import { RouteComponentProps } from 'react-router-dom';
 
@@ -24,15 +25,13 @@ import {
 	selectConfig,
 	selectListAccountLoading
 } from '../selectors';
-import { Monet } from 'evm-lite-core';
 
 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
 const SStatistic = styled.div`
-	background: #fff;
-	z-index: 23;
+	/* background: #fff; */
+	/* box-shadow: 2px 0px 40px rgba(0, 0, 0, 0.05); */
 	width: 100%;
-	box-shadow: 2px 0px 40px rgba(0, 0, 0, 0.05);
 	border-bottom: 1px solid #eee;
 
 	.col {
@@ -98,6 +97,8 @@ const Account: React.FC<RouteComponentProps<Props>> = props => {
 		if (a) {
 			setAccount(a);
 			fetchAccount(a);
+		} else {
+			props.history.push('/');
 		}
 	}, []);
 
@@ -105,9 +106,7 @@ const Account: React.FC<RouteComponentProps<Props>> = props => {
 		<>
 			<Header
 				icon={<Avatar address={account.address} size={35} />}
-				title={`${capitalize(account.moniker)} (${utils.cleanAddress(
-					account.address
-				)})`}
+				title={`${capitalize(account.moniker)}`}
 			>
 				<Loader loading={loading} />{' '}
 				<Button disabled={loading} variant="primary">
@@ -134,6 +133,7 @@ const Account: React.FC<RouteComponentProps<Props>> = props => {
 					</Row>
 				</Container>
 			</SStatistic>
+
 			<STransfer>
 				<h5>Transfer</h5>
 				<Transfer from={account.address} />

@@ -11,8 +11,9 @@ const SHeader = styled.div`
 	height: 60px;
 	line-height: 60px;
 	width: 100%;
-	box-shadow: 2px 0px 40px rgba(0, 0, 0, 0.05);
+	/* box-shadow: 2px 0px 40px rgba(0, 0, 0, 0.05); */
 	border-bottom: 1px solid #eee;
+	padding: 0 15px;
 `;
 
 const STitle = styled.div`
@@ -20,6 +21,8 @@ const STitle = styled.div`
 	font-weight: 600;
 	font-family: 'Titillium Web', sans-serif;
 `;
+
+const SIcon = styled.span``;
 
 type Props = {
 	title: string;
@@ -34,7 +37,7 @@ const Header: React.FC<Props> = props => {
 					<Row>
 						<Col xs={9}>
 							<STitle>
-								{props.icon}
+								<SIcon>{props.icon}</SIcon>
 								{props.title}
 							</STitle>
 						</Col>

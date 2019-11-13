@@ -7,6 +7,7 @@
 }
 
 * {
+	transition: height 1s cubic-bezier(1, 0, 0, 1);
 	--blue: #253c99;
 	--orange: #f16622;
 	--green: #02a24b;
@@ -22,7 +23,7 @@ body {
 	-webkit-font-smoothing: antialiased;
 	overflow-x: hidden;
 
-	background: #fff !important;
+	background: #f9f9f9 !important;
 	line-height: 1.7;
 }
 
