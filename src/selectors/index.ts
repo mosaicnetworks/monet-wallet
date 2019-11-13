@@ -9,6 +9,8 @@ export const selectTransferLoading = (store: Store) =>
 
 export const selectGetAccountLoading = (store: Store) =>
 	store.accounts.loading.get;
+export const selectListAccountLoading = (store: Store) =>
+	store.accounts.loading.list;
 
 export const selectCreateAccountLoading = (store: Store) =>
 	store.accounts.loading.create;

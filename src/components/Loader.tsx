@@ -2,7 +2,7 @@ import React from 'react';
 
 import Image from 'react-bootstrap/Image';
 
-import LoaderGif from '../assets/loader2.svg';
+import LOADER from '../assets/loader.svg';
 
 type Props = {
 	loading: boolean;
@@ -12,9 +12,9 @@ type Props = {
 const Loader: React.FC<Props> = props => {
 	return !!props.loading ? (
 		<Image
-			src={LoaderGif}
-			width={props.size || 30}
-			height={props.size || 30}
+			src={LOADER}
+			width={props.size || 40}
+			height={props.size || 40}
 		/>
 	) : (
 		<></>

@@ -1,44 +1,81 @@
-import React from 'react';
-
-import styled from 'styled-components';
+import React, { useEffect, useState } from 'react';
 
 import utils, { Currency } from 'evm-lite-utils';
+import styled from 'styled-components';
 
+import { faCircleNotch, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useSelector } from 'react-redux';
+import { RouteComponentProps } from 'react-router-dom';
 
+import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
-import Jumbotron from 'react-bootstrap/Jumbotron';
-import Media from 'react-bootstrap/Media';
 import Row from 'react-bootstrap/Row';
 
 import Avatar from '../components/Avatar';
+import Header from '../components/Header';
+import Loader from '../components/Loader';
 import Transfer from '../components/Transfer';
 
-import { SContent } from '../components/styled';
-
-import { selectedAccount } from '../selectors';
+import { MonikerEVMAccount } from 'src/monet';
+import {
+	selectAccounts,
+	selectConfig,
+	selectListAccountLoading
+} from '../selectors';
+import { Monet } from 'evm-lite-core';
 
 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
-const SJumbotron = styled(Jumbotron)`
-	box-shadow: 0 2px 20px -15px #ddd !important;
+const SStatistic = styled.div`
+	background: #fff;
+	z-index: 23;
+	width: 100%;
+	box-shadow: 2px 0px 40px rgba(0, 0, 0, 0.05);
+	border-bottom: 1px solid #eee;
+
+	.col {
+		padding: 20px 0;
+	}
 `;
 
-const SHeadingContainer = styled(Container)`
-	padding: 0 5px !important;
+const SSettings = styled.div`
+	padding: 30px !important;
+	display: none;
 `;
 
-const Accounts: React.FunctionComponent<{}> = () => {
-	const selected = useSelector(selectedAccount);
+const STransfer = styled.div`
+	padding: 30px !important;
+`;
 
-	const renderUnlocked = () => (
-		<SContent>
-			<Container>
-				<Transfer />
-			</Container>
-		</SContent>
-	);
+type Props = {
+	moniker: string;
+};
+
+const Account: React.FC<RouteComponentProps<Props>> = props => {
+	const accounts = useSelector(selectAccounts);
+	const config = useSelector(selectConfig);
+	const loading = useSelector(selectListAccountLoading);
+
+	const moniker = props.match.params.moniker;
+	const [account, setAccount] = useState<MonikerEVMAccount>({
+		moniker: '',
+		balance: new Currency(0),
+		nonce: 0,
+		address: '',
+		bytecode: ''
+	});
+
+	const fetchAccount = async (a: MonikerEVMAccount) => {
+		const node = new Monet(config.connection.host, config.connection.port);
+		const res = await node.getAccount(a.address);
+
+		setAccount({
+			...res,
+			moniker: a.moniker
+		});
+	};
 
 	const parseBalance = (balance: Currency) => {
 		const b = balance.format('T');
@@ -55,51 +92,59 @@ const Accounts: React.FunctionComponent<{}> = () => {
 		return l.join('.') + 'T';
 	};
 
+	useEffect(() => {
+		const a = accounts.find(a => a.moniker.toLowerCase() === moniker);
+
+		if (a) {
+			setAccount(a);
+			fetchAccount(a);
+		}
+	}, []);
+
 	return (
 		<>
-			<SJumbotron fluid={true}>
-				<SHeadingContainer>
-					<Row noGutters={true} className="align-items-center">
-						<Col md={6} lg={8}>
-							{selected ? (
-								<Media>
-									<Avatar address={selected.address} />
-									<Media.Body>
-										<h3>{capitalize(selected.moniker)}</h3>
-										<p className={'mono'}>
-											{utils.cleanAddress(
-												selected.address
-											)}
-										</p>
-									</Media.Body>
-								</Media>
-							) : (
-								<>
-									<h3>Not Selected</h3>
-									<p>Use the dropdown to select an account</p>
-								</>
-							)}
+			<Header
+				icon={<Avatar address={account.address} size={35} />}
+				title={`${capitalize(account.moniker)} (${utils.cleanAddress(
+					account.address
+				)})`}
+			>
+				<Loader loading={loading} />{' '}
+				<Button disabled={loading} variant="primary">
+					<FontAwesomeIcon icon={faCircleNotch} />
+				</Button>
+			</Header>
+			<SStatistic className="">
+				<Container>
+					<Row className="align-items-center">
+						<Col className="text-center">
+							<h3>{parseBalance(account.balance)}</h3>
+							<div>Balance</div>
 						</Col>
-						<Col>
-							<h4>Balance</h4>
-							<p className={(selected && 'mono') || ''}>
-								{selected
-									? parseBalance(selected.balance)
-									: '-'}
-							</p>
+						<Col className="text-center">
+							<h3>{account.nonce}</h3>
+							<div>Nonce</div>
 						</Col>
-						<Col>
-							<h4>Nonce</h4>
-							<p className={(selected && 'mono') || ''}>
-								{selected ? selected.nonce : '-'}
-							</p>
+						<Col className="text-center">
+							<h3 className="green">
+								<FontAwesomeIcon icon={faCheck} />
+							</h3>
+							<div>Validator</div>
 						</Col>
 					</Row>
-				</SHeadingContainer>
-			</SJumbotron>
-			{selected && renderUnlocked()}
+				</Container>
+			</SStatistic>
+			<STransfer>
+				<h5>Transfer</h5>
+				<Transfer from={account.address} />
+			</STransfer>
+			<SSettings>
+				<h5>Account Actions</h5>
+				<li>Change Password</li>
+				<li>Unlock</li>
+			</SSettings>
 		</>
 	);
 };
 
-export default Accounts;
+export default Account;

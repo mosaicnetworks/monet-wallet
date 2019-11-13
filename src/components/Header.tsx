@@ -6,51 +6,45 @@ import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 
-import Logo from '../assets/monet_logo.png';
-
 const SHeader = styled.div`
-	position: sticky !important;
-	top: 0 !important;
 	background: #fff;
-	box-shadow: 2px 0px 70px rgba(0, 0, 0, 0.1);
-	height: 70px;
-	line-height: 70px !important;
+	height: 60px;
+	line-height: 60px;
+	width: 100%;
+	box-shadow: 2px 0px 40px rgba(0, 0, 0, 0.05);
+	border-bottom: 1px solid #eee;
 `;
 
-const SLogo = styled.div`
-	background: #fff;
-	text-align: center;
+const STitle = styled.div`
+	font-size: 20px;
+	font-weight: 600;
+	font-family: 'Titillium Web', sans-serif;
 `;
 
-const SPadding = styled.div`
-	padding: 0 20px;
-`;
+type Props = {
+	title: string;
+	icon?: JSX.Element;
+};
 
-const SHeading = styled.div`
-	font-size: 25px;
-	font-weight: bold;
-`;
-
-type Props = {};
-
-const Header: React.FunctionComponent<Props> = () => {
+const Header: React.FC<Props> = props => {
 	return (
-		<SHeader>
-			<Container fluid={true}>
-				<Row noGutters={true}>
-					<Col md={1}>
-						<SLogo>
-							<img src={Logo} width={45} />
-						</SLogo>
-					</Col>
-					<Col>
-						<SPadding>
-							<SHeading>Monet Wallet</SHeading>
-						</SPadding>
-					</Col>
-				</Row>
-			</Container>
-		</SHeader>
+		<>
+			<SHeader className="sticky-top">
+				<Container>
+					<Row>
+						<Col xs={9}>
+							<STitle>
+								{props.icon}
+								{props.title}
+							</STitle>
+						</Col>
+						<Col xs={3} className="text-right">
+							{props.children}
+						</Col>
+					</Row>
+				</Container>
+			</SHeader>
+		</>
 	);
 };
 

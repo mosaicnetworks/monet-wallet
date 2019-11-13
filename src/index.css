@@ -1,24 +1,43 @@
-@import url('https://fonts.googleapis.com/css?family=Titillium+Web:300,400&display=swap');
-@import url('https://fonts.googleapis.com/css?family=Cousine&display=swap');
-@import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
-@import url('https://fonts.googleapis.com/css?family=Open+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Titillium+Web:400,600,700&display=swap');
 @import url('https://fonts.googleapis.com/css?family=Fira+Code&display=swap');
 
-/* Blue: #1f3b94 */
-/* Red: #5bc0de */
-/* Green: #5cb85c */
-/* Orange: #f0ad4e */
-/* Purple: #7B3992 */
+@font-face {
+	font-family: 'Monet';
+	src: local('Monet'), url(./assets/fonts/monet.ttf);
+}
+
+* {
+	--blue: #253c99;
+	--orange: #f16622;
+	--green: #02a24b;
+	--red: #ec1c24;
+	--purple: #7f3b97;
+	--yellow: #ffe014;
+}
 
 body {
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-	background: #fff !important;
 	margin: 0 !important;
 	padding: 0 !important;
-	font-size: 15px;
-	font-family: 'Open Sans', sans-serif !important;
+
+	-webkit-font-smoothing: antialiased;
 	overflow-x: hidden;
+
+	background: #fff !important;
+	line-height: 1.7;
+}
+
+.sticky-top {
+	position: sticky !important;
+	top: 0 !important;
+}
+
+.sticky-top-60 {
+	position: sticky !important;
+	top: 60px !important;
+}
+
+.container-fluid {
+	padding: 0 !important;
 }
 
 h1,
@@ -26,124 +45,87 @@ h2,
 h3,
 h4,
 h5 {
+	font-family: 'Titillium Web', sans-serif;
+	font-weight: 600;
 }
 
-.bg-light {
-	background: rgba(255, 255, 255, 1) !important;
-	color: #000 !important;
-	width: 100% !important;
-	/* border-bottom: 1px solid #fafafa; */
-}
-
-a {
-	color: #7b3992;
-}
-
-.container-fluid {
-	padding: 0 !important;
-}
-
-a:hover {
-	text-decoration: none !important;
-	color: inherit !important;
-}
-
-.jumbotron {
-	border-radius: 0 !important;
-	padding: 10px 0 !important;
-	background: #fff !important;
-	/* margin-bottom: 0 !important; */
-	border-bottom: 1px solid #eee;
-	margin-bottom: 0px;
-}
-
-p {
-	color: rgba(0, 0, 0, 0.7) !important;
-}
-
-.row {
-	padding: 0 !important;
-}
-
-.address {
-	font-family: 'Cousine', monospace !important;
-	font-size: 15px;
-}
-
-.btn {
-	font-size: 15px;
-	border-radius: 5px !important;
-}
-
-.btn:focus {
-	box-shadow: none !important;
-}
-
-.btn-primary {
-	background: #1f4292 !important;
-	border: none !important;
-}
-
-.btn-outline-primary {
-	color: #1f4292 !important;
-	border-color: #1f4292 !important;
-}
-
-.btn-outline-primary:hover {
-	color: #fff !important;
-	background-color: #1f4292 !important;
-	border-color: #1f4292 !important;
-}
-
-.btn-warning {
-	background: #f26630 !important;
-	border: none !important;
-	color: white !important;
-}
-
-.btn-success {
-	background-color: darkgreen;
-	border-color: darkgreen;
-}
-
-.btn-outline-success {
-	border-color: darkgreen;
-	color: darkgreen !important;
-}
-
-.btn-outline-success:hover {
-	color: #fff !important;
-	background-color: darkgreen !important;
-	border-color: darkgreen;
-}
-
-.btn-warning:hover {
-	background: #e55e2b !important;
-	border: none !important;
-	color: white !important;
-}
-
-.modal-content {
-	border: none !important;
-	border-radius: 5 !important;
-	outline: none !important;
-	box-shadow: none !important;
-}
-
-.modal-header {
-	border-bottom: 1px solid #f3f3f3 !important;
-}
-
-.modal-body {
-	padding: 30px 20px !important;
-}
-
-.modal-footer {
-	border-top: 1px solid #f3f3f3 !important;
+pre,
+code {
+	font-family: 'Fira Code', monospace !important;
+	/* color: rgba(31, 66, 146, 1); */
+	word-wrap: break-word;
 }
 
 .mono {
 	font-family: 'Fira Code', monospace !important;
+	font-size: 18px;
+}
+
+.btn {
+	font-family: 'Titillium Web', sans-serif;
+	font-weight: 700;
+}
+
+.btn-warning {
+	background: var(--orange);
+	color: white;
+	border: none !important;
+	outline: none !important;
+}
+
+.btn-warning:hover {
+	background: #d35a1e;
+	color: white;
+}
+
+.btn-warning:active {
+	box-shadow: none !important;
+	outline: none !important;
+	border: none !important;
+}
+
+.btn-primary {
+	background: var(--blue);
+	color: white;
+	border: none !important;
+	outline: none !important;
+}
+
+.btn-primary:hover {
+	background: #1e3383;
+	color: white;
+}
+
+.btn-primary:active {
+	box-shadow: none !important;
+	outline: none !important;
+	border: none !important;
+}
+
+.btn-success {
+	background: var(--green);
+	color: white;
+	border: none !important;
+	outline: none !important;
+}
+
+.btn-success:hover {
+	background: #02642e;
+	color: white;
+}
+
+.btn-success:active {
+	box-shadow: none !important;
+	outline: none !important;
+	border: none !important;
+}
+
+.green {
+	color: var(--green);
+}
+
+.red {
+	color: var(--red);
 }
 
 .dropdown-menu {
@@ -165,16 +147,21 @@ p {
 	background: #f1f1f1;
 }
 
-hr {
-	border-color: #f3f3f3 !important;
+.modal-content {
+	border: none !important;
+	border-radius: 5px !important;
+	outline: none !important;
+	box-shadow: none !important;
 }
 
-.sticky-top {
-	position: sticky !important;
-	top: 0 !important;
+.modal-header {
+	border-bottom: 1px solid #f3f3f3 !important;
 }
 
-.sticky-top-70 {
-	position: sticky !important;
-	top: 70px !important;
+.modal-body {
+	padding: 30px 20px !important;
+}
+
+.modal-footer {
+	border-top: 1px solid #f3f3f3 !important;
 }

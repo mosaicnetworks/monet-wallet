@@ -3,6 +3,9 @@
 	"version": "1.0.0",
 	"private": true,
 	"dependencies": {
+		"@fortawesome/fontawesome-svg-core": "^1.2.25",
+		"@fortawesome/free-solid-svg-icons": "^5.11.2",
+		"@fortawesome/react-fontawesome": "^0.1.7",
 		"bootstrap": "^4.3.1",
 		"evm-lite-client": "^1.3.7",
 		"evm-lite-consensus": "^1.3.7",
@@ -22,7 +25,6 @@
 		"styled-components": "^4.4.0"
 	},
 	"scripts": {
-		"prepublish": "yarn run build",
 		"dev": "concurrently --kill-others \"yarn run start:server\" \"yarn run start:electron\"",
 		"start:server": "webpack-dev-server --config config/webpack.config.js --hot --inline",
 		"start:electron": "electron ./dist",

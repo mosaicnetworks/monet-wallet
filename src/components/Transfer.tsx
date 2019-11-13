@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import styled from 'styled-components';
 
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
@@ -11,15 +11,10 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
 
 import Avatar from '../components/Avatar';
-
-import { selectAccountError, selectTransferLoading } from '../selectors';
-
-import { transfer } from '../modules/accounts';
 import Loader from './Loader';
+import Transaction from './Transaction';
 
-function isLetter(str: string) {
-	return str.length === 1 && str.match(/[a-z]/i);
-}
+import { selectConfig, selectTransferLoading } from '../selectors';
 
 const STransfer = styled.div`
 	padding-top: 20px;
@@ -29,39 +24,42 @@ const SLoader = styled(Loader)`
 	margin-left: 10px !important;
 `;
 
-const Transfer: React.FC<{}> = () => {
-	const dispatch = useDispatch();
+type Props = {
+	from: string;
+};
 
+const Transfer: React.FC<Props> = props => {
 	const loading = useSelector(selectTransferLoading);
-	const error = useSelector(selectAccountError);
+	const config = useSelector(selectConfig);
 
 	const [to, setTo] = useState('');
 	const [value, setValue] = useState('');
 
-	const makeTransfer = async () => {
-		if (isLetter(value.slice(-1))) {
-			await dispatch(transfer(to, value));
-		} else {
-			await dispatch(transfer(to, value + 'T'));
-		}
-
-		if (!error) {
-			setTo('');
-			setValue('');
-		}
+	const [show, setShow] = useState(false);
+	const handleClose = () => setShow(false);
+	const confirmTx = async () => {
+		setShow(true);
 	};
 
 	return (
 		<STransfer>
+			<Transaction
+				show={show}
+				handleClose={handleClose}
+				transaction={{
+					from: props.from,
+					to,
+					value,
+					gas: config.defaults.gas
+				}}
+			/>
 			<Form>
 				<Row>
-					<Col xs={1}>
-						{to.length > 0 ? (
+					{to.length > 0 && (
+						<Col xs={1}>
 							<Avatar address={to} />
-						) : (
-							<h5>Transfer Coins</h5>
-						)}
-					</Col>
+						</Col>
+					)}
 					<Col>
 						<Form.Group controlId="formBasicEmail">
 							<Form.Control
@@ -106,8 +104,8 @@ const Transfer: React.FC<{}> = () => {
 					</Col>
 					<Col xs={1}>
 						<Button
-							onClick={makeTransfer}
-							variant="warning"
+							onClick={confirmTx}
+							variant="primary"
 							type="submit"
 							disabled={loading || !to.length || !value.length}
 						>

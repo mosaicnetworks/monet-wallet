@@ -1,27 +1,31 @@
 import React from 'react';
 
+import styled from 'styled-components';
+
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 
-import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
+
+const SPadding = styled.div`
+	min-height: 200vh;
+`;
 
 const Wrapper: React.FunctionComponent<{}> = props => {
 	return (
-		<React.Fragment>
+		<>
 			<Container fluid={true}>
-				<Row className="sticky-top">
+				<Row noGutters={true}>
+					<Col xs={3}>
+						<Sidebar />
+					</Col>
 					<Col>
-						<Header />
+						<SPadding>{props.children}</SPadding>
 					</Col>
 				</Row>
-				<Row noGutters={true}>
-					<Sidebar />
-					<Col md={11}>{props.children}</Col>
-				</Row>
 			</Container>
-		</React.Fragment>
+		</>
 	);
 };
 
