@@ -74,6 +74,8 @@ const Settings: React.FC<Props> = props => {
 	// node details
 
 	const fetchNodeDetails = async () => {
+		setConLoading(true);
+
 		const monet = new Monet(host, Number(port));
 
 		try {
@@ -87,9 +89,14 @@ const Settings: React.FC<Props> = props => {
 			setIsConnected(false);
 			setMinGasPrice(0);
 		}
+
+		setTimeout(() => {
+			setConLoading(false);
+		}, 500);
 	};
 
 	const [isConnected, setIsConnected] = useState(false);
+	const [conLoading, setConLoading] = useState(false);
 	const [minGasPrice, setMinGasPrice] = useState(0);
 
 	useEffect(() => {
@@ -148,11 +155,21 @@ const Settings: React.FC<Props> = props => {
 						</Col>
 						<Col className="text-center">
 							<h2>
-								<FontAwesomeIcon
-									className={isConnected ? 'green' : 'red'}
-									icon={isConnected ? faCheck : faTimes}
-								/>{' '}
-								Connection
+								{conLoading ? (
+									<Loader loading={conLoading} />
+								) : (
+									<div>
+										<FontAwesomeIcon
+											className={
+												isConnected ? 'green' : 'red'
+											}
+											icon={
+												isConnected ? faCheck : faTimes
+											}
+										/>{' '}
+										Connection
+									</div>
+								)}
 							</h2>
 						</Col>
 					</Form.Row>
@@ -181,8 +198,18 @@ const Settings: React.FC<Props> = props => {
 							</Form.Group>
 						</Col>
 						<Col className="text-center">
-							{!isConnected && <h2>No valid connection</h2>}
-							{isConnected && <h2>{minGasPrice || 0} Attoms</h2>}
+							{conLoading ? (
+								<Loader loading={conLoading} />
+							) : (
+								<div>
+									{isConnected && (
+										<>
+											<h2>{minGasPrice || 0} Attoms</h2>
+											<div>Gas Price</div>
+										</>
+									)}
+								</div>
+							)}
 						</Col>
 					</Form.Row>
 				</Form>
