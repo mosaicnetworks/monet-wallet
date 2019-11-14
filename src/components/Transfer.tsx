@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import styled from 'styled-components';
 
-import { faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Currency } from 'evm-lite-utils';
 import { useDispatch, useSelector } from 'react-redux';
@@ -18,11 +18,8 @@ import Loader from './Loader';
 
 import { MonikerEVMAccount } from 'src/monet';
 import { transfer } from '../modules/accounts';
-import { selectTransferLoading } from '../selectors';
-
-function isLetter(str: string) {
-	return str.length === 1 && str.match(/[a-z]/i);
-}
+import { selectAccountError, selectTransferLoading } from '../selectors';
+import { isLetter } from '../utils';
 
 const STransfer = styled.div`
 	padding-top: 20px;
@@ -47,12 +44,16 @@ type Props = {
 const Transfer: React.FC<Props> = props => {
 	const dispatch = useDispatch();
 
+	const error = useSelector(selectAccountError);
 	const loading = useSelector(selectTransferLoading);
 
 	const [success, setSuccess] = useState('');
 	const [to, setTo] = useState('');
 	const [value, setValue] = useState('');
 	const [passphrase, setPassphrase] = useState('');
+
+	const allFieldsNotEmpty =
+		to.length > 0 && value.length > 0 && passphrase.length > 0;
 
 	const makeTransfer = async () => {
 		if (isLetter(value.slice(-1))) {
@@ -110,14 +111,7 @@ const Transfer: React.FC<Props> = props => {
 							</InputGroup>
 
 							<Form.Text className="text-muted">
-								The amount will default to Tenom if no{' '}
-								<a
-									target="_blank"
-									href="https://evm-lite-js.readthedocs.io/en/latest/utils.html"
-								>
-									unit
-								</a>{' '}
-								is provided.
+								Enter an amount in tenom
 							</Form.Text>
 						</Form.Group>
 						<Form.Group controlId="formBasicEmail">
@@ -141,9 +135,7 @@ const Transfer: React.FC<Props> = props => {
 						<Loader loading={loading} />
 					</Col>
 					<Col>
-						{to.length > 0 &&
-						value.length > 0 &&
-						passphrase.length > 0 ? (
+						{allFieldsNotEmpty ? (
 							<SConfirm>
 								<h5>Confirm</h5>
 								<p>
@@ -201,6 +193,16 @@ const Transfer: React.FC<Props> = props => {
 										? new Currency(value + 'T').format('T')
 										: '0T'}
 								</h5>
+							</SConfirm>
+						) : error ? (
+							<SConfirm className="text-center">
+								<h5>
+									<FontAwesomeIcon
+										className={'red'}
+										icon={faTimes}
+									/>{' '}
+								</h5>
+								<h5>{error}</h5>
 							</SConfirm>
 						) : (
 							success.length > 0 && (

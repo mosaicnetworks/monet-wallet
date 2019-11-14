@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
 
+import ReactTooltip from 'react-tooltip';
+
 import { useDispatch } from 'react-redux';
 import { HashRouter, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
@@ -26,6 +28,7 @@ const App: React.FunctionComponent<{}> = () => {
 
 	return (
 		<HashRouter>
+			<ReactTooltip type="dark" />
 			<React.Fragment>
 				<Wrapper>
 					<Route exact={true} path="/" component={Accounts} />

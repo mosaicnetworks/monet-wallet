@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
+import ReactTooltip from 'react-tooltip';
 import styled from 'styled-components';
 
-import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Currency } from 'evm-lite-utils';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -20,12 +21,13 @@ import NewAccount from '../components/NewAccount';
 
 import { listAccounts } from '../modules/accounts';
 import { selectAccounts, selectListAccountLoading } from '../selectors';
-import { parseBalance } from '../utils';
+import { capitalize, parseBalance } from '../utils';
 
 const SAccounts = styled.div`
 	padding: 30px !important;
 	border-bottom: var(--border);
 	z-index: 100;
+	padding-bottom: 10px !important;
 `;
 
 const SStatistic = styled.div`
@@ -33,14 +35,17 @@ const SStatistic = styled.div`
 	/* box-shadow: 2px 0px 40px rgba(0, 0, 0, 0.05); */
 	width: 100%;
 	border-bottom: var(--border);
-	background: #fff;
+	/* background: var(--blue); */
+	/* color: white; */
+	font-weight: 600 !important;
 
 	h3 {
+		/* color: var(--blue) !important; */
 		font-size: 35px;
 	}
 
 	.col {
-		padding: 10px 0;
+		padding: 20px 0;
 		border-right: var(--border);
 	}
 `;
@@ -50,7 +55,7 @@ const SAvatar = styled.div`
 	opacity: 0.9;
 	cursor: pointer;
 	display: inline-block;
-	margin-bottom: 15px;
+	margin-bottom: 25px;
 
 	:hover {
 		opacity: 1;
@@ -72,12 +77,16 @@ const Accounts: React.FC<Props> = () => {
 		totalBalance = totalBalance.plus(account.balance);
 	});
 
+	useEffect(() => {
+		ReactTooltip.rebuild();
+	});
+
 	return (
 		<>
 			<Header title={'All Accounts'}>
 				<Loader loading={loading} />{' '}
 				<Button disabled={loading} onClick={refresh} variant="primary">
-					<FontAwesomeIcon icon={faCircleNotch} />
+					Refresh
 				</Button>
 			</Header>
 			<SStatistic className="">
@@ -91,13 +100,21 @@ const Accounts: React.FC<Props> = () => {
 							<h3>{accounts.length}</h3>
 							<div>Accounts</div>
 						</Col>
+						{/* <Col className="text-center">
+							<h3>???</h3>
+							<div>???</div>
+						</Col> */}
 					</Row>
 				</Container>
 			</SStatistic>
 			<SAccounts className="">
 				<p>Select an account view more options</p>
+
 				{accounts.map(a => (
-					<SAvatar key={a.address}>
+					<SAvatar
+						data-tip={`${capitalize(a.moniker)}`}
+						key={a.address}
+					>
 						<Link to={`account/${a.moniker.toLowerCase()}`}>
 							<Avatar address={a.address} size={50} />
 						</Link>

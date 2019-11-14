@@ -16,3 +16,7 @@ export const parseBalance = (balance: Currency) => {
 
 	return l.join('.') + 'T';
 };
+
+export const isLetter = (str: string) => {
+	return str.length === 1 && str.match(/[a-z]/i);
+};

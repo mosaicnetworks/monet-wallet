@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 
 import { Currency } from 'evm-lite-utils';
+import ReactTooltip from 'react-tooltip';
 import styled from 'styled-components';
 
-import { faCheck, faCircleNotch } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Monet } from 'evm-lite-core';
 import { useSelector } from 'react-redux';
 import { RouteComponentProps } from 'react-router-dom';
@@ -20,18 +21,19 @@ import Loader from '../components/Loader';
 import Transfer from '../components/Transfer';
 
 import { MonikerEVMAccount } from 'src/monet';
-import {
-	selectAccounts,
-	selectConfig,
-	selectListAccountLoading
-} from '../selectors';
+import { selectAccounts, selectConfig } from '../selectors';
 import { capitalize, parseBalance } from '../utils';
 
 const SStatistic = styled.div`
 	/* background: #fff; */
 	/* box-shadow: 2px 0px 40px rgba(0, 0, 0, 0.05); */
 	width: 100%;
+	font-weight: 600 !important;
 	border-bottom: var(--border);
+
+	h3 {
+		font-size: 35px;
+	}
 
 	.col {
 		padding: 20px 0;
@@ -56,9 +58,9 @@ type Props = {
 const Account: React.FC<RouteComponentProps<Props>> = props => {
 	const accounts = useSelector(selectAccounts);
 	const config = useSelector(selectConfig);
-	const loading = useSelector(selectListAccountLoading);
 
 	const moniker = props.match.params.moniker;
+	const [loading, setLoading] = useState(false);
 	const [account, setAccount] = useState<MonikerEVMAccount>({
 		moniker: '',
 		balance: new Currency(0),
@@ -68,6 +70,8 @@ const Account: React.FC<RouteComponentProps<Props>> = props => {
 	});
 
 	const fetchAccount = async (a: MonikerEVMAccount) => {
+		setLoading(true);
+
 		const node = new Monet(config.connection.host, config.connection.port);
 		const res = await node.getAccount(a.address);
 
@@ -75,6 +79,8 @@ const Account: React.FC<RouteComponentProps<Props>> = props => {
 			...res,
 			moniker: a.moniker
 		});
+
+		setTimeout(() => setLoading(false), 500);
 	};
 
 	useEffect(() => {
@@ -86,6 +92,8 @@ const Account: React.FC<RouteComponentProps<Props>> = props => {
 		} else {
 			props.history.push('/');
 		}
+
+		ReactTooltip.hide();
 	}, []);
 
 	return (
@@ -95,17 +103,21 @@ const Account: React.FC<RouteComponentProps<Props>> = props => {
 				title={`${capitalize(account.moniker)}`}
 			>
 				<Loader loading={loading} />{' '}
-				<Button disabled={loading} variant="primary">
-					<FontAwesomeIcon icon={faCircleNotch} />
+				<Button
+					disabled={loading}
+					onClick={() => fetchAccount(account)}
+					variant="primary"
+				>
+					Refresh
 				</Button>
 			</Header>
 			<SStatistic className="">
 				<Container>
 					<Row className="align-items-center">
-						<Col className="text-center">
+						{/* <Col className="text-center">
 							<h5>0 Seconds ago</h5>
 							<div>Last Updated</div>
-						</Col>
+						</Col> */}
 						<Col className="text-center">
 							<h3>{parseBalance(account.balance)}</h3>
 							<div>Balance</div>
@@ -114,12 +126,12 @@ const Account: React.FC<RouteComponentProps<Props>> = props => {
 							<h3>{account.nonce}</h3>
 							<div>Nonce</div>
 						</Col>
-						<Col className="text-center">
+						{/* <Col className="text-center">
 							<h3 className="green">
 								<FontAwesomeIcon icon={faCheck} />
 							</h3>
-							<div>Validator</div>
-						</Col>
+							<div>???</div>
+						</Col> */}
 					</Row>
 				</Container>
 			</SStatistic>

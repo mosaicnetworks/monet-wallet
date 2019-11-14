@@ -23,8 +23,8 @@ function createWindow() {
 
 	// createMenu();
 
-	main.loadURL(`file://${__dirname}/index.html`);
-	// main.loadURL(`http://localhost:8081`);
+	// main.loadURL(`file://${__dirname}/index.html`);
+	main.loadURL(`http://localhost:8081`);
 
 	main.on('closed', () => {
 		main = null;

@@ -5,12 +5,7 @@ import { Currency } from 'evm-lite-utils';
 import { toast } from 'react-toastify';
 
 import { BaseAction, errorHandler, ThunkResult } from '.';
-import {
-	MonetDataDir,
-	MonetInfo,
-	MonikerAccount,
-	MonikerEVMAccount
-} from '../monet';
+import { MonetDataDir, MonetInfo, MonikerEVMAccount } from '../monet';
 
 // Lists all accounts in keystore
 const LIST_INIT = '@monet/accounts/LIST/INIT';
@@ -32,9 +27,6 @@ export type AccountsState = {
 	// Entire list of accounts
 	readonly all: MonikerEVMAccount[];
 
-	// Currently unlocked account
-	readonly selected?: MonikerAccount;
-
 	// A single error field to be used by this module for any action
 	readonly error?: string;
 
@@ -42,9 +34,7 @@ export type AccountsState = {
 	readonly loading: {
 		transfer: boolean;
 		list: boolean;
-		get: boolean;
 		create: boolean;
-		unlock: boolean;
 	};
 };
 
@@ -53,9 +43,7 @@ const initialState: AccountsState = {
 	all: [],
 	loading: {
 		list: false,
-		get: false,
 		create: false,
-		unlock: false,
 		transfer: false
 	}
 };
