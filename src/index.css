@@ -7,8 +7,6 @@
 }
 
 * {
-	transition: height 1s cubic-bezier(1, 0, 0, 1);
-
 	--blue: #253c99;
 	--orange: #f16622;
 	--green: #02a24b;

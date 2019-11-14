@@ -13,6 +13,7 @@ import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
+import Zoom from 'react-reveal/Flip';
 
 import Avatar from '../components/Avatar';
 import Header from '../components/Header';
@@ -24,6 +25,7 @@ import { selectAccounts, selectListAccountLoading } from '../selectors';
 import { capitalize, parseBalance } from '../utils';
 
 const SAccounts = styled.div`
+	transition: height 1s cubic-bezier(1, 0, 0, 1);
 	padding: 30px !important;
 	border-bottom: var(--border);
 	z-index: 100;
@@ -79,7 +81,9 @@ const Accounts: React.FC<Props> = () => {
 
 	useEffect(() => {
 		ReactTooltip.rebuild();
-	});
+
+		return () => ReactTooltip.rebuild();
+	}, [accounts]);
 
 	return (
 		<>
@@ -110,16 +114,20 @@ const Accounts: React.FC<Props> = () => {
 			<SAccounts className="">
 				<p>Select an account view more options</p>
 
-				{accounts.map(a => (
-					<SAvatar
-						data-tip={`${capitalize(a.moniker)}`}
-						key={a.address}
-					>
-						<Link to={`account/${a.moniker.toLowerCase()}`}>
-							<Avatar address={a.address} size={50} />
-						</Link>
-					</SAvatar>
-				))}
+				<Zoom left cascade>
+					<div>
+						{accounts.map(a => (
+							<SAvatar
+								data-tip={`${capitalize(a.moniker)}`}
+								key={a.address}
+							>
+								<Link to={`account/${a.moniker.toLowerCase()}`}>
+									<Avatar address={a.address} size={50} />
+								</Link>
+							</SAvatar>
+						))}
+					</div>
+				</Zoom>
 			</SAccounts>
 
 			<NewAccount />

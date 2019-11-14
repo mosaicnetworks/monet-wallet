@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { Currency } from 'evm-lite-utils';
+import Utils, { Currency } from 'evm-lite-utils';
 import ReactTooltip from 'react-tooltip';
 import styled from 'styled-components';
 
@@ -100,7 +100,9 @@ const Account: React.FC<RouteComponentProps<Props>> = props => {
 		<>
 			<Header
 				icon={<Avatar address={account.address} size={35} />}
-				title={`${capitalize(account.moniker)}`}
+				title={`${capitalize(account.moniker)}  (${Utils.cleanAddress(
+					account.address
+				)})`}
 			>
 				<Loader loading={loading} />{' '}
 				<Button
