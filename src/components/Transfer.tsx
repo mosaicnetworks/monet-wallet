@@ -29,6 +29,7 @@ const STransfer = styled.div`
 	}
 
 	h5 {
+		margin-bottom: 25px !important;
 	}
 `;
 
@@ -130,7 +131,7 @@ const Transfer: React.FC<Props> = props => {
 							type="submit"
 							disabled={loading || !to.length || !value.length}
 						>
-							Send
+							Make Transfer
 						</Button>{' '}
 						<Loader loading={loading} />
 					</Col>

@@ -114,7 +114,7 @@ const Accounts: React.FC<Props> = () => {
 			<SAccounts className="">
 				<p>Select an account view more options</p>
 
-				<Zoom left cascade>
+				<Zoom right cascade>
 					<div>
 						{accounts.map(a => (
 							<SAvatar

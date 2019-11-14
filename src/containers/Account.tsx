@@ -19,6 +19,7 @@ import Avatar from '../components/Avatar';
 import Header from '../components/Header';
 import Loader from '../components/Loader';
 import Transfer from '../components/Transfer';
+import Update from '../components/Update';
 
 import { MonikerEVMAccount } from 'src/monet';
 import { selectAccounts, selectConfig } from '../selectors';
@@ -47,6 +48,11 @@ const SSettings = styled.div`
 `;
 
 const STransfer = styled.div`
+	padding: 30px !important;
+	border-bottom: var(--border);
+`;
+
+const SUpdate = styled.div`
 	padding: 30px !important;
 	border-bottom: var(--border);
 `;
@@ -144,6 +150,12 @@ const Account: React.FC<RouteComponentProps<Props>> = props => {
 					account={account}
 				/>
 			</STransfer>
+			<SUpdate>
+				<Update
+					getAccount={() => fetchAccount(account)}
+					account={account}
+				/>
+			</SUpdate>
 			<SSettings>
 				<h5>Account Actions</h5>
 				<li>Change Password</li>

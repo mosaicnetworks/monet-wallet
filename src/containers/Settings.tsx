@@ -207,7 +207,7 @@ const Settings: React.FC<Props> = props => {
 									{isConnected && (
 										<>
 											<h2>{minGasPrice || 0} Attoms</h2>
-											<div>Gas Price</div>
+											<div>Current Gas Price</div>
 										</>
 									)}
 								</div>

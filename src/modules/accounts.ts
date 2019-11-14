@@ -1,6 +1,6 @@
 import { Account, Monet } from 'evm-lite-core';
 import { AbstractKeystore } from 'evm-lite-keystore';
-import { Currency } from 'evm-lite-utils';
+import Utils, { Currency } from 'evm-lite-utils';
 
 import { toast } from 'react-toastify';
 
@@ -153,7 +153,7 @@ export function listAccounts(
 		let accounts: MonikerEVMAccount[] = [];
 
 		const { config } = getState();
-		const error = errorHandler.bind(null, dispatch, LIST_ERROR);
+		const error = errorHandler(dispatch, LIST_ERROR);
 
 		dispatch({
 			type: LIST_INIT
@@ -163,6 +163,15 @@ export function listAccounts(
 		const mk = await datadir
 			.listKeyfiles()
 			.catch(() => error('Could not load accounts'));
+
+		if (!mk) {
+			dispatch({
+				type: LIST_ERROR,
+				error: 'Could not load accounts from keystore'
+			});
+
+			return;
+		}
 
 		accounts = Object.keys(mk).map(moniker => ({
 			address: mk[moniker].address,
@@ -209,7 +218,7 @@ export function transfer(
 		const state = getState();
 
 		const config = state.config.data;
-		const error = errorHandler.bind(null, dispatch, TRANSFER_ERROR);
+		const error = errorHandler(dispatch, TRANSFER_ERROR);
 
 		dispatch({
 			type: TRANSFER_INIT
@@ -226,12 +235,24 @@ export function transfer(
 				return;
 			});
 
+			if (Utils.cleanAddress(to).length !== 42) {
+				error('Invalid receipient address');
+			}
+
 			if (info) {
+				let account: Account;
+
 				try {
 					const datadir = new MonetDataDir(state.config.directory);
 					const keyfile = await datadir.getKeyfile(moniker);
-					const account = MonetDataDir.decrypt(keyfile, passphrase);
 
+					account = MonetDataDir.decrypt(keyfile, passphrase);
+				} catch (e) {
+					error('Incorrect passphrase');
+					return;
+				}
+
+				try {
 					const receipt = await node.transfer(
 						account,
 						to,
@@ -247,7 +268,9 @@ export function transfer(
 
 					toast.success('Transfer successful');
 				} catch (e) {
-					error(e.toString());
+					error(
+						'Looks like theres a proble with the connection to the node'
+					);
 				}
 			}
 		} else {
