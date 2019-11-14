@@ -18,8 +18,6 @@ function createWindow() {
 		resizable: false,
 		fullscreen: false,
 		title: 'Monet Wallet',
-		resizable: false,
-		fullscreen: false,
 		icon
 	});
 
