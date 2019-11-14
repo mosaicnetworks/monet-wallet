@@ -5,7 +5,6 @@ import { toast } from 'react-toastify';
 
 import { BaseAction, ThunkResult } from '.';
 import { MonetDataDir } from '../monet';
-import { list } from './accounts';
 
 // Set configuration data directory
 const SET_DIRECTORY_SUCCESS = '@monet/configuration/DATADIRECTORY/SUCCESS';
@@ -178,15 +177,13 @@ export function setDirectory(path: string): ThunkResult<Promise<string>> {
 
 		toast.success(`Data directory loaded at ${path}`);
 
-		dispatch(load()).then(() => dispatch(list()));
-
 		return path;
 	};
 }
 
-export function initialize(): ThunkResult<Promise<void>> {
+export function initConfig(): ThunkResult<Promise<void>> {
 	return async dispatch => {
-		dispatch(load()).then(() => dispatch(list()));
+		dispatch(load());
 	};
 }
 
@@ -200,6 +197,8 @@ export function save(
 			type: SAVE_REQUEST
 		});
 
+		await new Promise(resolve => setTimeout(resolve, 500));
+
 		try {
 			const datadir = new MonetDataDir(state.config.directory);
 
@@ -209,8 +208,6 @@ export function save(
 				type: SAVE_SUCCESS,
 				payload: newConfig
 			});
-
-			toast.success(`Configuration saved.`);
 
 			return newConfig;
 		} catch (error) {

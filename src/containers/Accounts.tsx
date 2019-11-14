@@ -1,124 +1,137 @@
 import React, { useEffect } from 'react';
+
+import ReactTooltip from 'react-tooltip';
 import styled from 'styled-components';
 
-import Utils, { Currency } from 'evm-lite-utils';
-
+// import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Currency } from 'evm-lite-utils';
 import { useDispatch, useSelector } from 'react-redux';
-import { config, Spring } from 'react-spring/renderprops';
-import { Card, Header } from 'semantic-ui-react';
+import { Link } from 'react-router-dom';
 
-import { AccountsState, create, list } from '../modules/accounts';
+import Button from 'react-bootstrap/Button';
+import Col from 'react-bootstrap/Col';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Zoom from 'react-reveal/Flip';
 
-import { Store } from '../store';
+import Avatar from '../components/Avatar';
+import Header from '../components/Header';
+import Loader from '../components/Loader';
+import NewAccount from '../components/NewAccount';
 
-import AccountCard from '../components/AccountCard';
-import AccountCreate from '../components/AccountCreate';
-import Banner from '../components/Banner';
-import FloatingButton from '../components/FloatingButton';
-import SJumbo from '../components/Jumbo';
-import LoadingButton from '../components/LoadingButton';
+import { listAccounts } from '../modules/accounts';
+import { selectAccounts, selectListAccountLoading } from '../selectors';
+import { capitalize, parseBalance } from '../utils';
 
-const SAccountsContainer = styled.div`
-	padding: 5px 0;
+const SAccounts = styled.div`
+	transition: height 1s cubic-bezier(1, 0, 0, 1);
+	padding: 30px !important;
+	border-bottom: var(--border);
+	z-index: 100;
+	padding-bottom: 10px !important;
 `;
 
-const Accounts: React.FunctionComponent<{}> = () => {
+const SStatistic = styled.div`
+	/* background: #fff; */
+	/* box-shadow: 2px 0px 40px rgba(0, 0, 0, 0.05); */
+	width: 100%;
+	border-bottom: var(--border);
+	/* background: var(--blue); */
+	/* color: white; */
+	font-weight: 600 !important;
+
+	h3 {
+		/* color: var(--blue) !important; */
+		font-size: 35px;
+	}
+
+	.col {
+		padding: 20px 0;
+		border-right: var(--border);
+	}
+`;
+
+const SAvatar = styled.div`
+	transition: opacity 0.2s cubic-bezier(1, 1, 1, 1);
+	opacity: 0.9;
+	cursor: pointer;
+	display: inline-block;
+	margin-bottom: 25px;
+
+	:hover {
+		opacity: 1;
+	}
+`;
+
+type Props = {};
+
+const Accounts: React.FC<Props> = () => {
 	const dispatch = useDispatch();
 
-	const createAccount = (moniker: string, password: string) =>
-		dispatch(create(moniker, password)) as any;
-	const refreshAccounts = () => dispatch(list());
+	const accounts = useSelector(selectAccounts);
+	const loading = useSelector(selectListAccountLoading);
 
-	const accounts = useSelector<Store, AccountsState>(store => store.accounts);
-
-	useEffect(() => {
-		refreshAccounts();
-	}, []);
+	const refresh = () => dispatch(listAccounts(true));
 
 	let totalBalance = new Currency(0);
-	accounts.all.map(account => {
+	accounts.map(account => {
 		totalBalance = totalBalance.plus(account.balance);
 	});
 
-	let balance = totalBalance.format('T');
+	useEffect(() => {
+		ReactTooltip.rebuild();
 
-	const b = balance.slice(0, -1);
-	const unit = balance.slice(-1);
-	const l = b.split('.');
-
-	if (l[1]) {
-		l[1] = l[1].slice(0, 4);
-	}
-
-	balance = l.join('.');
-
-	balance += unit;
+		return () => ReactTooltip.rebuild();
+	}, [accounts]);
 
 	return (
-		<React.Fragment>
-			<SJumbo>
-				<Spring
-					from={{
-						marginLeft: -50,
-						opacity: 0
-					}}
-					to={{
-						marginLeft: 0,
-						opacity: 1
-					}}
-					config={config.wobbly}
-				>
-					{props => (
-						<Header style={props} as="h2" floated="left">
-							Accounts
-							<Header.Subheader>
-								Create new and manage existing accounts
-							</Header.Subheader>
-						</Header>
-					)}
-				</Spring>
-				<Header as="h2" floated="right">
-					Accounts
-					<Header.Subheader>{accounts.all.length}</Header.Subheader>
-				</Header>
-				<Header as="h2" floated="right">
-					Total Balance
-					<Header.Subheader>{balance}</Header.Subheader>
-				</Header>
-			</SJumbo>
-			<Banner color="blue">
-				All accounts listed here are read in locally from your keystore.
-			</Banner>
-			<SAccountsContainer>
-				<Card.Group centered={true}>
-					{accounts.all.map(account => (
-						<AccountCard
-							unlocked={
-								(accounts.unlocked &&
-									Utils.cleanAddress(
-										accounts.unlocked.address
-									) ===
-										Utils.cleanAddress(account.address)) ||
-								false
-							}
-							key={account.address}
-							account={account}
-						/>
-					))}
-				</Card.Group>
-			</SAccountsContainer>
-			<AccountCreate
-				bottomOffset={105}
-				accounts={accounts}
-				create={createAccount}
-			/>
-			<FloatingButton bottomOffset={60}>
-				<LoadingButton
-					isLoading={accounts.loading.list}
-					onClickHandler={refreshAccounts}
-				/>
-			</FloatingButton>
-		</React.Fragment>
+		<>
+			<Header title={'All Accounts'}>
+				<Loader loading={loading} />{' '}
+				<Button disabled={loading} onClick={refresh} variant="primary">
+					Refresh
+				</Button>
+			</Header>
+			<SStatistic className="">
+				<Container>
+					<Row className="align-items-center">
+						<Col className="text-center">
+							<h3>{parseBalance(totalBalance)}</h3>
+							<div>Total Balance</div>
+						</Col>
+						<Col className="text-center">
+							<h3>{accounts.length}</h3>
+							<div>Accounts</div>
+						</Col>
+						{/* <Col className="text-center">
+							<h3>???</h3>
+							<div>???</div>
+						</Col> */}
+					</Row>
+				</Container>
+			</SStatistic>
+			<SAccounts className="">
+				<p>Select an account view more options</p>
+
+				<Zoom left cascade>
+					<div>
+						{accounts.map(a => (
+							<SAvatar
+								data-tip={`${capitalize(a.moniker)}`}
+								key={a.address}
+							>
+								<Link to={`account/${a.moniker.toLowerCase()}`}>
+									<Avatar address={a.address} size={50} />
+								</Link>
+							</SAvatar>
+						))}
+					</div>
+				</Zoom>
+			</SAccounts>
+
+			<NewAccount />
+		</>
 	);
 };
 

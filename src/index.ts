@@ -6,7 +6,7 @@ let main: BrowserWindow | null;
 
 function createWindow() {
 	const icon = nativeImage.createFromPath(
-		path.join(__dirname, 'src/assets/monet_logo.png')
+		path.resolve(__dirname, './assets/monet_logo.png')
 	);
 
 	main = new BrowserWindow({
@@ -18,6 +18,8 @@ function createWindow() {
 		resizable: false,
 		fullscreen: false,
 		title: 'Monet Wallet',
+		resizable: false,
+		fullscreen: false,
 		icon
 	});
 

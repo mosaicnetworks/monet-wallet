@@ -20,7 +20,8 @@
 		"allowSyntheticDefaultImports": true,
 		"strict": true,
 		"resolveJsonModule": true,
-		"noEmit": true
+		"noEmit": true,
+		"typeRoots": ["./types", "./node_modules/@types"]
 	},
 	"exclude": [
 		"node_modules",

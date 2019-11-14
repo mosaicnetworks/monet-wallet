@@ -1,180 +1,169 @@
-@import url('https://fonts.googleapis.com/css?family=Titillium+Web:300,400&display=swap');
-@import url('https://fonts.googleapis.com/css?family=Cousine&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Titillium+Web:400,600,700&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Fira+Code&display=swap');
+
+@font-face {
+	font-family: 'Monet';
+	src: local('Monet'), url(./assets/fonts/monet.ttf);
+}
+
+* {
+	--blue: #253c99;
+	--orange: #f16622;
+	--green: #02a24b;
+	--red: #ec1c24;
+	--purple: #7f3b97;
+	--yellow: #ffe014;
+
+	--border: 1px solid rgba(0, 0, 0, 0.1);
+}
 
 body {
-	font-family: 'Titillium Web', sans-serif !important;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-	background: #f4f5f7 !important;
 	margin: 0 !important;
+	padding: 0 !important;
+
+	-webkit-font-smoothing: antialiased;
+	overflow-x: hidden;
+
+	background: #f9f9f9 !important;
+	line-height: 1.7;
+}
+
+.sticky-top {
+	position: sticky !important;
+	top: 0 !important;
+}
+
+.sticky-top-60 {
+	position: sticky !important;
+	top: 60px !important;
+}
+
+.container-fluid {
 	padding: 0 !important;
 }
 
-.card {
-	padding: 3px !important;
-	border-radius: 0px !important;
-	box-shadow: none !important;
-	word-break: break-all;
-	font-family: 'Titillium Web', sans-serif !important;
-	/* box-shadow: 0 4px 20px -6px #ddd !important; */
-	/* border: 1px solid #eee !important; */
-	width: 320px !important;
-}
-
-a {
-	font-family: 'Titillium Web', sans-serif !important;
-}
-
-.ui.label {
-	border-radius: 2px !important;
-}
-
-.ui.label a {
-	background: transparent !important;
-	color: #000 !important;
-	margin: 0 !important;
-	padding: 0 10px !important;
-}
-
-.ui.label a:hover {
-	background: transparent !important;
-	color: #000 !important;
-}
-
-h2,
 h1,
+h2,
 h3,
 h4,
 h5 {
-	font-family: 'Titillium Web', sans-serif !important;
+	font-family: 'Titillium Web', sans-serif;
+	font-weight: 600;
 }
 
-.cards {
-	margin: 0 !important;
+pre,
+code {
+	font-family: 'Fira Code', monospace !important;
+	/* color: rgba(31, 66, 146, 1); */
+	word-wrap: break-word;
 }
 
-.content {
-	padding-left: 20px !important;
-	padding-right: 20px !important;
+.mono {
+	font-family: 'Fira Code', monospace !important;
+	font-size: 16px;
 }
 
-.ui.blue {
-	background: rgba(31, 66, 146, 1) !important;
+.btn {
+	font-family: 'Titillium Web', sans-serif;
+	font-weight: 700;
 }
 
-.ui.green {
-	background: #0d4b0d !important;
+.btn-warning {
+	background: var(--orange);
+	color: white;
+	border: none !important;
+	outline: none !important;
 }
 
-.ui.yellow {
-	background: rgb(254, 218, 55) !important;
+.btn-warning:hover {
+	background: #d35a1e;
+	color: white;
 }
 
-.ui.inverted.green.segment {
-	background-color: rgb(23, 103, 57) !important;
-}
-
-.ui.purple {
-	background: rgb(126, 66, 149) !important;
-}
-
-.ui.red {
-	background: rgb(204, 29, 40) !important;
-}
-
-button {
-	font-family: 'Titillium Web', sans-serif !important;
-	border-radius: 0 !important;
-}
-
-button.blue {
-	border-bottom: #0f2e94 3px solid !important;
-}
-
-button.green {
-	border-bottom: #0d4b0d 3px solid !important;
-}
-
-button.red {
-	border-bottom: #880202 3px solid !important;
-}
-
-button.orange {
-	border-bottom: rgb(173, 97, 3) 3px solid !important;
-}
-
-button.purple {
-	border-bottom: rgba(118, 70, 146, 1) 3px solid !important;
-}
-
-button.yellow {
-	border-bottom: rgb(150, 130, 38) 3px solid !important;
-}
-
-.is-active {
-	background: #fcfcfc !important;
-	color: #4183c4 !important;
-}
-
-.ui.horizontal.segments {
-	border: 0 !important;
+.btn-warning:active {
 	box-shadow: none !important;
-	margin-top: 0 !important;
-	margin-bottom: 0 !important;
-	font-size: 25px !important;
-	box-shadow: 0 4px 20px -6px #eee !important;
-	/* box-shadow: 0 1px 1px rgba(0, 0, 0, 0.03) !important; */
-	/* margin-bottom: 1px !important; */
+	outline: none !important;
+	border: none !important;
 }
 
-.ui.horizontal.segments .segment {
-	border: 0 !important;
-	padding: 20px;
+.btn-primary {
+	background: var(--blue);
+	color: white;
+	border: none !important;
+	outline: none !important;
 }
 
-.selection {
+.btn-primary:hover {
+	background: #1e3383;
+	color: white;
+}
+
+.btn-primary:active {
+	box-shadow: none !important;
+	outline: none !important;
+	border: none !important;
+}
+
+.btn-success {
+	background: var(--green);
+	color: white;
+	border: none !important;
+	outline: none !important;
+}
+
+.btn-success:hover {
+	background: #02642e;
+	color: white;
+}
+
+.btn-success:active {
+	box-shadow: none !important;
+	outline: none !important;
+	border: none !important;
+}
+
+.green {
+	color: var(--green);
+}
+
+.red {
+	color: var(--red);
+}
+
+.dropdown-menu {
 	border: 1px solid #eee !important;
-	padding: 16px !important;
-	margin-bottom: 4px !important;
+	border-radius: 5px !important;
+	margin-top: 5px;
+	box-shadow: 0 2px 20px -10px #ddd !important;
 }
 
-.dropdown {
-	padding: 16px !important;
+.dropdown-item {
+	color: black !important;
+	font-size: 15px;
+	padding-top: 5px !important;
+	padding-bottom: 5px !important;
+	text-transform: capitalize !important;
 }
 
-input[type='text'],
-input[type='number'],
-input[type='password'] {
-	font-family: 'Titillium Web', sans-serif !important;
-	border: 1px solid #eee !important;
-	padding: 12px !important;
-	margin: 0px !important;
+.dropdown-item:active {
+	background: #f1f1f1;
 }
 
-.ui.info.message {
-	border-radius: 2px !important;
+.modal-content {
+	border: none !important;
+	border-radius: 5px !important;
+	outline: none !important;
+	box-shadow: none !important;
 }
 
-.toast-custom {
-	box-shadow: 0 4px 20px -6px #000 !important;
-	padding: 5px 20px !important;
-	color: #333;
+.modal-header {
+	border-bottom: 1px solid #f3f3f3 !important;
 }
 
-.Toastify__toast--error {
-	box-shadow: 0 4px 20px -6px #000 !important;
-	color: white !important;
-	background: rgb(204, 29, 40) !important;
+.modal-body {
+	padding: 30px 20px !important;
 }
 
-.Toastify__toast--success {
-	box-shadow: 0 4px 20px -6px #000 !important;
-	background: #0d4b0d !important;
-	color: white !important;
-}
-
-.Toastify__toast--info {
-	box-shadow: 0 4px 20px -6px #000 !important;
-	color: white !important;
-	background: rgba(31, 66, 146, 1) !important;
+.modal-footer {
+	border-top: 1px solid #f3f3f3 !important;
 }
