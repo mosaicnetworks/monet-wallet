@@ -33,7 +33,7 @@
 		"start:electron": "electron ./dist",
 		"build": "rm -rf dist/ && webpack --config config/webpack.config.js && cp ./package.json ./dist/",
 		"clean": "rm -rf node_modules dist pkg",
-		"pkg:mac": "electron-packager ./dist \"Monet Wallet\" --platform=darwin --target=zip --arch=x64 --out ./pkg --overwrite --icon src/assets/monet_logo.icns",
+		"pkg:mac:app": "electron-packager ./dist \"Monet Wallet\" --platform=darwin --target=zip --arch=x64 --out ./pkg --overwrite --icon src/assets/monet_logo.icns",
 		"pkg:linux": "electron-packager ./dist \"Monet Wallet\" --target=zip --platform=linux --arch=x64 --out ./pkg --overwrite --icon src/assets/monet_logo.png",
 		"pkg:win": "electron-packager ./dist \"Monet Wallet\" --platform=win32 --arch=x64 --out ./pkg --overwrite --icon src/assets/monet_logo.ico",
 		"linkalldev": "yarn link evm-lite-core evm-lite-consensus evm-lite-keystore evm-lite-datadir evm-lite-client evm-lite-utils",
