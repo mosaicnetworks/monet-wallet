@@ -7,7 +7,7 @@ import Image from 'react-bootstrap/Image';
 
 const SAvatar = styled(Image)`
 	border-radius: 5px !important;
-	margin-right: 5px;
+	margin-right: 1px;
 `;
 
 type Props = {
@@ -18,12 +18,12 @@ type Props = {
 const Avatar: React.FC<Props> = props => {
 	return (
 		<SAvatar
-			className="align-self-top mr-3"
+			className="align-self-middle mr-3"
 			src={`https://s.gravatar.com/avatar/${utils.trimHex(
 				props.address
 			)}?size=100&default=retro`}
-			width={props.size || 60}
-			height={props.size || 60}
+			width={props.size || 50}
+			height={props.size || 50}
 		/>
 	);
 };

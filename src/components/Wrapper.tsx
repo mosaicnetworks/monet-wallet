@@ -9,7 +9,7 @@ import Row from 'react-bootstrap/Row';
 import Sidebar from '../components/Sidebar';
 
 const SPadding = styled.div`
-	min-height: 100vh;
+	padding-bottom: 70px;
 `;
 
 const Wrapper: React.FunctionComponent<{}> = props => {

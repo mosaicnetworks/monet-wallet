@@ -17,7 +17,7 @@ const App: React.FunctionComponent<{}> = () => {
 	const dispatch = useDispatch();
 
 	const initConf = () => dispatch(initConfig());
-	const initAccounts = () => dispatch(listAccounts());
+	const initAccounts = () => dispatch(listAccounts(true));
 
 	useEffect(() => {
 		initConf();

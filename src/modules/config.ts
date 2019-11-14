@@ -6,8 +6,6 @@ import { toast } from 'react-toastify';
 import { BaseAction, ThunkResult } from '.';
 import { MonetDataDir } from '../monet';
 
-import { getSelectedAccount } from './accounts';
-
 // Set configuration data directory
 const SET_DIRECTORY_SUCCESS = '@monet/configuration/DATADIRECTORY/SUCCESS';
 const SET_DIRECTORY_ERROR = '@monet/configuration/DATADIRECTORY/ERROR';
@@ -211,11 +209,6 @@ export function save(
 				payload: newConfig
 			});
 
-			if (state.accounts.selected) {
-				dispatch(getSelectedAccount());
-			}
-
-			toast.success(`Configuration saved.`);
 			return newConfig;
 		} catch (error) {
 			dispatch({

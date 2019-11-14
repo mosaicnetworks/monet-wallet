@@ -25,17 +25,17 @@ import {
 	selectConfig,
 	selectListAccountLoading
 } from '../selectors';
-
-const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+import { capitalize, parseBalance } from '../utils';
 
 const SStatistic = styled.div`
 	/* background: #fff; */
 	/* box-shadow: 2px 0px 40px rgba(0, 0, 0, 0.05); */
 	width: 100%;
-	border-bottom: 1px solid #eee;
+	border-bottom: var(--border);
 
 	.col {
 		padding: 20px 0;
+		border-right: var(--border);
 	}
 `;
 
@@ -46,6 +46,7 @@ const SSettings = styled.div`
 
 const STransfer = styled.div`
 	padding: 30px !important;
+	border-bottom: var(--border);
 `;
 
 type Props = {
@@ -76,21 +77,6 @@ const Account: React.FC<RouteComponentProps<Props>> = props => {
 		});
 	};
 
-	const parseBalance = (balance: Currency) => {
-		const b = balance.format('T');
-		const l = b.split('.');
-
-		if (l.length !== 2) {
-			return l.join('.');
-		}
-
-		if (l[1]) {
-			l[1] = l[1].slice(0, 4);
-		}
-
-		return l.join('.') + 'T';
-	};
-
 	useEffect(() => {
 		const a = accounts.find(a => a.moniker.toLowerCase() === moniker);
 
@@ -117,6 +103,10 @@ const Account: React.FC<RouteComponentProps<Props>> = props => {
 				<Container>
 					<Row className="align-items-center">
 						<Col className="text-center">
+							<h5>0 Seconds ago</h5>
+							<div>Last Updated</div>
+						</Col>
+						<Col className="text-center">
 							<h3>{parseBalance(account.balance)}</h3>
 							<div>Balance</div>
 						</Col>
@@ -135,8 +125,10 @@ const Account: React.FC<RouteComponentProps<Props>> = props => {
 			</SStatistic>
 
 			<STransfer>
-				<h5>Transfer</h5>
-				<Transfer from={account.address} />
+				<Transfer
+					getAccount={() => fetchAccount(account)}
+					account={account}
+				/>
 			</STransfer>
 			<SSettings>
 				<h5>Account Actions</h5>

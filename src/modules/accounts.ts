@@ -1,4 +1,5 @@
 import { Account, Monet } from 'evm-lite-core';
+import { AbstractKeystore } from 'evm-lite-keystore';
 import { Currency } from 'evm-lite-utils';
 
 import { toast } from 'react-toastify';
@@ -25,15 +26,6 @@ const CREATE_ERROR = '@monet/accounts/CREATE/ERROR';
 const TRANSFER_INIT = '@monet/accounts/TRANSFER/INIT';
 const TRANSFER_SUCCESS = '@monet/accounts/TRANSFER/SUCCESS';
 const TRANSFER_ERROR = '@monet/accounts/TRANSFER/ERROR';
-
-// Select an account as primary
-const SELECT_ACCOUNT_SUCCESS = '@monet/accounts/SELECT/SUCCESS';
-const SELECT_ACCOUNT_ERROR = '@monet/accounts/SELECT/ERROR';
-
-// For transferring tokens/coins from an account
-const GET_SELECTED_INIT = '@monet/accounts/GET/SELECTED/INIT';
-const GET_SELECTED_SUCCESS = '@monet/accounts/GET/SELECTED/SUCCESS';
-const GET_SELECTED_ERROR = '@monet/accounts/GET/SELECTED/ERROR';
 
 // Accounts state structure
 export type AccountsState = {
@@ -74,47 +66,6 @@ export default function reducer(
 	action: BaseAction<any> = {} as BaseAction<any>
 ): Readonly<AccountsState> {
 	switch (action.type) {
-		case SELECT_ACCOUNT_SUCCESS:
-			return {
-				...state,
-				selected: action.payload
-			};
-
-		case SELECT_ACCOUNT_ERROR:
-			return {
-				...state,
-				error: action.payload
-			};
-
-		case GET_SELECTED_INIT:
-			return {
-				...state,
-				loading: {
-					...state.loading,
-					get: true
-				}
-			};
-
-		case GET_SELECTED_SUCCESS:
-			return {
-				...state,
-				selected: action.payload,
-				loading: {
-					...state.loading,
-					get: false
-				}
-			};
-
-		case GET_SELECTED_ERROR:
-			return {
-				...state,
-				error: action.payload,
-				loading: {
-					...state.loading,
-					get: false
-				}
-			};
-
 		// List accounts
 		case LIST_INIT:
 			return {
@@ -207,91 +158,6 @@ export default function reducer(
 	}
 }
 
-export function getSelectedAccount(): ThunkResult<Promise<void>> {
-	return async (dispatch, getState) => {
-		const state = getState();
-		const selected = {
-			...state.accounts.selected!
-		};
-
-		dispatch({
-			type: GET_SELECTED_INIT
-		});
-
-		await new Promise(resolve => setTimeout(resolve, 1000));
-
-		try {
-			const n = new Monet(
-				state.config.data.connection.host,
-				state.config.data.connection.port
-			);
-
-			const d = await n.getAccount(selected.address);
-
-			selected.balance = new Currency(d.balance);
-			selected.nonce = d.nonce;
-
-			dispatch({
-				type: GET_SELECTED_SUCCESS,
-				payload: selected
-			});
-		} catch (e) {
-			selected.balance = new Currency(0);
-			selected.nonce = 0;
-
-			dispatch({
-				type: GET_SELECTED_SUCCESS,
-				payload: selected
-			});
-
-			dispatch({
-				type: GET_SELECTED_ERROR,
-				payload: e.toString()
-			});
-		}
-	};
-}
-
-export function selectAccount(
-	moniker: string,
-	password: string
-): ThunkResult<Promise<void>> {
-	return async (dispatch, getState) => {
-		const { config } = getState();
-
-		const datadir = new MonetDataDir(config.directory);
-		const keyfile = await datadir.getKeyfile(moniker);
-
-		try {
-			const account = MonetDataDir.decrypt(
-				keyfile,
-				password.trim().replace(/(\r\n|\n|\r)/gm, '')
-			);
-
-			const monikerAccount = new MonikerAccount({
-				address: account.address,
-				privateKey: account.privateKey
-			});
-
-			monikerAccount.moniker = moniker;
-
-			dispatch({
-				type: SELECT_ACCOUNT_SUCCESS,
-				payload: monikerAccount
-			});
-
-			dispatch(getSelectedAccount());
-		} catch (e) {
-			dispatch({
-				type: SELECT_ACCOUNT_ERROR,
-				payload: e.toString()
-			});
-
-			toast.error('Invalid password!');
-		}
-	};
-}
-
 export function listAccounts(
 	fetch: boolean = false
 ): ThunkResult<Promise<void>> {
@@ -346,6 +212,8 @@ export function listAccounts(
 }
 
 export function transfer(
+	moniker: string,
+	passphrase: string,
 	to: string,
 	value: string
 ): ThunkResult<Promise<void>> {
@@ -372,10 +240,12 @@ export function transfer(
 
 			if (info) {
 				try {
+					const datadir = new MonetDataDir(state.config.directory);
+					const keyfile = await datadir.getKeyfile(moniker);
+					const account = MonetDataDir.decrypt(keyfile, passphrase);
+
 					const receipt = await node.transfer(
-						Account.fromPrivateKey(
-							state.accounts.selected!.privateKey
-						),
+						account,
 						to,
 						new Currency(value),
 						21000,
@@ -387,7 +257,6 @@ export function transfer(
 						payload: receipt
 					});
 
-					await dispatch(getSelectedAccount());
 					toast.success('Transfer successful');
 				} catch (e) {
 					error(e.toString());
@@ -400,6 +269,7 @@ export function transfer(
 }
 
 export function createAccount(
+	account: Account,
 	moniker: string,
 	password: string
 ): ThunkResult<Promise<void>> {
@@ -412,19 +282,19 @@ export function createAccount(
 
 		try {
 			const datadir = new MonetDataDir(config.directory);
-			const keyfile = await datadir.newKeyfile(moniker, password);
+			const keyfile = AbstractKeystore.encrypt(account, password);
 
-			const account: MonikerEVMAccount = {
-				address: keyfile.address,
-				balance: new Currency(0),
-				nonce: 0,
+			await datadir.importKeyfile(moniker, keyfile);
+
+			const a: MonikerEVMAccount = {
+				...account,
 				bytecode: '',
 				moniker
 			};
 
 			dispatch({
 				type: CREATE_SUCCESS,
-				payload: account
+				payload: a
 			});
 
 			toast.success(

@@ -2,60 +2,86 @@ import React, { useState } from 'react';
 
 import styled from 'styled-components';
 
-import { useSelector } from 'react-redux';
+import { faCheck } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Currency } from 'evm-lite-utils';
+import { useDispatch, useSelector } from 'react-redux';
 
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
-// import Row from 'react-bootstrap/Row';
+import Row from 'react-bootstrap/Row';
 
-// import Avatar from '../components/Avatar';
-// import Loader from './Loader';
-import Transaction from './Transaction';
+import Avatar from './Avatar';
+import Loader from './Loader';
 
-import { selectConfig, selectTransferLoading } from '../selectors';
+import { MonikerEVMAccount } from 'src/monet';
+import { transfer } from '../modules/accounts';
+import { selectTransferLoading } from '../selectors';
+
+function isLetter(str: string) {
+	return str.length === 1 && str.match(/[a-z]/i);
+}
 
 const STransfer = styled.div`
 	padding-top: 20px;
+
+	td {
+		padding-right: 10px;
+	}
+
+	h5 {
+	}
 `;
 
-// const SLoader = styled(Loader)`
-// 	margin-left: 10px !important;
-// `;
+const SConfirm = styled.div`
+	padding-left: 30px;
+`;
 
 type Props = {
-	from: string;
+	account: MonikerEVMAccount;
+	getAccount: () => any;
 };
 
 const Transfer: React.FC<Props> = props => {
-	const loading = useSelector(selectTransferLoading);
-	const config = useSelector(selectConfig);
+	const dispatch = useDispatch();
 
+	const loading = useSelector(selectTransferLoading);
+
+	const [success, setSuccess] = useState('');
 	const [to, setTo] = useState('');
 	const [value, setValue] = useState('');
+	const [passphrase, setPassphrase] = useState('');
 
-	const [show, setShow] = useState(false);
-	const handleClose = () => setShow(false);
-	const confirmTx = async () => {
-		setShow(true);
+	const makeTransfer = async () => {
+		if (isLetter(value.slice(-1))) {
+			await dispatch(
+				transfer(props.account.moniker, passphrase, to, value)
+			);
+		} else {
+			await dispatch(
+				transfer(props.account.moniker, passphrase, to, value + 'T')
+			);
+		}
+
+		setTo('');
+		setValue('');
+
+		setSuccess('Transfer successful');
+		await props.getAccount();
+
+		setTimeout(() => {
+			setSuccess('');
+		}, 3000);
 	};
 
 	return (
 		<STransfer>
-			<Transaction
-				show={show}
-				handleClose={handleClose}
-				transaction={{
-					from: props.from,
-					to,
-					value,
-					gas: config.defaults.gas
-				}}
-			/>
 			<Form>
-				<Form.Row>
+				<Form.Row className="align-items-center">
 					<Col>
+						<h5>Transfer</h5>
 						<Form.Group controlId="formBasicEmail">
 							<Form.Control
 								onChange={(e: any) => setTo(e.target.value)}
@@ -94,17 +120,102 @@ const Transfer: React.FC<Props> = props => {
 								is provided.
 							</Form.Text>
 						</Form.Group>
-
+						<Form.Group controlId="formBasicEmail">
+							<Form.Control
+								onChange={(e: any) =>
+									setPassphrase(e.target.value)
+								}
+								value={passphrase}
+								type="password"
+								placeholder="Passphrase"
+							/>
+						</Form.Group>
 						<Button
-							onClick={confirmTx}
+							onClick={makeTransfer}
 							variant="primary"
 							type="submit"
 							disabled={loading || !to.length || !value.length}
 						>
 							Send
-						</Button>
+						</Button>{' '}
+						<Loader loading={loading} />
 					</Col>
-					<Col></Col>
+					<Col>
+						{to.length > 0 &&
+						value.length > 0 &&
+						passphrase.length > 0 ? (
+							<SConfirm>
+								<h5>Confirm</h5>
+								<p>
+									Make sure the details below are correct
+									before submitting transaction
+								</p>
+								<Row>
+									<Col>From</Col>
+									<Col>To</Col>
+								</Row>
+								<Row>
+									<Col className="text-center">
+										<Row
+											noGutters={false}
+											className="align-items-center"
+										>
+											<Col md={2}>
+												<Avatar
+													address={
+														props.account.address
+													}
+													size={40}
+												/>
+											</Col>
+											<Col>
+												<code>
+													{props.account.address}
+												</code>
+											</Col>
+										</Row>
+									</Col>
+									<Col className="text-center">
+										<Row className="align-items-center">
+											<Col md={2}>
+												<Avatar
+													address={to}
+													size={40}
+												/>
+											</Col>
+											<Col>
+												<code>{to}</code>
+											</Col>
+										</Row>
+									</Col>
+								</Row>
+								<hr />
+								<h5 className="mono text-center">
+									<img
+										src={
+											'https://monet.network/app/images/products/tenom.svg'
+										}
+										width={30}
+									/>{' '}
+									{value.length > 0
+										? new Currency(value + 'T').format('T')
+										: '0T'}
+								</h5>
+							</SConfirm>
+						) : (
+							success.length > 0 && (
+								<SConfirm className="text-center">
+									<h5>
+										<FontAwesomeIcon
+											className={'green'}
+											icon={faCheck}
+										/>{' '}
+									</h5>
+									<h5>{success}</h5>
+								</SConfirm>
+							)
+						)}
+					</Col>
 				</Form.Row>
 			</Form>
 		</STransfer>

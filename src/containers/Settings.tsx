@@ -9,9 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
-// import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
-// import Row from 'react-bootstrap/Row';
 
 import Header from '../components/Header';
 import Loader from '../components/Loader';
@@ -20,13 +18,17 @@ import { save, setDirectory } from '../modules/config';
 import { MonetInfo } from '../monet';
 import {
 	selectConfig,
+	selectConfigError,
 	selectConfigSaveLoading,
-	selectDatadir,
-	selectConfigError
+	selectDatadir
 } from '../selectors';
 
 const SContent = styled.div`
 	padding: 30px !important;
+
+	h4 {
+		margin-bottom: 15px;
+	}
 `;
 
 type Props = {};
@@ -113,7 +115,7 @@ const Settings: React.FC<Props> = props => {
 					onClick={saveConfig}
 					variant="outline-success"
 				>
-					Save
+					{datadir !== vdatadir ? 'Save Datadir' : 'Save'}
 				</Button>
 			</Header>
 			<SContent>
@@ -215,7 +217,6 @@ const Settings: React.FC<Props> = props => {
 				</Form>
 				<hr />
 				<h4>Advanced</h4>
-				<br />
 				<Form>
 					<Form.Row>
 						<Col>

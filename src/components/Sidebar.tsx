@@ -25,6 +25,8 @@ const SLogo = styled.div`
 	border-bottom: 1px solid #eee;
 	font-size: 18px;
 	letter-spacing: 3px;
+	color: var(--blue);
+
 	padding: 0 20px;
 
 	img {
