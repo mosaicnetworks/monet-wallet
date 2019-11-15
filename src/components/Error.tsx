@@ -5,7 +5,7 @@ type Props = {
 	fallback: JSX.Element;
 };
 
-const Await: React.FC<Props> = props => {
+const Response: React.FC<Props> = props => {
 	let elements = props.children;
 
 	if (!props.error.length) {
@@ -15,4 +15,4 @@ const Await: React.FC<Props> = props => {
 	return <>{elements}</>;
 };
 
-export default Await;
+export default Response;

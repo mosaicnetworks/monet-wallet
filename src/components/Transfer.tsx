@@ -14,9 +14,8 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
 
 import Avatar from './Avatar';
-import Loader from './Loader';
-import Await from './Await';
 import Error from './Error';
+import Loader from './Loader';
 
 import { MonikerEVMAccount } from 'src/monet';
 import { transfer } from '../modules/accounts';
@@ -49,13 +48,10 @@ const Transfer: React.FC<Props> = props => {
 	const error = useSelector(selectAccountError);
 	const loading = useSelector(selectTransferLoading);
 
-	const [success, setSuccess] = useState('');
 	const [to, setTo] = useState('');
 	const [value, setValue] = useState('');
 	const [passphrase, setPassphrase] = useState('');
-
-	const allFieldsNotEmpty =
-		to.length > 0 && value.length > 0 && passphrase.length > 0;
+	const [success, setSuccess] = useState('');
 
 	const makeTransfer = async () => {
 		const success: any = await dispatch(
@@ -65,13 +61,13 @@ const Transfer: React.FC<Props> = props => {
 		if (success) {
 			setTo('');
 			setValue('');
-
 			setSuccess('Transfer successful');
-			await props.getAccount();
 
+			await props.getAccount();
+			console.log(success);
 			setTimeout(() => {
 				setSuccess('');
-			}, 3000);
+			}, 5000);
 		}
 	};
 
@@ -99,6 +95,7 @@ const Transfer: React.FC<Props> = props => {
 										setValue(e.target.value)
 									}
 									value={value}
+									type="text"
 									placeholder="Amount"
 								/>
 								<InputGroup.Append>
@@ -133,11 +130,11 @@ const Transfer: React.FC<Props> = props => {
 						<Loader loading={loading} />
 					</Col>
 					<Col>
-						<Await await={!allFieldsNotEmpty} fallback={<></>}>
-							<Error
-								error={error || ''}
-								fallback={
-									(success.length > 0 && (
+						<Error
+							error={error || ''}
+							fallback={
+								(success.length && (
+									<>
 										<SConfirm className="text-center">
 											<h5>
 												<FontAwesomeIcon
@@ -147,78 +144,72 @@ const Transfer: React.FC<Props> = props => {
 											</h5>
 											<h5>{success}</h5>
 										</SConfirm>
-									)) || <></>
-								}
-							>
-								<SConfirm className="text-center">
-									<h5>
-										<FontAwesomeIcon
-											className={'red'}
-											icon={faTimes}
-										/>{' '}
-									</h5>
-									<h5>{error}</h5>
-								</SConfirm>
-							</Error>
-							<SConfirm>
-								<h5>Confirm</h5>
-								<p>
-									Make sure the details below are correct
-									before submitting transaction
-								</p>
-								<Row>
-									<Col>From</Col>
-									<Col>To</Col>
-								</Row>
-								<Row>
-									<Col className="text-center">
-										<Row
-											noGutters={false}
-											className="align-items-center"
-										>
-											<Col md={2}>
-												<Avatar
-													address={
-														props.account.address
-													}
-													size={40}
-												/>
-											</Col>
-											<Col>
-												<code>
-													{props.account.address}
-												</code>
-											</Col>
-										</Row>
-									</Col>
-									<Col className="text-center">
-										<Row className="align-items-center">
-											<Col md={2}>
-												<Avatar
-													address={to}
-													size={40}
-												/>
-											</Col>
-											<Col>
-												<code>{to}</code>
-											</Col>
-										</Row>
-									</Col>
-								</Row>
-								<hr />
-								<h5 className="mono text-center">
-									<img
-										src={
-											'https://monet.network/app/images/products/tenom.svg'
-										}
-										width={30}
+									</>
+								)) || <></>
+							}
+						>
+							<SConfirm className="text-center">
+								<h5>
+									<FontAwesomeIcon
+										className={'red'}
+										icon={faTimes}
 									/>{' '}
-									{value.length > 0
-										? new Currency(value + 'T').format('T')
-										: '0T'}
+									{error}
 								</h5>
 							</SConfirm>
-						</Await>
+						</Error>
+						<hr />
+						<SConfirm>
+							<h5>Confirm</h5>
+							<p>
+								Make sure the details below are correct before
+								submitting transaction
+							</p>
+							<Row>
+								<Col>From</Col>
+								<Col>To</Col>
+							</Row>
+							<Row>
+								<Col className="text-center">
+									<Row
+										noGutters={false}
+										className="align-items-center"
+									>
+										<Col md={2}>
+											<Avatar
+												address={props.account.address}
+												size={40}
+											/>
+										</Col>
+										<Col>
+											<code>{props.account.address}</code>
+										</Col>
+									</Row>
+								</Col>
+								<Col className="text-center">
+									<Row className="align-items-center">
+										<Col md={2}>
+											<Avatar address={to} size={40} />
+										</Col>
+										<Col>
+											<code>{to}</code>
+										</Col>
+									</Row>
+								</Col>
+							</Row>
+							<hr />
+							<h5 className="mono text-center">
+								<img
+									src={
+										'https://monet.network/app/images/products/tenom.svg'
+									}
+									width={30}
+								/>{' '}
+								{value.length > 0
+									? new Currency(value + 'T').format('T')
+									: '0T'}
+							</h5>
+						</SConfirm>
 					</Col>
 				</Form.Row>
 			</Form>

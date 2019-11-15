@@ -93,9 +93,29 @@ code {
 	outline: none !important;
 }
 
+.btn-outline-primary {
+	border-color: var(--blue);
+	color: var(--blue);
+}
+
+.btn-outline-primary:hover {
+	background: #1e3383;
+	color: white;
+}
+
+.btn-outline-primary:active {
+	background: #1e3383;
+	box-shadow: none !important;
+	outline: none !important;
+}
+
 .btn-primary:hover {
 	background: #1e3383;
 	color: white;
+}
+
+.btn-primary:disabled {
+	background: #1e3383;
 }
 
 .btn-primary:active {
@@ -166,4 +186,11 @@ code {
 
 .modal-footer {
 	border-top: 1px solid #f3f3f3 !important;
+}
+
+input[type='text'],
+input[type='email'],
+input[type='password'],
+input[type='number'] {
+	background-color: rgba(60, 120, 208, 0.0980392);
 }

@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 
 import styled from 'styled-components';
 
-import { useDispatch, useSelector } from 'react-redux';
-
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
@@ -12,9 +10,6 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import Loader from './Loader';
 
 import { MonikerEVMAccount } from 'src/monet';
-import { transfer } from '../modules/accounts';
-import { selectTransferLoading } from '../selectors';
-import { isLetter } from '../utils';
 
 const STransfer = styled.div`
 	padding-top: 20px;
@@ -34,39 +29,9 @@ type Props = {
 };
 
 const Update: React.FC<Props> = props => {
-	const dispatch = useDispatch();
-
-	// const error = useSelector(selectAccountError);
-	const loading = useSelector(selectTransferLoading);
-
-	const [success, setSuccess] = useState('');
-	const [to, setTo] = useState('');
-	const [value, setValue] = useState('');
 	const [passphrase, setPassphrase] = useState('');
-
-	console.log(success);
-
-	const makeTransfer = async () => {
-		if (isLetter(value.slice(-1))) {
-			await dispatch(
-				transfer(props.account.moniker, passphrase, to, value)
-			);
-		} else {
-			await dispatch(
-				transfer(props.account.moniker, passphrase, to, value + 'T')
-			);
-		}
-
-		setTo('');
-		setValue('');
-
-		setSuccess('Transfer successful');
-		await props.getAccount();
-
-		setTimeout(() => {
-			setSuccess('');
-		}, 3000);
-	};
+	const [newPassphrase, setNewPassphrase] = useState('');
+	const [verifyNewPassword, setVerifyNewPassphrase] = useState('');
 
 	return (
 		<STransfer>
@@ -76,8 +41,10 @@ const Update: React.FC<Props> = props => {
 						<h5>Change Password</h5>
 						<Form.Group controlId="formBasicEmail">
 							<Form.Control
-								onChange={(e: any) => setTo(e.target.value)}
-								value={to}
+								onChange={(e: any) =>
+									setPassphrase(e.target.value)
+								}
+								value={passphrase}
 								type="text"
 								placeholder="Current Passphrase"
 							/>
@@ -88,10 +55,11 @@ const Update: React.FC<Props> = props => {
 						<Form.Group controlId="formBasicPassword">
 							<InputGroup>
 								<Form.Control
+									type="password"
 									onChange={(e: any) =>
-										setValue(e.target.value)
+										setNewPassphrase(e.target.value)
 									}
-									value={value}
+									value={newPassphrase}
 									placeholder="New Passphrase"
 								/>
 							</InputGroup>
@@ -103,22 +71,17 @@ const Update: React.FC<Props> = props => {
 						<Form.Group controlId="formBasicEmail">
 							<Form.Control
 								onChange={(e: any) =>
-									setPassphrase(e.target.value)
+									setVerifyNewPassphrase(e.target.value)
 								}
-								value={passphrase}
+								value={verifyNewPassword}
 								type="password"
 								placeholder="Confirm New Passphrase"
 							/>
 						</Form.Group>
-						<Button
-							onClick={makeTransfer}
-							variant="primary"
-							type="submit"
-							disabled={loading || !to.length || !value.length}
-						>
+						<Button variant="primary" type="submit">
 							Save
 						</Button>{' '}
-						<Loader loading={loading} />
+						<Loader loading={false} />
 					</Col>
 					<Col></Col>
 				</Form.Row>

@@ -21,6 +21,11 @@ const TRANSFER_INIT = '@monet/accounts/TRANSFER/INIT';
 const TRANSFER_SUCCESS = '@monet/accounts/TRANSFER/SUCCESS';
 const TRANSFER_ERROR = '@monet/accounts/TRANSFER/ERROR';
 
+// For transferring tokens/coins from an account
+// const UPDATE_INIT = '@monet/accounts/UPDATE/INIT';
+// const UPDATE_SUCCESS = '@monet/accounts/UPDATE/SUCCESS';
+// const UPDATE_ERROR = '@monet/accounts/UPDATE/ERROR';
+
 // Accounts state structure
 export type AccountsState = {
 	// Entire list of accounts
@@ -87,6 +92,7 @@ export default function reducer(
 		case TRANSFER_INIT:
 			return {
 				...state,
+				error: undefined,
 				loading: {
 					...state.loading,
 					transfer: true

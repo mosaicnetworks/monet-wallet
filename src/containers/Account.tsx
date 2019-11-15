@@ -76,7 +76,7 @@ const Account: React.FC<RouteComponentProps<Props>> = props => {
 			setAccount(a);
 			fetchAccount(a);
 		} else {
-			// props.history.push('/');
+			props.history.push('/');
 		}
 
 		ReactTooltip.hide();
