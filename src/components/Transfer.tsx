@@ -34,7 +34,7 @@ const STransfer = styled.div`
 `;
 
 const SConfirm = styled.div`
-	padding-left: 30px;
+	padding-left: 50px;
 `;
 
 type Props = {
@@ -158,8 +158,8 @@ const Transfer: React.FC<Props> = props => {
 								</h5>
 							</SConfirm>
 						</Error>
-						<hr />
 						<SConfirm>
+							<hr />
 							<h5>Confirm</h5>
 							<p>
 								Make sure the details below are correct before
@@ -182,7 +182,10 @@ const Transfer: React.FC<Props> = props => {
 											/>
 										</Col>
 										<Col>
-											<code>{props.account.address}</code>
+											<code>
+												{props.account.address ||
+													'0x0000000000000000000000000000000000000000'}
+											</code>
 										</Col>
 									</Row>
 								</Col>
@@ -192,7 +195,10 @@ const Transfer: React.FC<Props> = props => {
 											<Avatar address={to} size={40} />
 										</Col>
 										<Col>
-											<code>{to}</code>
+											<code>
+												{to ||
+													'0x0000000000000000000000000000000000000000'}
+											</code>
 										</Col>
 									</Row>
 								</Col>

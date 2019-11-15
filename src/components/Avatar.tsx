@@ -20,7 +20,7 @@ const Avatar: React.FC<Props> = props => {
 		<SAvatar
 			className="align-self-middle mr-4"
 			src={`https://s.gravatar.com/avatar/${utils.trimHex(
-				props.address
+				props.address || '0x0000000000000000000000000000000000000000'
 			)}?size=100&default=retro`}
 			width={props.size || 50}
 			height={props.size || 50}

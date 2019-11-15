@@ -12,6 +12,9 @@ export const selectListAccountLoading = (store: Store) =>
 export const selectCreateAccountLoading = (store: Store) =>
 	store.accounts.loading.create;
 
+export const selectAccountUpdateLoading = (store: Store) =>
+	store.accounts.loading.update;
+
 export const selectAccountError = (store: Store) => store.accounts.error;
 
 // config selectors

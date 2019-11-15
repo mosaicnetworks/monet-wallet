@@ -21,10 +21,10 @@ const TRANSFER_INIT = '@monet/accounts/TRANSFER/INIT';
 const TRANSFER_SUCCESS = '@monet/accounts/TRANSFER/SUCCESS';
 const TRANSFER_ERROR = '@monet/accounts/TRANSFER/ERROR';
 
-// For transferring tokens/coins from an account
-// const UPDATE_INIT = '@monet/accounts/UPDATE/INIT';
-// const UPDATE_SUCCESS = '@monet/accounts/UPDATE/SUCCESS';
-// const UPDATE_ERROR = '@monet/accounts/UPDATE/ERROR';
+// Updating account password
+const UPDATE_INIT = '@monet/accounts/UPDATE/INIT';
+const UPDATE_SUCCESS = '@monet/accounts/UPDATE/SUCCESS';
+const UPDATE_ERROR = '@monet/accounts/UPDATE/ERROR';
 
 // Accounts state structure
 export type AccountsState = {
@@ -39,6 +39,7 @@ export type AccountsState = {
 		transfer: boolean;
 		list: boolean;
 		create: boolean;
+		update: boolean;
 	};
 };
 
@@ -48,7 +49,8 @@ const initialState: AccountsState = {
 	loading: {
 		list: false,
 		create: false,
-		transfer: false
+		transfer: false,
+		update: false
 	}
 };
 
@@ -143,6 +145,33 @@ export default function reducer(
 				loading: {
 					...state.loading,
 					create: false
+				}
+			};
+
+		// update pass
+		case UPDATE_INIT:
+			return {
+				...state,
+				loading: {
+					...state.loading,
+					update: true
+				}
+			};
+		case UPDATE_SUCCESS:
+			return {
+				...state,
+				loading: {
+					...state.loading,
+					update: false
+				}
+			};
+		case UPDATE_ERROR:
+			return {
+				...state,
+				error: action.payload,
+				loading: {
+					...state.loading,
+					update: false
 				}
 			};
 
@@ -349,5 +378,36 @@ export function createAccount(
 
 			return false;
 		}
+	};
+}
+
+export function updateAccount(
+	moniker: string,
+	passphrase: string,
+	newPassphrase: string
+): ThunkResult<Promise<boolean>> {
+	return async (dispatch, getState) => {
+		const error = errorHandler(dispatch, UPDATE_ERROR);
+		const { settings } = getState();
+
+		const datadir = new MonetDataDir(settings.datadir);
+
+		try {
+			const {} = await datadir.updateKeyfile(
+				moniker,
+				passphrase,
+				newPassphrase
+			);
+
+			dispatch({
+				type: CREATE_SUCCESS
+			});
+
+			return true;
+		} catch (e) {
+			return error('Incorrect passphrase');
+		}
+
+		return false;
 	};
 }
