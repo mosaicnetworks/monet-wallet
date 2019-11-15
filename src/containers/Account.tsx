@@ -4,56 +4,36 @@ import Utils, { Currency } from 'evm-lite-utils';
 import ReactTooltip from 'react-tooltip';
 import styled from 'styled-components';
 
-// import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Monet } from 'evm-lite-core';
 import { useSelector } from 'react-redux';
 import { RouteComponentProps } from 'react-router-dom';
 
-import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 
 import Avatar from '../components/Avatar';
+import Await from '../components/Await';
 import Header from '../components/Header';
 import Loader from '../components/Loader';
 import Transfer from '../components/Transfer';
 import Update from '../components/Update';
 
+import { SSection, SStatistic } from '../components/styles';
+
 import { MonikerEVMAccount } from 'src/monet';
 import { selectAccounts, selectConfig } from '../selectors';
-import { capitalize, parseBalance } from '../utils';
+import { capitalize, commaSeperate, parseBalance } from '../utils';
 
-const SStatistic = styled.div`
-	/* background: #fff; */
-	/* box-shadow: 2px 0px 40px rgba(0, 0, 0, 0.05); */
-	width: 100%;
-	font-weight: 600 !important;
-	border-bottom: var(--border);
-
-	h3 {
-		font-size: 35px;
-	}
-
-	.col {
-		padding: 20px 0;
-		border-right: var(--border);
-	}
-`;
-
-const SSettings = styled.div`
-	padding: 30px !important;
+const SSettings = styled(SSection)`
 	display: none;
 `;
 
-const STransfer = styled.div`
-	padding: 30px !important;
+const STransfer = styled(SSection)`
 	border-bottom: var(--border);
 `;
 
-const SUpdate = styled.div`
-	padding: 30px !important;
+const SUpdate = styled(SSection)`
 	border-bottom: var(--border);
 `;
 
@@ -102,6 +82,18 @@ const Account: React.FC<RouteComponentProps<Props>> = props => {
 		ReactTooltip.hide();
 	}, []);
 
+	// polling for accounts
+	// let poller: any;
+	// useEffect(() => {
+	// 	poller = setInterval(() => {
+	// 		fetchAccount(account);
+	// 	}, 10000);
+
+	// 	return () => {
+	// 		clearInterval(poller);
+	// 	};
+	// }, []);
+
 	return (
 		<>
 			<Header
@@ -109,41 +101,46 @@ const Account: React.FC<RouteComponentProps<Props>> = props => {
 				title={`${capitalize(account.moniker)}  (${Utils.cleanAddress(
 					account.address
 				)})`}
-			>
-				<Loader loading={loading} />{' '}
-				<Button
-					disabled={loading}
-					onClick={() => fetchAccount(account)}
-					variant="primary"
-				>
-					Refresh
-				</Button>
-			</Header>
+			></Header>
 			<SStatistic className="">
 				<Container>
 					<Row className="align-items-center">
-						{/* <Col className="text-center">
-							<h5>0 Seconds ago</h5>
-							<div>Last Updated</div>
-						</Col> */}
 						<Col className="text-center">
-							<h3>{parseBalance(account.balance)}</h3>
+							<h3>
+								<Await
+									await={loading}
+									fallback={<Loader loading={loading} />}
+								>
+									<img
+										src={
+											'https://monet.network/app/images/products/tenom.svg'
+										}
+										width={35}
+									/>
+									{commaSeperate(
+										parseBalance(account.balance).slice(
+											0,
+											-1
+										)
+									)}
+								</Await>
+							</h3>
 							<div>Balance</div>
 						</Col>
 						<Col className="text-center">
-							<h3>{account.nonce}</h3>
+							<h3>
+								<Await
+									await={loading}
+									fallback={<Loader loading={loading} />}
+								>
+									{account.nonce}
+								</Await>
+							</h3>
 							<div>Nonce</div>
 						</Col>
-						{/* <Col className="text-center">
-							<h3 className="green">
-								<FontAwesomeIcon icon={faCheck} />
-							</h3>
-							<div>???</div>
-						</Col> */}
 					</Row>
 				</Container>
 			</SStatistic>
-
 			<STransfer>
 				<Transfer
 					getAccount={() => fetchAccount(account)}

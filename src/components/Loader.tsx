@@ -2,7 +2,7 @@ import React from 'react';
 
 import Image from 'react-bootstrap/Image';
 
-import LOADER from '../assets/loader.svg';
+import LOADER from '../assets/loader-circle.svg';
 
 type Props = {
 	loading: boolean;
@@ -13,8 +13,8 @@ const Loader: React.FC<Props> = props => {
 	return !!props.loading ? (
 		<Image
 			src={LOADER}
-			width={props.size || 40}
-			height={props.size || 40}
+			width={props.size || 45}
+			height={props.size || 45}
 		/>
 	) : (
 		<></>

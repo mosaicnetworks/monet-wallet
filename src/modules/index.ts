@@ -5,7 +5,7 @@ import { combineReducers } from 'redux';
 import { Store } from '../store';
 
 import accounts from './accounts';
-import config from './config';
+import settings from './settings';
 
 export const errorHandler = (dispatch: any, action: string) => (
 	error: string
@@ -23,6 +23,6 @@ export interface BaseAction<Payload> {
 }
 
 export default combineReducers({
-	config,
+	settings,
 	accounts
 });

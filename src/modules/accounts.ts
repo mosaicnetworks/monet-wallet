@@ -152,14 +152,14 @@ export function listAccounts(
 	return async (dispatch, getState) => {
 		let accounts: MonikerEVMAccount[] = [];
 
-		const { config } = getState();
+		const { settings } = getState();
 		const error = errorHandler(dispatch, LIST_ERROR);
 
 		dispatch({
 			type: LIST_INIT
 		});
 
-		const datadir = new MonetDataDir(config.directory);
+		const datadir = new MonetDataDir(settings.datadir);
 		const mk = await datadir
 			.listKeyfiles()
 			.catch(() => error('Could not load accounts'));
@@ -183,8 +183,8 @@ export function listAccounts(
 
 		if (fetch) {
 			const n = new Monet(
-				config.data.connection.host,
-				config.data.connection.port
+				settings.config.connection.host,
+				settings.config.connection.port
 			);
 
 			try {
@@ -217,7 +217,7 @@ export function transfer(
 	return async (dispatch, getState) => {
 		const state = getState();
 
-		const config = state.config.data;
+		const config = state.settings.config;
 		const error = errorHandler(dispatch, TRANSFER_ERROR);
 
 		dispatch({
@@ -243,7 +243,7 @@ export function transfer(
 				let account: Account;
 
 				try {
-					const datadir = new MonetDataDir(state.config.directory);
+					const datadir = new MonetDataDir(state.settings.datadir);
 					const keyfile = await datadir.getKeyfile(moniker);
 
 					account = MonetDataDir.decrypt(keyfile, passphrase);
@@ -285,14 +285,14 @@ export function createAccount(
 	password: string
 ): ThunkResult<Promise<void>> {
 	return async (dispatch, getState) => {
-		const { config } = getState();
+		const { settings } = getState();
 
 		dispatch({
 			type: CREATE_INIT
 		});
 
 		try {
-			const datadir = new MonetDataDir(config.directory);
+			const datadir = new MonetDataDir(settings.datadir);
 			const keyfile = AbstractKeystore.encrypt(account, password);
 
 			await datadir.importKeyfile(moniker, keyfile);

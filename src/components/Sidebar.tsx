@@ -6,7 +6,7 @@ import { faCog, faUser } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link } from 'react-router-dom';
 
-import LOGO from '../assets/icon.png';
+import LOGO from '../assets/monet.svg';
 
 type Props = {};
 
@@ -14,15 +14,16 @@ const SSidebar = styled.div`
 	/* width: 300px; */
 	height: 100vh;
 	background: #fff;
-	/* box-shadow: 0 2px 40px rgba(0, 0, 0, 0.03); */
-	border-right: 1px solid #eee;
+	box-shadow: 0 2px 60px rgba(0, 0, 0, 0.2);
+	border-right: var(--border);
+	background: var(--blue);
 `;
 
 const SLogo = styled.div`
 	font-family: Monet;
 	height: 60px;
 	line-height: 60px;
-	border-bottom: 1px solid #eee;
+	border-bottom: 1px solid #1e3383;
 	font-size: 18px;
 	letter-spacing: 3px;
 	color: var(--blue);
@@ -34,6 +35,8 @@ const SLogo = styled.div`
 	}
 `;
 
+const SNav = styled.div``;
+
 const SLinks = styled.div`
 	margin-bottom: 50px;
 
@@ -41,7 +44,7 @@ const SLinks = styled.div`
 		font-size: 14px;
 		text-transform: uppercase;
 		letter-spacing: 0px;
-		color: #777;
+		color: #ccc;
 		margin-left: 20px;
 		font-weight: 700;
 		margin-bottom: 15px;
@@ -58,11 +61,11 @@ const SLinks = styled.div`
 		font-family: 'Titillium Web', sans-serif;
 		list-style: none;
 		font-size: 16px;
-		border-bottom: 1px solid #f3f3f3;
+		border-bottom: 1px solid #1e3383;
 	}
 
 	li:first-child {
-		border-top: 1px solid #f3f3f3 !important;
+		border-top: 1px solid #1e3383;
 	}
 
 	a {
@@ -71,7 +74,7 @@ const SLinks = styled.div`
 		}
 
 		transition: background 0.1s cubic-bezier(1, 1, 1, 1);
-		color: #333;
+		color: #eee;
 		font-weight: 600;
 		display: block !important;
 		padding: 12px 30px !important;
@@ -88,33 +91,35 @@ const Sidebar: React.FunctionComponent<Props> = () => {
 	return (
 		<SSidebar className="sticky-top">
 			<SLogo>
-				<img src={LOGO} width={80} />
-				Monet
+				<img src={LOGO} width={160} />
 			</SLogo>
-			<br />
-			<br />
-			<SLinks>
-				<h3>Actions</h3>
-				<ul>
-					<li>
-						<Link to={'/'}>
-							<FontAwesomeIcon icon={faUser} />
-							Accounts
-						</Link>
-					</li>
-				</ul>
-			</SLinks>
 
-			<SLinks>
-				<ul>
-					<li>
-						<Link to={'/settings'}>
-							<FontAwesomeIcon icon={faCog} />
-							Settings
-						</Link>
-					</li>
-				</ul>
-			</SLinks>
+			<SNav>
+				<br />
+				<br />
+				<SLinks>
+					<h3>Actions</h3>
+					<ul>
+						<li>
+							<Link to={'/'}>
+								<FontAwesomeIcon icon={faUser} />
+								Accounts
+							</Link>
+						</li>
+					</ul>
+				</SLinks>
+
+				<SLinks>
+					<ul>
+						<li>
+							<Link to={'/settings'}>
+								<FontAwesomeIcon icon={faCog} />
+								Settings
+							</Link>
+						</li>
+					</ul>
+				</SLinks>
+			</SNav>
 		</SSidebar>
 	);
 };

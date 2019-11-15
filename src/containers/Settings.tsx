@@ -14,13 +14,13 @@ import Form from 'react-bootstrap/Form';
 import Header from '../components/Header';
 import Loader from '../components/Loader';
 
-import { save, setDirectory } from '../modules/config';
+import { save, setDatadir } from '../modules/settings';
 import { MonetInfo } from '../monet';
 import {
 	selectConfig,
-	selectConfigError,
 	selectConfigSaveLoading,
-	selectDatadir
+	selectDatadir,
+	selectSettingsError
 } from '../selectors';
 
 const SContent = styled.div`
@@ -37,7 +37,7 @@ const Settings: React.FC<Props> = props => {
 	const dispatch = useDispatch();
 
 	const config = useSelector(selectConfig);
-	const error = useSelector(selectConfigError);
+	const error = useSelector(selectSettingsError);
 	const datadir = useSelector(selectDatadir);
 	const loading = useSelector(selectConfigSaveLoading);
 
@@ -48,7 +48,7 @@ const Settings: React.FC<Props> = props => {
 
 	const saveConfig = async () => {
 		if (datadir !== vdatadir) {
-			await dispatch(setDirectory(vdatadir));
+			await dispatch(setDatadir(vdatadir));
 		}
 
 		if (!error) {

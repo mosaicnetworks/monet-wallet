@@ -11,7 +11,9 @@ const SHeader = styled.div`
 	height: 60px;
 	line-height: 60px;
 	width: 100%;
-	/* box-shadow: 2px 0px 40px rgba(0, 0, 0, 0.05); */
+	/* background: var(--blue); */
+	/* color: white !important; */
+	box-shadow: 2px 0px 40px rgba(0, 0, 0, 0.05);
 	border-bottom: 1px solid #eee;
 	padding: 0 15px;
 `;

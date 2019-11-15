@@ -6,8 +6,7 @@ import { useDispatch } from 'react-redux';
 import { HashRouter, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 
-import { listAccounts } from '../modules/accounts';
-import { initConfig } from '../modules/config';
+import { initSettings } from '../modules/settings';
 
 import Account from '../containers/Account';
 import Accounts from '../containers/Accounts';
@@ -18,12 +17,14 @@ import Wrapper from '../components/Wrapper';
 const App: React.FunctionComponent<{}> = () => {
 	const dispatch = useDispatch();
 
-	const initConf = () => dispatch(initConfig());
-	const initAccounts = () => dispatch(listAccounts(true));
+	const initConf = () => dispatch(initSettings());
+
+	const initApp = async () => {
+		await initConf();
+	};
 
 	useEffect(() => {
-		initConf();
-		initAccounts();
+		initApp();
 	}, []);
 
 	return (

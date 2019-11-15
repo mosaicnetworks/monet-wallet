@@ -7,25 +7,25 @@ import { BaseAction, ThunkResult } from '.';
 import { MonetDataDir } from '../monet';
 
 // Set configuration data directory
-const SET_DIRECTORY_SUCCESS = '@monet/configuration/DATADIRECTORY/SUCCESS';
-const SET_DIRECTORY_ERROR = '@monet/configuration/DATADIRECTORY/ERROR';
+const SET_DATADIR_SUCCESS = '@monet/settings/DATADIR/SUCCESS';
+const SET_DATADIR_ERROR = '@monet/settings/DATADIR/ERROR';
 
 // Load configuration from data directory
-const LOAD_REQUEST = '@monet/configuration/LOAD/REQUEST';
-const LOAD_SUCCESS = '@monet/configuration/LOAD/SUCCESS';
-const LOAD_ERROR = '@monet/configuration/LOAD/ERROR';
+const LOAD_REQUEST = '@monet/settings/LOAD/REQUEST';
+const LOAD_SUCCESS = '@monet/settings/LOAD/SUCCESS';
+const LOAD_ERROR = '@monet/settings/LOAD/ERROR';
 
 // Save configuration
-const SAVE_REQUEST = '@monet/configuration/SAVE/REQUEST';
-const SAVE_SUCCESS = '@monet/configuration/SAVE/SUCCESS';
-const SAVE_ERROR = '@monet/configuration/SAVE/ERROR';
+const SAVE_REQUEST = '@monet/settings/SAVE/REQUEST';
+const SAVE_SUCCESS = '@monet/settings/SAVE/SUCCESS';
+const SAVE_ERROR = '@monet/settings/SAVE/ERROR';
 
-export interface ConfigurationState {
+export interface SettingState {
 	// The data directory path
-	readonly directory: string;
+	readonly datadir: string;
 
 	// The configuration data values
-	readonly data: IConfiguration;
+	readonly config: IConfiguration;
 
 	// This error attribute is used by all actions
 	readonly error?: string;
@@ -37,9 +37,9 @@ export interface ConfigurationState {
 	};
 }
 
-const initialState: ConfigurationState = {
-	directory: osdatadir('Monet'),
-	data: {} as IConfiguration,
+const initial: SettingState = {
+	datadir: osdatadir('Monet'),
+	config: {} as IConfiguration,
 	loading: {
 		load: false,
 		save: false
@@ -47,18 +47,18 @@ const initialState: ConfigurationState = {
 };
 
 export default function reducer(
-	state: ConfigurationState = initialState,
+	state: SettingState = initial,
 	action: BaseAction<any> = {} as BaseAction<any>
-): ConfigurationState {
+): SettingState {
 	switch (action.type) {
 		// Set data directory
-		case SET_DIRECTORY_SUCCESS:
+		case SET_DATADIR_SUCCESS:
 			return {
 				...state,
-				directory: action.payload,
+				datadir: action.payload,
 				error: undefined
 			};
-		case SET_DIRECTORY_ERROR:
+		case SET_DATADIR_ERROR:
 			return {
 				...state,
 				error: action.payload
@@ -77,7 +77,7 @@ export default function reducer(
 		case LOAD_SUCCESS:
 			return {
 				...state,
-				data: action.payload,
+				config: action.payload,
 				loading: {
 					...state.loading,
 					load: false
@@ -107,7 +107,7 @@ export default function reducer(
 		case SAVE_SUCCESS:
 			return {
 				...state,
-				data: action.payload,
+				config: action.payload,
 				loading: {
 					...state.loading,
 					save: false
@@ -138,7 +138,7 @@ export function load(): ThunkResult<Promise<IConfiguration>> {
 		});
 
 		try {
-			const datadir = new MonetDataDir(store.config.directory);
+			const datadir = new MonetDataDir(store.settings.datadir);
 
 			config = await datadir.readConfig();
 
@@ -157,11 +157,11 @@ export function load(): ThunkResult<Promise<IConfiguration>> {
 	};
 }
 
-export function setDirectory(path: string): ThunkResult<Promise<string>> {
+export function setDatadir(path: string): ThunkResult<Promise<string>> {
 	return async dispatch => {
 		if (utils.exists(path) && !utils.isDirectory(path)) {
 			dispatch({
-				type: SET_DIRECTORY_ERROR,
+				type: SET_DATADIR_ERROR,
 				payload: `Provided path '${path}' is not a directory.`
 			});
 
@@ -171,7 +171,7 @@ export function setDirectory(path: string): ThunkResult<Promise<string>> {
 		const {} = new MonetDataDir(path);
 
 		dispatch({
-			type: SET_DIRECTORY_SUCCESS,
+			type: SET_DATADIR_SUCCESS,
 			payload: path
 		});
 
@@ -181,7 +181,7 @@ export function setDirectory(path: string): ThunkResult<Promise<string>> {
 	};
 }
 
-export function initConfig(): ThunkResult<Promise<void>> {
+export function initSettings(): ThunkResult<Promise<void>> {
 	return async dispatch => {
 		dispatch(load());
 	};
@@ -200,7 +200,7 @@ export function save(
 		await new Promise(resolve => setTimeout(resolve, 500));
 
 		try {
-			const datadir = new MonetDataDir(state.config.directory);
+			const datadir = new MonetDataDir(state.settings.datadir);
 
 			await datadir.saveConfig(newConfig);
 

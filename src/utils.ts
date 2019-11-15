@@ -20,3 +20,17 @@ export const parseBalance = (balance: Currency) => {
 export const isLetter = (str: string) => {
 	return str.length === 1 && str.match(/[a-z]/i);
 };
+
+export const commaSeperate = (x: number | string) => {
+	x = x.toString();
+
+	const split = x.split('.');
+
+	if (split.length > 1) {
+		return `${split[0].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}.${
+			split[1]
+		}`;
+	}
+
+	return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+};
