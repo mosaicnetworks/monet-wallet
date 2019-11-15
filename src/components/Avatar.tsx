@@ -1,30 +1,29 @@
 import React from 'react';
 
-import Utils from 'evm-lite-utils';
+import utils from 'evm-lite-utils';
 import styled from 'styled-components';
 
-import { Image, SemanticSIZES } from 'semantic-ui-react';
+import Image from 'react-bootstrap/Image';
 
-const SAvatarContainer = styled(Image)`
-	border-radius: 100px;
+const SAvatar = styled(Image)`
+	border-radius: 5px !important;
+	margin-right: 1px;
 `;
 
-interface Props {
+type Props = {
 	address: string;
-	size?: SemanticSIZES;
-	float?: 'right' | 'left';
-	avatar?: boolean;
-}
+	size?: number;
+};
 
-const Avatar: React.FunctionComponent<Props> = props => {
+const Avatar: React.FC<Props> = props => {
 	return (
-		<SAvatarContainer
-			floated={props.float}
-			src={`https://s.gravatar.com/avatar/${Utils.trimHex(
-				props.address
+		<SAvatar
+			className="align-self-middle mr-4"
+			src={`https://s.gravatar.com/avatar/${utils.trimHex(
+				props.address || '0x0000000000000000000000000000000000000000'
 			)}?size=100&default=retro`}
-			avatar={props.avatar}
-			size={props.size}
+			width={props.size || 50}
+			height={props.size || 50}
 		/>
 	);
 };

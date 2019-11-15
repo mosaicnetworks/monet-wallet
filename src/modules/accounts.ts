@@ -1,48 +1,35 @@
-import * as path from 'path';
-
-import { IBaseAccount, IReceipt } from 'evm-lite-client';
 import { Account, Monet } from 'evm-lite-core';
-import { toast } from 'react-toastify';
-
-import Keystore, { IMonikerBaseAccount, IV3Keyfile } from 'evm-lite-keystore';
-import utils, { Currency } from 'evm-lite-utils';
+import { AbstractKeystore } from 'evm-lite-keystore';
+import Utils, { Currency } from 'evm-lite-utils';
 
 import { BaseAction, errorHandler, ThunkResult } from '.';
-import { IMonikerEVMAccount, MonetDataDir, MonikerAccount } from '../monet';
+import { MonetDataDir, MonetInfo, MonikerEVMAccount } from '../monet';
+import { isLetter } from '../utils';
 
 // Lists all accounts in keystore
-const LIST_REQUEST = '@monet/accounts/LIST/REQUEST';
+const LIST_INIT = '@monet/accounts/LIST/INIT';
 const LIST_SUCCESS = '@monet/accounts/LIST/SUCCESS';
 const LIST_ERROR = '@monet/accounts/LIST/ERROR';
 
 // Creates account in keystore
-const CREATE_REQUEST = '@monet/accounts/CREATE/REQUEST';
+const CREATE_INIT = '@monet/accounts/CREATE/INIT';
 const CREATE_SUCCESS = '@monet/accounts/CREATE/SUCCESS';
 const CREATE_ERROR = '@monet/accounts/CREATE/ERROR';
 
-// Get account balance and nonce from node
-const GET_REQUEST = '@monet/accounts/GET/REQUEST';
-const GET_SUCCESS = '@monet/accounts/GET/SUCCESS';
-const GET_ERROR = '@monet/accounts/GET/ERROR';
-
-// For decrypting an account
-const UNLOCK_REQUEST = '@monet/accounts/UNLOCK/REQUEST';
-const UNLOCK_SUCCESS = '@monet/accounts/UNLOCK/SUCCESS';
-const UNLOCK_ERROR = '@monet/accounts/UNLOCK/ERROR';
-const UNLOCK_RESET = '@monet/accounts/UNLOCK/RESET';
-
 // For transferring tokens/coins from an account
-const TRANSFER_REQUEST = '@monet/accounts/TRANSFER/REQUEST';
+const TRANSFER_INIT = '@monet/accounts/TRANSFER/INIT';
 const TRANSFER_SUCCESS = '@monet/accounts/TRANSFER/SUCCESS';
 const TRANSFER_ERROR = '@monet/accounts/TRANSFER/ERROR';
 
-// Accounts state structure
-export interface AccountsState {
-	// Entire list of accounts
-	readonly all: IMonikerEVMAccount[];
+// Updating account password
+const UPDATE_INIT = '@monet/accounts/UPDATE/INIT';
+const UPDATE_SUCCESS = '@monet/accounts/UPDATE/SUCCESS';
+const UPDATE_ERROR = '@monet/accounts/UPDATE/ERROR';
 
-	// Currently unlocked account
-	readonly unlocked?: MonikerAccount;
+// Accounts state structure
+export type AccountsState = {
+	// Entire list of accounts
+	readonly all: MonikerEVMAccount[];
 
 	// A single error field to be used by this module for any action
 	readonly error?: string;
@@ -51,21 +38,19 @@ export interface AccountsState {
 	readonly loading: {
 		transfer: boolean;
 		list: boolean;
-		get: boolean;
 		create: boolean;
-		unlock: boolean;
+		update: boolean;
 	};
-}
+};
 
 // Initial State of the accounts module
 const initialState: AccountsState = {
 	all: [],
 	loading: {
 		list: false,
-		get: false,
 		create: false,
-		unlock: false,
-		transfer: false
+		transfer: false,
+		update: false
 	}
 };
 
@@ -76,10 +61,9 @@ export default function reducer(
 ): Readonly<AccountsState> {
 	switch (action.type) {
 		// List accounts
-		case LIST_REQUEST:
+		case LIST_INIT:
 			return {
 				...state,
-				all: [],
 				error: undefined,
 				loading: {
 					...state.loading,
@@ -89,7 +73,7 @@ export default function reducer(
 		case LIST_SUCCESS:
 			return {
 				...state,
-				all: action.payload,
+				all: [...action.payload],
 				loading: {
 					...state.loading,
 					list: false
@@ -106,8 +90,36 @@ export default function reducer(
 				}
 			};
 
+		// Transfer
+		case TRANSFER_INIT:
+			return {
+				...state,
+				error: undefined,
+				loading: {
+					...state.loading,
+					transfer: true
+				}
+			};
+		case TRANSFER_SUCCESS:
+			return {
+				...state,
+				loading: {
+					...state.loading,
+					transfer: false
+				}
+			};
+		case TRANSFER_ERROR:
+			return {
+				...state,
+				error: action.payload,
+				loading: {
+					...state.loading,
+					transfer: false
+				}
+			};
+
 		// Create account
-		case CREATE_REQUEST:
+		case CREATE_INIT:
 			return {
 				...state,
 				error: undefined,
@@ -136,152 +148,64 @@ export default function reducer(
 				}
 			};
 
-		// Get account
-		case GET_REQUEST:
+		// update pass
+		case UPDATE_INIT:
 			return {
 				...state,
-				error: undefined,
 				loading: {
 					...state.loading,
-					get: true
+					update: true
 				}
 			};
-		case GET_SUCCESS:
-			const accounts = state.all.map(acc => {
-				const acc2 = {
-					...acc
-				};
-
-				if (
-					utils.cleanAddress(acc.address) ===
-					utils.cleanAddress(action.payload.address)
-				) {
-					acc2.balance = action.payload.balance;
-					acc2.nonce = action.payload.nonce;
-				}
-
-				return acc2;
-			});
-
+		case UPDATE_SUCCESS:
 			return {
 				...state,
-				error: undefined,
-				all: accounts,
 				loading: {
 					...state.loading,
-					get: false
+					update: false
 				}
 			};
-		case GET_ERROR:
+		case UPDATE_ERROR:
 			return {
 				...state,
 				error: action.payload,
 				loading: {
 					...state.loading,
-					get: false
+					update: false
 				}
 			};
 
-		// Unlock account
-		case UNLOCK_REQUEST:
-			return {
-				...state,
-				error: undefined,
-				loading: {
-					...state.loading,
-					unlock: true
-				}
-			};
-		case UNLOCK_SUCCESS:
-			return {
-				...state,
-				unlocked: action.payload,
-				error: undefined,
-				loading: {
-					...state.loading,
-					unlock: false
-				}
-			};
-		case UNLOCK_ERROR:
-			return {
-				...state,
-				error: action.payload,
-				loading: {
-					...state.loading,
-					unlock: false
-				}
-			};
-		case UNLOCK_RESET:
-			return {
-				...state,
-				error: undefined,
-				unlocked: undefined,
-				loading: {
-					...state.loading,
-					unlock: false
-				}
-			};
-
-		// Transfer
-		case TRANSFER_REQUEST:
-			return {
-				...state,
-				loading: {
-					...state.loading,
-					transfer: true
-				}
-			};
-		case TRANSFER_SUCCESS:
-			return {
-				...state,
-
-				loading: {
-					...state.loading,
-					transfer: false
-				}
-			};
-		case TRANSFER_ERROR:
-			return {
-				...state,
-				loading: {
-					...state.loading,
-					transfer: false
-				},
-				error: action.payload
-			};
 		default:
 			return state;
 	}
 }
 
-/**
- * Should list all acounts from the keystore. It will update the redux state
- * and set the `all` attribute to the desired result.
- */
-export function list(): ThunkResult<Promise<IMonikerEVMAccount[]>> {
+export function listAccounts(
+	fetch: boolean = false
+): ThunkResult<Promise<void>> {
 	return async (dispatch, getState) => {
-		let accounts: IMonikerEVMAccount[] = [];
+		let accounts: MonikerEVMAccount[] = [];
 
-		const { config } = getState();
-		const error = errorHandler.bind(null, dispatch, LIST_ERROR);
+		const { settings } = getState();
+		const error = errorHandler(dispatch, LIST_ERROR);
 
 		dispatch({
-			type: LIST_REQUEST
+			type: LIST_INIT
 		});
 
-		let node: Monet | undefined = new Monet(
-			config.data.connection.host,
-			config.data.connection.port
-		);
-
-		await node.getInfo().catch(() => {
-			node = undefined;
-		});
-
-		const datadir = new MonetDataDir(config.directory);
+		const datadir = new MonetDataDir(settings.datadir);
 		const mk = await datadir
 			.listKeyfiles()
 			.catch(() => error('Could not load accounts'));
+
+		if (!mk) {
+			dispatch({
+				type: LIST_ERROR,
+				error: 'Could not load accounts from keystore'
+			});
+
+			return;
+		}
 
 		accounts = Object.keys(mk).map(moniker => ({
 			address: mk[moniker].address,
@@ -291,220 +215,51 @@ export function list(): ThunkResult<Promise<IMonikerEVMAccount[]>> {
 			moniker
 		}));
 
-		if (node) {
-			accounts = await Promise.all(
-				accounts.map(async account => {
-					const acc = await node!
-						.getAccount(account.address)
-						.catch(console.log);
-
-					return {
-						...account,
-						...acc,
-						moniker: account.moniker
-					};
-				})
+		if (fetch) {
+			const n = new Monet(
+				settings.config.connection.host,
+				settings.config.connection.port
 			);
+
+			try {
+				await n.getInfo();
+
+				for (const a of accounts) {
+					const acc = await n.getAccount(a.address);
+
+					a.balance = acc.balance;
+					a.nonce = acc.nonce;
+				}
+			} catch (e) {
+				// pass
+			}
 		}
 
 		dispatch({
 			type: LIST_SUCCESS,
 			payload: accounts
 		});
-
-		return accounts;
 	};
 }
 
-export type IAccountsCreate = (
-	moniker: string,
-	password: string
-) => Promise<IMonikerBaseAccount>;
-
-/**
- * Creates an ethereum account and appends it into the list of all accounts.
- *
- * @param moniker - The moniker for the created account
- * @param password - The string to used to encrypt the newly created account
- */
-export function create(
-	moniker: string,
-	password: string
-): ThunkResult<Promise<IMonikerEVMAccount>> {
-	return async (dispatch, getState) => {
-		const { config } = getState();
-
-		const account: IMonikerEVMAccount = {
-			address: '',
-			balance: new Currency(0),
-			nonce: 0,
-			bytecode: '',
-			moniker
-		};
-
-		dispatch({
-			type: CREATE_REQUEST
-		});
-
-		try {
-			const keystore = new Keystore(
-				path.join(config.directory, 'keystore')
-			);
-
-			const acc: IV3Keyfile = await keystore.create(moniker, password);
-
-			account.address = acc.address;
-
-			dispatch({
-				type: CREATE_SUCCESS,
-				payload: account
-			});
-
-			toast.success(
-				`Account created: 0x${account.address.slice(0, 15)}...`
-			);
-		} catch (error) {
-			dispatch({
-				type: CREATE_ERROR,
-				payload: error.toString()
-			});
-		}
-
-		return account;
-	};
-}
-
-/**
- * Should fetch `BaseAccount` type of the address prepopulating the object with
- * the address's balance and nonce.
- *
- * @param address - The address to fetch from the node
- */
-export function get(address: string): ThunkResult<Promise<IBaseAccount>> {
-	return async (dispatch, getState) => {
-		const { config } = getState();
-		let account = {} as IBaseAccount;
-
-		dispatch({
-			type: GET_REQUEST
-		});
-
-		try {
-			if (!!Object.keys(config).length) {
-				const node = new Monet(
-					config.data.connection.host,
-					config.data.connection.port
-				);
-
-				account = await node.getAccount(address);
-
-				dispatch({
-					type: GET_SUCCESS,
-					payload: account
-				});
-			} else {
-				throw Error('Configuration could not loaded.');
-			}
-		} catch (error) {
-			dispatch({
-				type: GET_ERROR,
-				payload: error.toString()
-			});
-		}
-
-		return account;
-	};
-}
-
-/**
- * Should decrypt an account and set the result into the redux state. The account
- * will be removed after the session is closed or manually reset.
- *
- * @param moniker - The moniker of the account to unlock
- * @param password - The associated password for the address in question
- */
-export function unlock(
-	moniker: string,
-	password: string
-): ThunkResult<Promise<Account | undefined>> {
-	return async (dispatch, getState) => {
-		const { config } = getState();
-
-		dispatch({
-			type: UNLOCK_REQUEST
-		});
-
-		const keystore = new Keystore(path.join(config.directory, 'keystore'));
-		const keyfile = await keystore.get(moniker);
-
-		try {
-			const account = Keystore.decrypt(
-				keyfile,
-				password.trim().replace(/(\r\n|\n|\r)/gm, '')
-			);
-
-			const monikerAccount = new MonikerAccount({
-				address: account.address,
-				privateKey: account.privateKey
-			});
-
-			monikerAccount.moniker = moniker;
-
-			dispatch({
-				type: UNLOCK_SUCCESS,
-				payload: monikerAccount
-			});
-
-			return account;
-		} catch (error) {
-			dispatch({
-				type: UNLOCK_ERROR,
-				payload: error.toString()
-			});
-
-			toast.error('Invalid password.');
-
-			return undefined;
-		}
-	};
-}
-
-/**
- * Reset function for unlocking an account.
- */
-export function resetUnlock(): ThunkResult<void> {
-	return dispatch => {
-		dispatch({
-			type: UNLOCK_RESET
-		});
-	};
-}
-
-/**
- * Should transfer the state amount of tokens/coins to the desired address.
- *
- * @param from - The `from` address of the transaction
- * @param to - The `to` address of the transaction
- * @param value - The amount of coin(s)/token(s) to send
- * @param gas - The maximum `gas` to use for this transaction
- * @param gasPrice - The price per `gas` to pay for the transaction
- */
 export function transfer(
+	moniker: string,
+	passphrase: string,
 	to: string,
-	value: number,
-	gasPrice: number
-): ThunkResult<Promise<IReceipt>> {
+	value: string
+): ThunkResult<Promise<boolean | undefined>> {
 	return async (dispatch, getState) => {
 		const state = getState();
-		const config = state.config.data;
-		const error = errorHandler.bind(null, dispatch, TRANSFER_ERROR);
+
+		const config = state.settings.config;
+		const error = errorHandler(dispatch, TRANSFER_ERROR);
 
 		dispatch({
-			type: TRANSFER_REQUEST
+			type: TRANSFER_INIT
 		});
 
-		if (!state.accounts.unlocked) {
-			throw Error('No account unlocked to sign the transaction');
+		if (!isLetter(value.slice(-1))) {
+			value += 'T';
 		}
 
 		if (!!Object.keys(config).length) {
@@ -513,35 +268,146 @@ export function transfer(
 				config.connection.port
 			);
 
-			const info = await node.getInfo().catch(() => {
-				error('No connection detected');
-				return;
+			const info = await node.getInfo<MonetInfo>().catch(() => {
+				return error('No connection detected');
 			});
 
-			if (!info) {
-				return {} as IReceipt;
+			if (Utils.cleanAddress(to).length !== 42) {
+				return error('Invalid receipient address');
 			}
 
-			const receipt = await node.transfer(
-				state.accounts.unlocked,
-				to,
-				new Currency(value + 'T'),
-				21000,
-				gasPrice
+			if (Object.keys(info).length > 0 && typeof info === 'object') {
+				let account: Account;
+
+				try {
+					const datadir = new MonetDataDir(state.settings.datadir);
+					const keyfile = await datadir.getKeyfile(moniker);
+
+					account = MonetDataDir.decrypt(keyfile, passphrase);
+				} catch (e) {
+					return error('Incorrect passphrase');
+				}
+
+				try {
+					const receipt = await node.transfer(
+						account,
+						to,
+						new Currency(value),
+						21000,
+						Number(info.min_gas_price)
+					);
+
+					dispatch({
+						type: TRANSFER_SUCCESS,
+						payload: receipt
+					});
+
+					return true;
+				} catch (e) {
+					return error(e.toString());
+				}
+			}
+		} else {
+			return error('Configuration could not loaded.');
+		}
+	};
+}
+
+export function createAccount(
+	account: Account,
+	moniker: string,
+	password: string
+): ThunkResult<Promise<boolean>> {
+	return async (dispatch, getState) => {
+		const { settings } = getState();
+
+		const error = errorHandler(dispatch, CREATE_ERROR);
+
+		dispatch({
+			type: CREATE_INIT
+		});
+
+		if (!moniker.length) {
+			return error('Moniker cannot be empty');
+		}
+
+		if (!Utils.validMoniker(moniker)) {
+			return error(
+				'Moniker can only include alphanumeric characters and underscores'
+			);
+		}
+
+		if (password.length < 3) {
+			return error('Passphrase must be longer than 3 characters');
+		}
+
+		try {
+			const datadir = new MonetDataDir(settings.datadir);
+			const keyfile = AbstractKeystore.encrypt(account, password);
+
+			const monikers = Object.keys(await datadir.listKeyfiles());
+			console.log(monikers);
+			if (monikers.find(m => m.toLowerCase() === moniker.toLowerCase())) {
+				dispatch({
+					type: CREATE_ERROR,
+					payload: 'Moniker already exists!'
+				});
+
+				return false;
+			}
+
+			await datadir.importKeyfile(moniker, keyfile);
+
+			const a: MonikerEVMAccount = {
+				...account,
+				bytecode: '',
+				moniker
+			};
+
+			dispatch({
+				type: CREATE_SUCCESS,
+				payload: a
+			});
+
+			return true;
+		} catch (error) {
+			dispatch({
+				type: CREATE_ERROR,
+				payload: error.toString()
+			});
+
+			return false;
+		}
+	};
+}
+
+export function updateAccount(
+	moniker: string,
+	passphrase: string,
+	newPassphrase: string
+): ThunkResult<Promise<boolean>> {
+	return async (dispatch, getState) => {
+		const error = errorHandler(dispatch, UPDATE_ERROR);
+		const { settings } = getState();
+
+		const datadir = new MonetDataDir(settings.datadir);
+
+		try {
+			const {} = await datadir.updateKeyfile(
+				moniker,
+				passphrase,
+				newPassphrase
 			);
 
 			dispatch({
-				type: TRANSFER_SUCCESS,
-				payload: receipt
+				type: CREATE_SUCCESS
 			});
 
-			dispatch(get(state.accounts.unlocked.address));
-
-			toast.success('Transfer submitted');
-
-			return receipt;
-		} else {
-			throw Error('Configuration could not loaded.');
+			return true;
+		} catch (e) {
+			return error('Incorrect passphrase');
 		}
+
+		return false;
 	};
 }

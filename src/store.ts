@@ -8,21 +8,19 @@ import { PersistConfig, persistReducer, persistStore } from 'redux-persist';
 import rootReducer from './modules';
 
 import { AccountsState } from './modules/accounts';
-import { ConfigurationState } from './modules/configuration';
-import { POAState } from './modules/poa';
+import { SettingState } from './modules/settings';
 
 export interface Store {
 	accounts: AccountsState;
-	config: ConfigurationState;
-	poa: POAState;
+	settings: SettingState;
 }
 
 const persistConfig: PersistConfig<Store> = {
 	key: 'root',
 	storage: dynamicStorage,
-	whitelist: ['config']
+	whitelist: ['settings']
 };
-const persistedReducer = persistReducer(persistConfig, rootReducer);
+const persistedReducer = persistReducer<any>(persistConfig, rootReducer);
 const middleware = [thunk, logger];
 
 export default () => {

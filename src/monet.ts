@@ -6,7 +6,7 @@ import { Account, IEVMAccount } from 'evm-lite-core';
 import DataDirectory from 'evm-lite-datadir';
 import Keystore from 'evm-lite-keystore';
 
-export interface IMonetInfo extends IBaseInfo {
+export type MonetInfo = IBaseInfo & {
 	consensus_events: string;
 	consensus_transactions: string;
 	events_per_second: string;
@@ -21,11 +21,12 @@ export interface IMonetInfo extends IBaseInfo {
 	sync_rate: string;
 	transaction_pool: string;
 	undetermined_events: string;
-}
+	min_gas_price: string;
+};
 
-export interface IMonikerEVMAccount extends IEVMAccount {
+export type MonikerEVMAccount = IEVMAccount & {
 	moniker: string;
-}
+};
 
 // monet specific class definitions
 export class MonikerAccount extends Account {

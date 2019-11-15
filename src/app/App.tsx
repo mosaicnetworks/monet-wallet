@@ -1,44 +1,44 @@
 import React, { useEffect } from 'react';
 
+import ReactTooltip from 'react-tooltip';
+
 import { useDispatch } from 'react-redux';
 import { HashRouter, Route } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
 
-import { initialize } from '../modules/configuration';
+import { initSettings } from '../modules/settings';
 
-import AccountDetail from '../containers/AccountDetail';
+import Account from '../containers/Account';
 import Accounts from '../containers/Accounts';
-import Configuration from '../containers/Configuration';
-import POA from '../containers/POA';
-import Wrapper from '../containers/Wrapper';
+import Settings from '../containers/Settings';
+
+import Wrapper from '../components/Wrapper';
 
 const App: React.FunctionComponent<{}> = () => {
 	const dispatch = useDispatch();
 
-	const init = () => dispatch(initialize());
+	const initConf = () => dispatch(initSettings());
+
+	const initApp = async () => {
+		await initConf();
+	};
 
 	useEffect(() => {
-		init();
+		initApp();
 	}, []);
 
 	return (
 		<HashRouter>
+			<ReactTooltip type="dark" />
 			<React.Fragment>
 				<Wrapper>
 					<Route exact={true} path="/" component={Accounts} />
-					<Route path="/config" component={Configuration} />
-					<Route path="/poa" component={POA} />
 					<Route
 						exact={true}
-						path="/account/:address"
-						component={AccountDetail}
+						path="/account/:moniker"
+						component={Account}
 					/>
+					<Route exact={true} path="/settings" component={Settings} />
 				</Wrapper>
-				<ToastContainer
-					autoClose={2000}
-					position={'bottom-left'}
-					toastClassName="toast-custom"
-				/>
 			</React.Fragment>
 		</HashRouter>
 	);

@@ -6,7 +6,7 @@ let main: BrowserWindow | null;
 
 function createWindow() {
 	const icon = nativeImage.createFromPath(
-		path.join(__dirname, 'src/assets/monet_logo.png')
+		path.resolve(__dirname, './assets/monet_logo.png')
 	);
 
 	main = new BrowserWindow({
@@ -15,14 +15,16 @@ function createWindow() {
 		},
 		width: 1350,
 		height: 757,
+		resizable: false,
+		fullscreen: false,
 		title: 'Monet Wallet',
 		icon
 	});
 
 	// createMenu();
 
-	// main.loadURL(`file://${__dirname}/index.html`);
-	main.loadURL(`http://localhost:8081`);
+	main.loadURL(`file://${__dirname}/index.html`);
+	// main.loadURL(`http://localhost:8081`);
 
 	main.on('closed', () => {
 		main = null;

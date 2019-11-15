@@ -1,14 +1,6 @@
-<img width="75px" height="75px" align="right" alt="Monet Logo" src="./src/assets/monet_logo.png" title="Monet Logo"/>
-
 # Monet Wallet
 
 A user interface to interact with Monet.
-
-## Preview
-
-<img  alt="Monet Logo" src="./assets/accounts.png" title="Accounts Page"/>
-
-<img  alt="Monet Logo" src="./assets/config.png" title="Accounts Page"/>
 
 ## Development
 
@@ -20,10 +12,10 @@ You will need to install `yarn` to proceed to development.
 curl -o- -L https://yarnpkg.com/install.sh | bash
 ```
 
-To install dependencies
+To install dependencies and build files
 
 ```bash
-yarn install
+yarn install && yarn build
 ```
 
 This should also transpile all `ts` and `tsx` files.

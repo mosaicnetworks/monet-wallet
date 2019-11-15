@@ -8,15 +8,23 @@ import { PersistGate } from 'redux-persist/integration/react';
 import getStores from '../store';
 import App from './App';
 
-import 'react-toastify/dist/ReactToastify.css';
-import 'semantic-ui-css/semantic.min.css';
-
+import 'bootstrap/dist/css/bootstrap.min.css';
 import '../index.css';
+
 const stores = getStores();
+
+const reset = () => {
+	stores.persistor.purge();
+	stores.persistor.flush();
+};
 
 ReactDOM.render(
 	<Provider store={stores.store}>
-		<PersistGate loading={null} persistor={stores.persistor}>
+		<PersistGate
+			loading={null}
+			onBeforeLift={reset}
+			persistor={stores.persistor}
+		>
 			<App />
 		</PersistGate>
 	</Provider>,
