@@ -1,7 +1,6 @@
 import utils from 'evm-lite-utils';
 
 import { IConfiguration, osdatadir } from 'evm-lite-datadir';
-import { toast } from 'react-toastify';
 
 import { BaseAction, ThunkResult } from '.';
 import { MonetDataDir } from '../monet';
@@ -174,8 +173,6 @@ export function setDatadir(path: string): ThunkResult<Promise<string>> {
 			type: SET_DATADIR_SUCCESS,
 			payload: path
 		});
-
-		toast.success(`Data directory loaded at ${path}`);
 
 		return path;
 	};

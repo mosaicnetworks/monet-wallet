@@ -14,17 +14,14 @@ import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 
 import Avatar from './Avatar';
+import Error from './Error';
 
 import { createAccount } from '../modules/accounts';
-import { selectCreateAccountLoading } from '../selectors';
+import { selectAccountError, selectCreateAccountLoading } from '../selectors';
 
 const SCreateAccount = styled.div`
 	padding: 30px;
 	border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-
-	h4 {
-		/* margin-bottom: 20px !important; */
-	}
 `;
 
 const NewAccount: React.FC<{}> = () => {
@@ -32,37 +29,22 @@ const NewAccount: React.FC<{}> = () => {
 
 	const [moniker, setMoniker] = useState('');
 	const [passphrase, setPassphrase] = useState('');
-	const [error, setError] = useState('');
 	const [account, setAccount] = useState<Account>();
 
-	console.log(error);
-
 	const loading = useSelector(selectCreateAccountLoading);
+	const error = useSelector(selectAccountError);
 
 	const create = async () => {
-		if (!moniker.length) {
-			setError('Moniker cannot be empty');
-			return;
-		}
-
-		if (!utils.validMoniker(moniker)) {
-			setError(
-				'Moniker can only include alphanumeric characters and underscores'
-			);
-			return;
-		}
-
-		if (passphrase.length < 3) {
-			setError('Passphrase must be longer than 3 characters');
-			return;
-		}
-
 		if (account) {
-			await dispatch(createAccount(account, moniker, passphrase));
+			const success: any = await dispatch(
+				createAccount(account, moniker, passphrase)
+			);
 
-			randomize();
-			setMoniker('');
-			setPassphrase('');
+			if (success) {
+				randomize();
+				setMoniker('');
+				setPassphrase('');
+			}
 		}
 	};
 
@@ -101,6 +83,7 @@ const NewAccount: React.FC<{}> = () => {
 						<Form.Group>
 							<label>Moniker</label>
 							<Form.Control
+								value={moniker}
 								onChange={(e: any) =>
 									setMoniker(e.target.value)
 								}
@@ -111,6 +94,7 @@ const NewAccount: React.FC<{}> = () => {
 						<Form.Group>
 							<label>Passsphrase</label>
 							<Form.Control
+								value={passphrase}
 								onChange={(e: any) =>
 									setPassphrase(e.target.value)
 								}
@@ -132,7 +116,7 @@ const NewAccount: React.FC<{}> = () => {
 					</Col>
 					<Col md={1}></Col>
 					<Col>
-						{error.length > 0 && (
+						<Error error={error || ''} fallback={<></>}>
 							<Row>
 								<Col md={1}>
 									<h5>
@@ -146,7 +130,7 @@ const NewAccount: React.FC<{}> = () => {
 									<h5>{error}</h5>
 								</Col>
 							</Row>
-						)}
+						</Error>
 					</Col>
 				</Row>
 			</SCreateAccount>

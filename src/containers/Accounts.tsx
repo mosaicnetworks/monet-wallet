@@ -36,8 +36,8 @@ const SAccounts = styled(SSection)`
 `;
 
 const SAvatar = styled.div`
-	transition: opacity 0.2s cubic-bezier(1, 1, 1, 1);
-	opacity: 0.9;
+	transition: opacity 0.4s ease;
+	opacity: 0.2;
 	cursor: pointer;
 	display: inline-block;
 	margin-bottom: 25px;

@@ -8,6 +8,8 @@ import Row from 'react-bootstrap/Row';
 
 import Sidebar from '../components/Sidebar';
 
+import ScrollTop from './utils/ScrollTop';
+
 const SPadding = styled.div`
 	padding-bottom: 70px;
 `;
@@ -15,6 +17,7 @@ const SPadding = styled.div`
 const Wrapper: React.FunctionComponent<{}> = props => {
 	return (
 		<>
+			<ScrollTop />
 			<Container fluid={true}>
 				<Row noGutters={true}>
 					<Col xs={2}>

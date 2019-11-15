@@ -2,8 +2,6 @@ import { Account, Monet } from 'evm-lite-core';
 import { AbstractKeystore } from 'evm-lite-keystore';
 import Utils, { Currency } from 'evm-lite-utils';
 
-import { toast } from 'react-toastify';
-
 import { BaseAction, errorHandler, ThunkResult } from '.';
 import { MonetDataDir, MonetInfo, MonikerEVMAccount } from '../monet';
 
@@ -265,8 +263,6 @@ export function transfer(
 						type: TRANSFER_SUCCESS,
 						payload: receipt
 					});
-
-					toast.success('Transfer successful');
 				} catch (e) {
 					error(
 						'Looks like theres a proble with the connection to the node'
@@ -283,17 +279,47 @@ export function createAccount(
 	account: Account,
 	moniker: string,
 	password: string
-): ThunkResult<Promise<void>> {
+): ThunkResult<Promise<boolean>> {
 	return async (dispatch, getState) => {
 		const { settings } = getState();
+
+		const error = errorHandler(dispatch, CREATE_ERROR);
 
 		dispatch({
 			type: CREATE_INIT
 		});
 
+		if (!moniker.length) {
+			error('Moniker cannot be empty');
+			return false;
+		}
+
+		if (!Utils.validMoniker(moniker)) {
+			error(
+				'Moniker can only include alphanumeric characters and underscores'
+			);
+			return false;
+		}
+
+		if (password.length < 3) {
+			error('Passphrase must be longer than 3 characters');
+			return false;
+		}
+
 		try {
 			const datadir = new MonetDataDir(settings.datadir);
 			const keyfile = AbstractKeystore.encrypt(account, password);
+
+			const monikers = Object.keys(await datadir.listKeyfiles());
+			console.log(monikers);
+			if (monikers.find(m => m.toLowerCase() === moniker.toLowerCase())) {
+				dispatch({
+					type: CREATE_ERROR,
+					payload: 'Moniker already exists!'
+				});
+
+				return false;
+			}
 
 			await datadir.importKeyfile(moniker, keyfile);
 
@@ -308,16 +334,14 @@ export function createAccount(
 				payload: a
 			});
 
-			toast.success(
-				`Account created: 0x${account.address.slice(0, 15)}...`
-			);
+			return true;
 		} catch (error) {
 			dispatch({
 				type: CREATE_ERROR,
 				payload: error.toString()
 			});
 
-			toast.error(error.toString());
+			return false;
 		}
 	};
 }

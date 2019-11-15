@@ -4,7 +4,6 @@ import ReactTooltip from 'react-tooltip';
 
 import { useDispatch } from 'react-redux';
 import { HashRouter, Route } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
 
 import { initSettings } from '../modules/settings';
 
@@ -40,11 +39,6 @@ const App: React.FunctionComponent<{}> = () => {
 					/>
 					<Route exact={true} path="/settings" component={Settings} />
 				</Wrapper>
-				<ToastContainer
-					autoClose={2000}
-					position={'bottom-left'}
-					toastClassName="toast-custom"
-				/>
 			</React.Fragment>
 		</HashRouter>
 	);
