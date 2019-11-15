@@ -14,6 +14,8 @@ export const errorHandler = (dispatch: any, action: string) => (
 		type: action,
 		payload: error
 	});
+
+	return false;
 };
 
 export type ThunkResult<R> = ThunkAction<R, Store, undefined, BaseAction<any>>;

@@ -4,6 +4,7 @@ import Utils, { Currency } from 'evm-lite-utils';
 
 import { BaseAction, errorHandler, ThunkResult } from '.';
 import { MonetDataDir, MonetInfo, MonikerEVMAccount } from '../monet';
+import { isLetter } from '../utils';
 
 // Lists all accounts in keystore
 const LIST_INIT = '@monet/accounts/LIST/INIT';
@@ -211,7 +212,7 @@ export function transfer(
 	passphrase: string,
 	to: string,
 	value: string
-): ThunkResult<Promise<void>> {
+): ThunkResult<Promise<boolean | undefined>> {
 	return async (dispatch, getState) => {
 		const state = getState();
 
@@ -222,6 +223,10 @@ export function transfer(
 			type: TRANSFER_INIT
 		});
 
+		if (!isLetter(value.slice(-1))) {
+			value += 'T';
+		}
+
 		if (!!Object.keys(config).length) {
 			const node = new Monet(
 				config.connection.host,
@@ -229,15 +234,14 @@ export function transfer(
 			);
 
 			const info = await node.getInfo<MonetInfo>().catch(() => {
-				error('No connection detected');
-				return;
+				return error('No connection detected');
 			});
 
 			if (Utils.cleanAddress(to).length !== 42) {
-				error('Invalid receipient address');
+				return error('Invalid receipient address');
 			}
 
-			if (info) {
+			if (Object.keys(info).length > 0 && typeof info === 'object') {
 				let account: Account;
 
 				try {
@@ -246,8 +250,7 @@ export function transfer(
 
 					account = MonetDataDir.decrypt(keyfile, passphrase);
 				} catch (e) {
-					error('Incorrect passphrase');
-					return;
+					return error('Incorrect passphrase');
 				}
 
 				try {
@@ -263,14 +266,14 @@ export function transfer(
 						type: TRANSFER_SUCCESS,
 						payload: receipt
 					});
+
+					return true;
 				} catch (e) {
-					error(
-						'Looks like theres a proble with the connection to the node'
-					);
+					return error(e.toString());
 				}
 			}
 		} else {
-			throw Error('Configuration could not loaded.');
+			return error('Configuration could not loaded.');
 		}
 	};
 }
@@ -290,20 +293,17 @@ export function createAccount(
 		});
 
 		if (!moniker.length) {
-			error('Moniker cannot be empty');
-			return false;
+			return error('Moniker cannot be empty');
 		}
 
 		if (!Utils.validMoniker(moniker)) {
-			error(
+			return error(
 				'Moniker can only include alphanumeric characters and underscores'
 			);
-			return false;
 		}
 
 		if (password.length < 3) {
-			error('Passphrase must be longer than 3 characters');
-			return false;
+			return error('Passphrase must be longer than 3 characters');
 		}
 
 		try {

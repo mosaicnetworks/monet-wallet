@@ -15,11 +15,12 @@ import Row from 'react-bootstrap/Row';
 
 import Avatar from './Avatar';
 import Loader from './Loader';
+import Await from './Await';
+import Error from './Error';
 
 import { MonikerEVMAccount } from 'src/monet';
 import { transfer } from '../modules/accounts';
 import { selectAccountError, selectTransferLoading } from '../selectors';
-import { isLetter } from '../utils';
 
 const STransfer = styled.div`
 	padding-top: 20px;
@@ -57,25 +58,21 @@ const Transfer: React.FC<Props> = props => {
 		to.length > 0 && value.length > 0 && passphrase.length > 0;
 
 	const makeTransfer = async () => {
-		if (isLetter(value.slice(-1))) {
-			await dispatch(
-				transfer(props.account.moniker, passphrase, to, value)
-			);
-		} else {
-			await dispatch(
-				transfer(props.account.moniker, passphrase, to, value + 'T')
-			);
+		const success: any = await dispatch(
+			transfer(props.account.moniker, passphrase, to, value)
+		);
+
+		if (success) {
+			setTo('');
+			setValue('');
+
+			setSuccess('Transfer successful');
+			await props.getAccount();
+
+			setTimeout(() => {
+				setSuccess('');
+			}, 3000);
 		}
-
-		setTo('');
-		setValue('');
-
-		setSuccess('Transfer successful');
-		await props.getAccount();
-
-		setTimeout(() => {
-			setSuccess('');
-		}, 3000);
 	};
 
 	return (
@@ -136,7 +133,33 @@ const Transfer: React.FC<Props> = props => {
 						<Loader loading={loading} />
 					</Col>
 					<Col>
-						{allFieldsNotEmpty ? (
+						<Await await={!allFieldsNotEmpty} fallback={<></>}>
+							<Error
+								error={error || ''}
+								fallback={
+									(success.length > 0 && (
+										<SConfirm className="text-center">
+											<h5>
+												<FontAwesomeIcon
+													className={'green'}
+													icon={faCheck}
+												/>{' '}
+											</h5>
+											<h5>{success}</h5>
+										</SConfirm>
+									)) || <></>
+								}
+							>
+								<SConfirm className="text-center">
+									<h5>
+										<FontAwesomeIcon
+											className={'red'}
+											icon={faTimes}
+										/>{' '}
+									</h5>
+									<h5>{error}</h5>
+								</SConfirm>
+							</Error>
 							<SConfirm>
 								<h5>Confirm</h5>
 								<p>
@@ -195,29 +218,7 @@ const Transfer: React.FC<Props> = props => {
 										: '0T'}
 								</h5>
 							</SConfirm>
-						) : error ? (
-							<SConfirm className="text-center">
-								<h5>
-									<FontAwesomeIcon
-										className={'red'}
-										icon={faTimes}
-									/>{' '}
-								</h5>
-								<h5>{error}</h5>
-							</SConfirm>
-						) : (
-							success.length > 0 && (
-								<SConfirm className="text-center">
-									<h5>
-										<FontAwesomeIcon
-											className={'green'}
-											icon={faCheck}
-										/>{' '}
-									</h5>
-									<h5>{success}</h5>
-								</SConfirm>
-							)
-						)}
+						</Await>
 					</Col>
 				</Form.Row>
 			</Form>
