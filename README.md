@@ -1,4 +1,4 @@
-<img width="75px" height="75px" align="right" alt="Monet Logo" src="./src/assets/monet_logo.png" title="Monet Logo"/>
+<img width="200px" height="200px" align="right" alt="Monet Logo" src="./src/assets/monet.svg" title="Monet Logo"/>
 
 # Monet Wallet
 
