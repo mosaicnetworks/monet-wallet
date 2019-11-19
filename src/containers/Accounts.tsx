@@ -23,8 +23,8 @@ import { SSection, SStatistic } from '../components/styles';
 import { listAccounts } from '../modules/accounts';
 import {
 	selectAccounts,
-	selectConfig,
-	selectListAccountLoading
+	selectConfig
+	// selectListAccountLoading
 } from '../selectors';
 import { capitalize, commaSeperate, parseBalance } from '../utils';
 
@@ -54,7 +54,7 @@ const Accounts: React.FC<Props> = () => {
 
 	const accounts = useSelector(selectAccounts);
 	const config = useSelector(selectConfig);
-	const loading = useSelector(selectListAccountLoading);
+	const loading = false; // useSelector(selectListAccountLoading);
 
 	const refresh = () => dispatch(listAccounts(true));
 
@@ -75,9 +75,9 @@ const Accounts: React.FC<Props> = () => {
 	// polling for accounts
 	let poller: any;
 	useEffect(() => {
-		poller = setInterval(() => {
-			refresh();
-		}, 5000);
+		// poller = setInterval(() => {
+		// 	refresh();
+		// }, 5000);
 
 		return () => {
 			clearInterval(poller);
@@ -101,6 +101,7 @@ const Accounts: React.FC<Props> = () => {
 											'https://monet.network/app/images/products/tenom.svg'
 										}
 										width={35}
+										style={{ marginRight: '15px' }}
 									/>
 									{commaSeperate(
 										parseBalance(totalBalance).slice(0, -1)
@@ -124,7 +125,6 @@ const Accounts: React.FC<Props> = () => {
 				</Container>
 			</SStatistic>
 			<SAccounts className="">
-				<p>Select an account view more options</p>
 				<Zoom left={true}>
 					<div>
 						{accounts.map(a => (

@@ -62,6 +62,7 @@ const Transfer: React.FC<Props> = props => {
 		if (success) {
 			setTo('');
 			setValue('');
+			setPassphrase('');
 			setSuccess('Transfer successful');
 
 			await props.getAccount();
@@ -96,7 +97,7 @@ const Transfer: React.FC<Props> = props => {
 										setValue(e.target.value)
 									}
 									value={value}
-									type="text"
+									type="number"
 									placeholder="Amount"
 								/>
 								<InputGroup.Append>
@@ -137,12 +138,12 @@ const Transfer: React.FC<Props> = props => {
 								(success.length && (
 									<>
 										<SConfirm className="text-center">
-											<h5>
+											<h2>
 												<FontAwesomeIcon
 													className={'green'}
 													icon={faCheck}
 												/>{' '}
-											</h5>
+											</h2>
 											<h5>{success}</h5>
 										</SConfirm>
 									</>
