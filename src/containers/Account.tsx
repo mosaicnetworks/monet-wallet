@@ -83,16 +83,16 @@ const Account: React.FC<RouteComponentProps<Props>> = props => {
 	}, []);
 
 	// polling for accounts
-	// let poller: any;
-	// useEffect(() => {
-	// 	poller = setInterval(() => {
-	// 		fetchAccount(account);
-	// 	}, 10000);
+	let poller: any;
+	useEffect(() => {
+		poller = setInterval(() => {
+			fetchAccount(account);
+		}, 5000);
 
-	// 	return () => {
-	// 		clearInterval(poller);
-	// 	};
-	// }, []);
+		return () => {
+			clearInterval(poller);
+		};
+	}, []);
 
 	return (
 		<>

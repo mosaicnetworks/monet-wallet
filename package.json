@@ -26,14 +26,15 @@
 		"react-router-dom": "^5.1.2"
 	},
 	"scripts": {
-		"dev": "concurrently --kill-others \"yarn run start:server\" \"yarn run start:electron\"",
-		"start:server": "webpack-dev-server --config config/webpack.config.js --hot --inline",
-		"start:electron": "electron ./dist",
+		"dev": "concurrently --kill-others \"yarn run dev:server\" \"yarn run dev:electron\"",
+		"dev:server": "webpack-dev-server --config config/webpack.config.js --hot --inline",
+		"dev:electron": "electron ./dist",
 		"build": "rm -rf dist/ && webpack --config config/webpack.config.js && cp ./package.json ./dist/",
 		"clean": "rm -rf node_modules dist pkg",
-		"pkg:mac": "electron-packager dist \"Monet Wallet\" --platform=darwin --target=zip --arch=x64 --out=pkg --overwrite --icon=src/assets/icons/monet_logo.icns",
-		"pkg:linux": "electron-packager ./dist \"Monet Wallet\" --target=zip --platform=linux --arch=x64 --out ./pkg --overwrite --icon src/assets/monet_logo.png",
-		"pkg:win": "electron-packager ./dist \"Monet Wallet\" --platform=win32 --arch=x64 --out ./pkg --overwrite --icon src/assets/monet_logo.ico",
+		"pkg:mac": "electron-packager dist \"Monet Wallet\" --platform=darwin --target=zip --arch=x64 --out=pkg --overwrite --icon=src/assets/icons/monet_logo.icns --prune",
+		"pkg:lin": "electron-packager ./dist \"Monet Wallet\" --target=zip --platform=linux --arch=x64 --out=./pkg --overwrite --icon=src/assets/monet_logo.png --prune --asar",
+		"pkg:win": "electron-packager ./dist \"Monet Wallet\" --platform=win32 --arch=x64 --out=./pkg --overwrite --icon=src/assets/monet_logo.ico --prune --asar",
+		"pkg": "concurrently --kill-others \"yarn pkg:mac\" \"yarn pkg:lin\" \"yarn pkg:win\"",
 		"linkalldev": "yarn link evm-lite-core evm-lite-consensus evm-lite-keystore evm-lite-datadir evm-lite-client evm-lite-utils",
 		"addalldev": "yarn add evm-lite-core evm-lite-consensus evm-lite-keystore evm-lite-datadir evm-lite-client evm-lite-utils"
 	},

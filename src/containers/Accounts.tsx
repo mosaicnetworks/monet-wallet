@@ -37,7 +37,7 @@ const SAccounts = styled(SSection)`
 
 const SAvatar = styled.div`
 	transition: opacity 0.4s ease;
-	opacity: 0.2;
+	opacity: 0.8;
 	cursor: pointer;
 	display: inline-block;
 	margin-bottom: 25px;
@@ -73,16 +73,16 @@ const Accounts: React.FC<Props> = () => {
 	}, [accounts]);
 
 	// polling for accounts
-	// let poller: any;
-	// useEffect(() => {
-	// 	poller = setInterval(() => {
-	// 		refresh();
-	// 	}, 10000);
+	let poller: any;
+	useEffect(() => {
+		poller = setInterval(() => {
+			refresh();
+		}, 5000);
 
-	// 	return () => {
-	// 		clearInterval(poller);
-	// 	};
-	// }, []);
+		return () => {
+			clearInterval(poller);
+		};
+	}, []);
 
 	return (
 		<>
@@ -90,7 +90,7 @@ const Accounts: React.FC<Props> = () => {
 			<SStatistic className="">
 				<Container>
 					<Row className="align-items-center">
-						<Col className="text-center">
+						<Col className="text-center" md={6}>
 							<h3>
 								<Await
 									await={loading}
@@ -125,7 +125,7 @@ const Accounts: React.FC<Props> = () => {
 			</SStatistic>
 			<SAccounts className="">
 				<p>Select an account view more options</p>
-				<Zoom right cascade>
+				<Zoom left={true}>
 					<div>
 						{accounts.map(a => (
 							<SAvatar

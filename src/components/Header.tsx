@@ -13,8 +13,8 @@ const SHeader = styled.div`
 	width: 100%;
 	/* background: var(--blue); */
 	/* color: white !important; */
-	box-shadow: 2px 0px 40px rgba(0, 0, 0, 0.05);
-	border-bottom: 1px solid #eee;
+	/* box-shadow: 2px 0px 40px rgba(0, 0, 0, 0.05); */
+	border-bottom: var(--border);
 	padding: 0 15px;
 `;
 
