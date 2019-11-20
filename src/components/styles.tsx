@@ -5,7 +5,7 @@ export const SStatistic = styled.div`
 	font-weight: 600 !important;
 	border-bottom: var(--border);
 	background: #fff;
-	box-shadow: 2px 0px 40px rgba(0, 0, 0, 0.05);
+	/* box-shadow: 2px 0px 40px rgba(0, 0, 0, 0.05); */
 
 	h3 {
 		font-size: 35px;

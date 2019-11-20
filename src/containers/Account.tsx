@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import Utils, { Currency } from 'evm-lite-utils';
 import ReactTooltip from 'react-tooltip';
@@ -55,19 +55,25 @@ const Account: React.FC<RouteComponentProps<Props>> = props => {
 		bytecode: ''
 	});
 
-	const fetchAccount = async (a: MonikerEVMAccount) => {
-		// setLoading(true);
+	const fetchAccount = useCallback(
+		async (a: MonikerEVMAccount) => {
+			// setLoading(true);
 
-		const node = new Monet(config.connection.host, config.connection.port);
-		const res = await node.getAccount(a.address);
+			const node = new Monet(
+				config.connection.host,
+				config.connection.port
+			);
+			const res = await node.getAccount(a.address);
 
-		setAccount({
-			...res,
-			moniker: a.moniker
-		});
+			setAccount({
+				...res,
+				moniker: a.moniker
+			});
 
-		// setTimeout(() => setLoading(false), 0);
-	};
+			// setTimeout(() => setLoading(false), 0);
+		},
+		[account]
+	);
 
 	useEffect(() => {
 		const a = accounts.find(a => a.moniker.toLowerCase() === moniker);
@@ -87,7 +93,6 @@ const Account: React.FC<RouteComponentProps<Props>> = props => {
 	useEffect(() => {
 		poller = setInterval(() => {
 			fetchAccount(account);
-			console.log(account);
 		}, 5000);
 
 		return () => {
