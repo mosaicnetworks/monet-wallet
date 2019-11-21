@@ -34,7 +34,7 @@
 		"pkg:mac": "electron-packager dist \"Monet Wallet\" --platform=darwin --target=zip --arch=x64 --out=pkg --overwrite --icon=src/assets/icons/monet_logo.icns --prune",
 		"pkg:lin": "electron-packager ./dist \"Monet Wallet\" --target=zip --platform=linux --arch=x64 --out=./pkg --overwrite --icon=src/assets/monet_logo.png --prune --asar",
 		"pkg:win": "electron-packager ./dist \"Monet Wallet\" --platform=win32 --arch=x64 --out=./pkg --overwrite --icon=src/assets/monet_logo.ico --prune --asar",
-		"pkg": "concurrently --kill-others \"yarn pkg:mac\" \"yarn pkg:lin\" \"yarn pkg:win\"",
+		"pkg": "concurrently --kill-others \"yarn pkg:mac\" \"yarn pkg:lin\"",
 		"linkalldev": "yarn link evm-lite-core evm-lite-consensus evm-lite-keystore evm-lite-datadir evm-lite-client evm-lite-utils",
 		"addalldev": "yarn add evm-lite-core evm-lite-consensus evm-lite-keystore evm-lite-datadir evm-lite-client evm-lite-utils"
 	},
