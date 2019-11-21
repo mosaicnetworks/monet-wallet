@@ -101,9 +101,7 @@ const Update: React.FC<Props> = props => {
 								type="text"
 								placeholder="Current Passphrase"
 							/>
-							<Form.Text className="text-muted">
-								The address you wish to transfer to.
-							</Form.Text>
+							<Form.Text className="text-muted"></Form.Text>
 						</Form.Group>
 						<Form.Group controlId="formBasicPassword">
 							<InputGroup>
@@ -117,9 +115,7 @@ const Update: React.FC<Props> = props => {
 								/>
 							</InputGroup>
 
-							<Form.Text className="text-muted">
-								Enter an amount in tenom
-							</Form.Text>
+							<Form.Text className="text-muted"></Form.Text>
 						</Form.Group>
 						<Form.Group controlId="formBasicEmail">
 							<Form.Control
