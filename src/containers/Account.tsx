@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import Utils, { Currency } from 'evm-lite-utils';
 import ReactTooltip from 'react-tooltip';
@@ -46,7 +46,7 @@ const Account: React.FC<RouteComponentProps<Props>> = props => {
 	const config = useSelector(selectConfig);
 
 	const moniker = props.match.params.moniker;
-	const [loading, setLoading] = useState(false);
+	const [loading] = useState(false);
 	const [account, setAccount] = useState<MonikerEVMAccount>({
 		moniker: '',
 		balance: new Currency(0),
@@ -55,19 +55,25 @@ const Account: React.FC<RouteComponentProps<Props>> = props => {
 		bytecode: ''
 	});
 
-	const fetchAccount = async (a: MonikerEVMAccount) => {
-		setLoading(true);
+	const fetchAccount = useCallback(
+		async (a: MonikerEVMAccount) => {
+			// setLoading(true);
 
-		const node = new Monet(config.connection.host, config.connection.port);
-		const res = await node.getAccount(a.address);
+			const node = new Monet(
+				config.connection.host,
+				config.connection.port
+			);
+			const res = await node.getAccount(a.address);
 
-		setAccount({
-			...res,
-			moniker: a.moniker
-		});
+			setAccount({
+				...res,
+				moniker: a.moniker
+			});
 
-		setTimeout(() => setLoading(false), 500);
-	};
+			// setTimeout(() => setLoading(false), 0);
+		},
+		[account]
+	);
 
 	useEffect(() => {
 		const a = accounts.find(a => a.moniker.toLowerCase() === moniker);
@@ -83,16 +89,16 @@ const Account: React.FC<RouteComponentProps<Props>> = props => {
 	}, []);
 
 	// polling for accounts
-	// let poller: any;
-	// useEffect(() => {
-	// 	poller = setInterval(() => {
-	// 		fetchAccount(account);
-	// 	}, 10000);
+	let poller: any;
+	useEffect(() => {
+		poller = setInterval(() => {
+			fetchAccount(account);
+		}, 5000);
 
-	// 	return () => {
-	// 		clearInterval(poller);
-	// 	};
-	// }, []);
+		return () => {
+			clearInterval(poller);
+		};
+	}, [account]);
 
 	return (
 		<>
@@ -116,6 +122,7 @@ const Account: React.FC<RouteComponentProps<Props>> = props => {
 											'https://monet.network/app/images/products/tenom.svg'
 										}
 										width={35}
+										style={{ marginRight: '15px' }}
 									/>
 									{commaSeperate(
 										parseBalance(account.balance).slice(
@@ -125,7 +132,9 @@ const Account: React.FC<RouteComponentProps<Props>> = props => {
 									)}
 								</Await>
 							</h3>
-							<div>Balance</div>
+							<div onClick={() => fetchAccount(account)}>
+								Balance
+							</div>
 						</Col>
 						<Col className="text-center">
 							<h3>
@@ -136,7 +145,9 @@ const Account: React.FC<RouteComponentProps<Props>> = props => {
 									{account.nonce}
 								</Await>
 							</h3>
-							<div>Nonce</div>
+							<div onClick={() => console.log(account)}>
+								Nonce
+							</div>
 						</Col>
 					</Row>
 				</Container>

@@ -14,7 +14,7 @@
 	--purple: #7f3b97;
 	--yellow: #ffe014;
 
-	--border: 1px solid rgba(0, 0, 0, 0.1);
+	--border: 1px solid rgba(0, 0, 0, 0.03);
 }
 
 body {
@@ -26,6 +26,8 @@ body {
 
 	background: #fff !important;
 	line-height: 1.7;
+
+	font-family: 'Titillium Web', sans-serif;
 }
 
 .sticky-top {
@@ -192,5 +194,6 @@ input[type='text'],
 input[type='email'],
 input[type='password'],
 input[type='number'] {
-	background-color: rgba(60, 120, 208, 0.0980392);
+	color: #000;
+	background-color: rgba(60, 120, 208, 0.0480392);
 }

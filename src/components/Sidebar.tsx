@@ -13,10 +13,11 @@ type Props = {};
 const SSidebar = styled.div`
 	/* width: 300px; */
 	height: 100vh;
-	background: #fff;
-	box-shadow: 0 2px 60px rgba(0, 0, 0, 0.2);
+	background: url('https://dashboard.monet.network/static/media/bg.f2d96fad.svg');
+	background-position-x: -1px;
+	/* box-shadow: 0 2px 60px rgba(0, 0, 0, 0.2); */
 	border-right: var(--border);
-	background: var(--blue);
+	/* background: var(--blue); */
 `;
 
 const SLogo = styled.div`

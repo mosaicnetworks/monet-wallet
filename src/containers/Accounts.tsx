@@ -23,8 +23,8 @@ import { SSection, SStatistic } from '../components/styles';
 import { listAccounts } from '../modules/accounts';
 import {
 	selectAccounts,
-	selectConfig,
-	selectListAccountLoading
+	selectConfig
+	// selectListAccountLoading
 } from '../selectors';
 import { capitalize, commaSeperate, parseBalance } from '../utils';
 
@@ -37,7 +37,7 @@ const SAccounts = styled(SSection)`
 
 const SAvatar = styled.div`
 	transition: opacity 0.4s ease;
-	opacity: 0.2;
+	opacity: 0.8;
 	cursor: pointer;
 	display: inline-block;
 	margin-bottom: 25px;
@@ -54,7 +54,7 @@ const Accounts: React.FC<Props> = () => {
 
 	const accounts = useSelector(selectAccounts);
 	const config = useSelector(selectConfig);
-	const loading = useSelector(selectListAccountLoading);
+	const loading = false; // useSelector(selectListAccountLoading);
 
 	const refresh = () => dispatch(listAccounts(true));
 
@@ -73,16 +73,16 @@ const Accounts: React.FC<Props> = () => {
 	}, [accounts]);
 
 	// polling for accounts
-	// let poller: any;
-	// useEffect(() => {
-	// 	poller = setInterval(() => {
-	// 		refresh();
-	// 	}, 10000);
+	let poller: any;
+	useEffect(() => {
+		// poller = setInterval(() => {
+		// 	refresh();
+		// }, 5000);
 
-	// 	return () => {
-	// 		clearInterval(poller);
-	// 	};
-	// }, []);
+		return () => {
+			clearInterval(poller);
+		};
+	}, []);
 
 	return (
 		<>
@@ -90,7 +90,7 @@ const Accounts: React.FC<Props> = () => {
 			<SStatistic className="">
 				<Container>
 					<Row className="align-items-center">
-						<Col className="text-center">
+						<Col className="text-center" md={6}>
 							<h3>
 								<Await
 									await={loading}
@@ -101,6 +101,7 @@ const Accounts: React.FC<Props> = () => {
 											'https://monet.network/app/images/products/tenom.svg'
 										}
 										width={35}
+										style={{ marginRight: '15px' }}
 									/>
 									{commaSeperate(
 										parseBalance(totalBalance).slice(0, -1)
@@ -124,8 +125,7 @@ const Accounts: React.FC<Props> = () => {
 				</Container>
 			</SStatistic>
 			<SAccounts className="">
-				<p>Select an account view more options</p>
-				<Zoom right cascade>
+				<Zoom left={true}>
 					<div>
 						{accounts.map(a => (
 							<SAvatar
